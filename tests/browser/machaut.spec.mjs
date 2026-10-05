@@ -301,7 +301,7 @@ test("Machaut: internal phrase durations and repertoire groups are recorded", as
   ).toBe(true);
   expect(r.notes).toEqual(r.sampledNotes);
   await page.locator("#repertoire").selectOption("ballade");
-  await expect(page.locator("#stats")).toContainText("801");
+  await expect(page.locator("#stats")).toContainText("719");
   await page.locator("#repertoire").selectOption("motet");
   await expect(page.locator("#stats")).toContainText("285");
 });

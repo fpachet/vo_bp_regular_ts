@@ -266,11 +266,14 @@ corpus inspection pages.
 ## Machaut melody application
 
 [**Open the Machaut Melody Laboratory**](https://fpachet.github.io/vo_bp_regular_ts/machaut/)
-trains on six locally stored source voices and uses the published npm library.
+offers 23 locally stored source voices (2,879 notes), with 16 rondeaux/virelais
+selected by default, and uses the published npm library.
 Compare ordinary and exact constrained generation, control finals/range/leaps,
 inspect copying and note probabilities, and download MIDI, MusicXML or experiment
 JSON. Its [standalone source and usage guide](examples/machaut/README.md) documents
-corpus extraction, equal-duration generation and the research limitations.
+corpus extraction, joint pitch × duration generation, learned meter and
+phrase-ending duration priors, and the research limitations. Internal phrase
+boundaries are documented timing candidates; raw source timing is retained.
 
 ## Validation and benchmarks
 
