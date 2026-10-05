@@ -51,8 +51,8 @@ The product budgets intentionally stop large requests rather than approximating.
 - Local browser inspection confirms full Alice generation and metered playback.
   Screenshot: playground-features.png.
 
-Validated implementation: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37307941669
+Validated implementation: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37308325693
 
-Validated deployment: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37307941667
+Validated deployment: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37308325796
 
 Performance gains and practical limits: [feature-results.md](feature-results.md).

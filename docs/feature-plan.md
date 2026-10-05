@@ -1,6 +1,6 @@
 # Feature and example completion plan
 
-Status: implemented and validated. Browser timing artifact persistence is being finalized.
+Status: complete. Implemented, benchmarked, validated, committed, pushed and deployed.
 
 Version: 0.3.0-rc.1. Results: [feature-results.md](feature-results.md).
 

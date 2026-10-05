@@ -1,0 +1,54 @@
+{
+  "ciRun": "https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37308325693",
+  "platform": "GitHub Ubuntu runner, virtual PulseAudio output",
+  "measurements": [
+    {
+      "browser": "chromium",
+      "sampling": [
+        {
+          "cap": 0,
+          "coldMs": 0.20000000001164153,
+          "warm500Ms": 15.89999999999418,
+          "cachedEdges": 0
+        },
+        {
+          "cap": 256,
+          "coldMs": 0.20000000001164153,
+          "warm500Ms": 7.7999999999883585,
+          "cachedEdges": 256
+        },
+        {
+          "cap": 100000,
+          "coldMs": 0.10000000000582077,
+          "warm500Ms": 2.1999999999825377,
+          "cachedEdges": 1332
+        }
+      ],
+      "diagnostics": "Training tokens\n24\nTraining ms\n1.2\nConstraint/product/backward ms\n7.4\nSample/optimization ms\n0.4\nMarginals ms\n4.5\nTotal ms\n41.1\nSequence log weight\n-15.87209\nConditional probability\n0.002031462\nLog conditional probability\n-6.198999\nLongest copied run\n6\nSource states\n12\nSource edges\n132\nReachable constraint states\n60\nUnique product states\n433\nTime-indexed product states\n433\nTime-indexed product edges\n3209\nConstrained mass\n0.00006295478\nLog constrained mass\n-9.673094"
+    },
+    {
+      "browser": "firefox",
+      "sampling": [
+        {
+          "cap": 0,
+          "coldMs": 0,
+          "warm500Ms": 10,
+          "cachedEdges": 0
+        },
+        {
+          "cap": 256,
+          "coldMs": 0,
+          "warm500Ms": 5,
+          "cachedEdges": 256
+        },
+        {
+          "cap": 100000,
+          "coldMs": 0,
+          "warm500Ms": 2,
+          "cachedEdges": 1332
+        }
+      ],
+      "diagnostics": "Training tokens\n24\nTraining ms\n9\nConstraint/product/backward ms\n14\nSample/optimization ms\n0\nMarginals ms\n4\nTotal ms\n44\nSequence log weight\n-16.87165\nConditional probability\n0.0007476619\nLog conditional probability\n-7.19856\nLongest copied run\n7\nSource states\n12\nSource edges\n132\nReachable constraint states\n60\nUnique product states\n433\nTime-indexed product states\n433\nTime-indexed product edges\n3209\nConstrained mass\n0.00006295478\nLog constrained mass\n-9.673094"
+    }
+  ]
+}

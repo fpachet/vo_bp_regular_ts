@@ -92,3 +92,22 @@ rather than the larger full-book MAXORDER demonstration:
 
 All four realistic products match the Python reference state/edge counts; log
 partition differences are at most 2.3e-14.
+
+
+Persisted CI browser timings (`benchmarks/browser-results.json`), 500 metered
+melody samples of length 12 with five seed streams:
+
+| Browser | No cache ms | Cap 256 ms | Cap 100,000 ms | Large-cache retained edges |
+|---|---:|---:|---:|---:|
+| Chromium | 15.9 | 7.8 | 2.2 | 1,332 |
+| Firefox | 10 | 5 | 2 | 1,332 |
+
+These are single ordered measurements from a shared CI runner, not medians;
+JIT/order effects and coarse browser clocks limit comparisons. A recorded zero
+for a cold sample means below timer resolution. CI uses a virtual PulseAudio
+sink for WebAudio startup checks; it does not assess audible sound quality.
+
+Final validation: 168 Node tests, 91 freshly regenerated Python reference cases,
+16 Chromium/Firefox checks and an external strict TypeScript package consumer
+(including new meter/marginal exports) passed. The Pages deployment passed and
+live metered inference was checked in the published site.
