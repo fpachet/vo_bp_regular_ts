@@ -127,11 +127,17 @@ self.onmessage = async ({ data: input }) => {
     const a = allOf(...parts),
       p = compileProduct(graph, a, {
         length: input.length,
+        pruneDeadStates: input.prune || input.lowMemory,
         maxProductEdges: 20000000,
         maxDfaTransitions:
           input.fullText && input.wordMode ? 10000000 : 1000000,
       }),
-      bp = new ProductBPResult(p);
+      bp = new ProductBPResult(
+        p,
+        input.lowMemory
+          ? { checkpointInterval: 8, maxCachedSamplingEdges: 0 }
+          : {},
+      );
     const inferred = performance.now();
     const best = input.action === "best" ? optimizeProduct(p) : null;
     const sequence = best
@@ -184,6 +190,8 @@ self.onmessage = async ({ data: input }) => {
       feasible: bp.feasible,
       logWeight: best?.logWeight,
       diagnostics: {
+        "Inference buffers MiB (excludes model/Maps)":
+          bp.memoryDiagnostics().totalBufferBytes / 2 ** 20,
         "Training tokens": d.sequences.reduce((n, s) => n + s.length, 0),
         "Training ms": trained - trainingStart,
         "Constraint/product/backward ms": inferred - trained,

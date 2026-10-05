@@ -157,6 +157,8 @@ function run(action) {
   $("status").textContent = "Computing reachable product and backward values…";
   worker.postMessage({
     action,
+    lowMemory: $("lowMemory").checked,
+    prune: $("prune").checked,
     fullText: $("fullText").checked,
     wordMode: $("wordMode").checked,
     meter: $("meter").checked,

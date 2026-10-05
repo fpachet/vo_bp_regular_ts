@@ -167,3 +167,64 @@ only the current forward layer; it computes no marginals until requested.
 Expected counts sum to the fixed sequence length; each position's symbol
 probabilities sum to one within floating-point tolerance. Very small ordinary
 probabilities can underflow. The edge-record budget bounds output aggregation.
+
+## Memory controls (0.4.0-rc.1)
+
+Defaults now use packed product edges (`Uint32Array` symbol/destination IDs and
+`Float64Array` log weights), sorted `Uint32Array` layers, deduplication of equal
+layer sets, and shared dense lookup buffers. Sparse layers use binary search
+without separate Map indices. Source outgoing order and optimization tie order
+are preserved; canonicalization can change internal product IDs.
+
+Pattern builders accept `maxCachedTransitions` (default 100,000; zero disables
+sparse caching). At capacity the sparse cache is cleared and missed transitions
+are recomputed exactly. `maxTransitions` continues to bound dense table entries
+and caps the sparse cache capacity. Eviction never rejects a sequence or
+approximates its language. Alphabet tables remain optional.
+
+Additional `InferenceOptions`:
+
+| Option | Default | Meaning |
+|---|---:|---|
+| maxCachedDfaTransitions | 100000 | Temporary compilation cache entries; zero disables; eviction recomputes |
+| checkpointInterval | 1 | Store every B-th backward layer plus the final layer; positive integer |
+| pruneDeadStates | false | Remove infeasible time-layer states and edges unused by any accepted path |
+
+`maxDfaTransitions` now bounds actual DFA evaluations on cache misses. Very small
+caches can cause repeated evaluations to consume this work budget faster.
+Acceptor callbacks must remain deterministic functions of state and symbol.
+
+For a memory-sensitive one-shot generation:
+
+```ts
+const bp = runBP(graph, constraint, {
+  length: 128,
+  pruneDeadStates: true,
+  checkpointInterval: 8,
+  maxCachedSamplingEdges: 0,
+});
+const sequence = bp.sample(seededRng(42));
+console.log(bp.memoryDiagnostics());
+```
+
+Checkpointing reconstructs one block at a time in Float64 log space, supporting
+sampling, marginals and all sequence probability methods. With roughly uniform
+layers, backward storage is proportional to `(T/B + B) * states` instead of
+`T * states`. Repeated uncached sampling can rerun almost an entire backward pass
+per sample, so leave `checkpointInterval:1` for fast repeated generation.
+
+Pruning is exact, performed after forward compilation, and preserves source
+state/product IDs. Unique state metadata may therefore include pruned states.
+It does not avoid forward-construction resource limits or guarantee lower peak
+RSS. Different viable layer sets can reduce layer sharing; pruning is opt-in.
+
+`memoryDiagnostics()` reports retained inference buffer bytes, unique layer
+buffers, checkpoint count and sampling buffer bytes. It excludes the source,
+constraint Maps, object metadata and caller-held inspection snapshots; process
+measurements must include heap and external array buffers.
+
+`product.layerIds` exposes packed layer IDs. Existing `product.rows` and
+`product.layers` inspection getters lazily materialize and retain compatibility
+snapshots; avoid those getters in memory-sensitive code. `product.row(id)`
+materializes only one edge row. `bp.logBetas` materializes all backward layers for
+inspection, which defeats checkpoint savings while the returned array is held.

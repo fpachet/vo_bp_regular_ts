@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0-rc.1
+
+- Bound sparse pattern and temporary compiler caches with exact recomputation.
+- Pack edges into integer/Float64 buffers and share canonical layers/indices.
+- Add optional exact dead-state pruning and backward checkpointing.
+- Reduce Viterbi choices to integer buffers; expose inference buffer diagnostics.
+- Preserve row/layer/beta inspection through lazy compatibility snapshots.
+- Add memory controls in the playground and fresh-process before/after benchmarks.
+
+
 ## 0.3.0-rc.1
 
 - Aho–Corasick substring/MAXORDER automata with sparse caches and optional finite tables.

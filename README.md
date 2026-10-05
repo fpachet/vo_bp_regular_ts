@@ -48,7 +48,10 @@ and declarations expose the root core module and the `/constraints` subpath.
 
 ## Release candidate status
 
-Version **0.2.0-rc.1** adds Python-equivalent backoff mixtures, reproducible RNGs,
+Current version: **0.4.0-rc.1**, with packed inference storage and bounded
+pattern caches. See [memory controls and results](docs/memory-results.md).
+
+Version 0.2.0-rc.1 added Python-equivalent backoff mixtures, reproducible RNGs,
 versioned model/DFA snapshots, start overrides, resource budgets and bounded
 sampling caches. See the [API guide](docs/api.md), [changelog](CHANGELOG.md),
 [implementation plan](docs/release-plan.md) and
@@ -315,3 +318,9 @@ inference is substantially larger than the toy examples; its default horizon is
 
 Reproduce performance results with `npm run benchmark:patterns`,
 `npm run benchmark:sampling`, and `npm run benchmark:realistic`.
+
+
+For lower memory, use `pruneDeadStates:true` and optionally
+`checkpointInterval:8` with `maxCachedSamplingEdges:0`. Checkpointing trades
+sampling speed for memory; it is disabled by default. The playground exposes
+both pruning and reduced-memory generation controls. Details: [API](docs/api.md).

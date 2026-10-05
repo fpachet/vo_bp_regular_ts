@@ -170,6 +170,19 @@
           ><input id="marginals" type="checkbox" checked /> Compute position
           marginals</label
         >
+        <label
+          ><input id="prune" type="checkbox" /> Prune impossible
+          continuations</label
+        >
+        <label
+          ><input id="lowMemory" type="checkbox" /> Reduce memory (slower
+          sampling)</label
+        >
+        <small
+          >Reduced memory recomputes backward blocks and disables the sampling
+          cache. Use it when memory is more important than repeated-generation
+          speed.</small
+        >
         <label for="order">Source maximum order</label
         ><input id="order" type="number" min="0" max="8" value="2" />
         <label for="backoff">Backoff mixture weight</label

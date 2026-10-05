@@ -48,7 +48,7 @@ const graph=ContextGraph.fromBackoffSequences(corpus,{maxOrder:1,backoffWeight:.
 const restored=ContextGraph.fromJSON(JSON.parse(JSON.stringify(graph.toJSON())));
 const constraint=allOf(prefixAcceptor(['a']),maxOrderAcceptor(corpus,1),paddedDurationAcceptor(5,{length:5,padSymbol:'PAD',duration:(symbol:string)=>symbol==='a'?1:2}));
 const dfa=deserializeDFA(serializeDFA(constraint,graph.alphabet));
-const result=runBP(restored,dfa,{length:5});
+const result=runBP(restored,dfa,{length:5,checkpointInterval:3,pruneDeadStates:true,maxCachedDfaTransitions:2});
 if(!result.feasible||result.sample(seededRng(42))[0]!=='a')throw new Error('Consumer inference failed');
 const marginals=result.marginals();
 if(marginals.symbolProbabilities.length!==5||Math.abs(marginals.expectedTransitions.reduce((n,e)=>n+e.expectedCount,0)-5)>1e-10)throw new Error('Consumer marginals failed');

@@ -118,3 +118,24 @@ test("full Alice characters and words with copying limits", async ({
   });
   await expect(page.locator("#output")).toContainText("Alice");
 });
+
+test("low-memory and pruning modes preserve seeded generation", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.locator("#seed").fill("42");
+  await page.locator("#sample").click();
+  await expect(page.locator("#status")).toHaveText("Completed.");
+  const sequence = await page.locator("#output").innerText();
+  await page.locator("#lowMemory").check();
+  await page.locator("#sample").click();
+  await expect(page.locator("#status")).toHaveText("Completed.");
+  await expect(page.locator("#output")).toHaveText(sequence);
+  await expect(page.locator("#diagnostics")).toContainText(
+    "Inference buffers MiB",
+  );
+  await page.locator("#lowMemory").uncheck();
+  await page.locator("#prune").check();
+  await page.locator("#best").click();
+  await expect(page.locator("#status")).toHaveText("Completed.");
+});

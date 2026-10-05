@@ -1,6 +1,6 @@
 {
   "name": "markov-constraints",
-  "version": "0.3.0-rc.1",
+  "version": "0.4.0-rc.1",
   "type": "module",
   "description": "Exact controlled generation for variable-order Markov models",
   "license": "MIT",
@@ -34,7 +34,8 @@
     "benchmark:realistic": "npm run build && node benchmarks/realistic.mjs",
     "examples:rich": "npm run build && node examples/rich.mjs",
     "benchmark:patterns": "npm run build && node benchmarks/patterns.mjs",
-    "benchmark:sampling": "npm run build && node --expose-gc benchmarks/sampling.mjs"
+    "benchmark:sampling": "npm run build && node --expose-gc benchmarks/sampling.mjs",
+    "benchmark:memory": "npm run build && node benchmarks/memory.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

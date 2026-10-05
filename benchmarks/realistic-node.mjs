@@ -41,22 +41,23 @@ const before = beforeMemory.heapUsed;
 const product = compileProduct(graph, acceptor, options),
   bp = new ProductBPResult(product);
 global.gc?.();
-const afterMemory=process.memoryUsage();
+const afterMemory = process.memoryUsage();
 const retained = (afterMemory.heapUsed - before) / 2 ** 20;
-const retainedArrayBuffersMB=(afterMemory.arrayBuffers-beforeMemory.arrayBuffers)/2**20;
+const retainedArrayBuffersMB =
+  (afterMemory.arrayBuffers - beforeMemory.arrayBuffers) / 2 ** 20;
 // Evaluate plain probability DP as a benchmark-only prototype. It is not the library engine.
 function probabilityPrototype() {
   let values = new Map(
-    product.layers[product.length].map((id) => [
+    Array.from(product.layerIds[product.length], (id) => [
       id,
       acceptor.isAccepting(product.states[id].acceptor) ? 1 : 0,
     ]),
   );
   for (let t = product.length - 1; t >= 0; t--) {
     const next = new Map();
-    for (const id of product.layers[t]) {
+    for (const id of product.layerIds[t]) {
       let sum = 0;
-      for (const edge of product.rows[id])
+      for (const edge of product.row(id))
         sum += Math.exp(edge.logWeight) * (values.get(edge.next) ?? 0);
       next.set(id, sum);
     }
@@ -79,12 +80,12 @@ const result = {
   optimization: median(() => mostProbableSequence(graph, acceptor, options)),
   states: product.productStateCount,
   layerStates: product.timeIndexedProductStateCount,
-  peakLayerStates: Math.max(...product.layers.map((l) => l.length)),
+  peakLayerStates: Math.max(...product.layerIds.map((l) => l.length)),
   edges: product.productEdgeCount,
   logPartition: bp.logPartitionFunction,
   retainedProductMB: retained,
   retainedArrayBuffersMB,
-  retainedTotalMB:retained+retainedArrayBuffersMB,
+  retainedTotalMB: retained + retainedArrayBuffersMB,
   peakRSSMB: process.resourceUsage().maxRSS / 1024,
 };
 console.log(JSON.stringify(result));

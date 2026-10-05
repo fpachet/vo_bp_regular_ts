@@ -10,6 +10,8 @@ export interface PatternOptions<S extends Symbol> {
   alphabet?: Iterable<S>;
   maxStates?: number;
   maxTransitions?: number;
+  /** Sparse cache entries; eviction recomputes transitions. Zero disables caching. */
+  maxCachedTransitions?: number;
 }
 interface Node<S> {
   next: Map<S, number>;
@@ -26,6 +28,8 @@ export function patternMachine<S extends Symbol>(
     maxTransitions = options.maxTransitions ?? 1000000;
   integer(maxStates, "maxStates");
   integer(maxTransitions, "maxTransitions");
+  if (options.maxCachedTransitions !== undefined)
+    integer(options.maxCachedTransitions, "maxCachedTransitions");
   if (maxStates < 1) throw new ResourceLimitError("pattern states", maxStates);
   if (mode === "forbid" && patterns.some((p) => p.length === 0))
     throw new Error("Empty forbidden pattern");
@@ -90,18 +94,33 @@ export function patternMachine<S extends Symbol>(
       return next === undefined || next === -1 ? null : next;
     };
   } else {
-    const cache: Map<S, number | null>[] = nodes.map(() => new Map());
+    const capacity = Math.min(
+      options.maxCachedTransitions ?? 100000,
+      maxTransitions,
+    );
+    integer(capacity, "maxCachedTransitions");
+    // Allocate rows only when used. Flush at capacity; no language approximation.
+    const cache = new Map<number, Map<S, number | null>>();
     let count = 0;
     transition = (q, symbol) => {
       if (q === found) return found;
       if (!Number.isInteger(q) || q < 0 || q >= nodes.length) return null;
-      const row = cache[q];
-      if (row.has(symbol)) return row.get(symbol)!;
-      if (count >= maxTransitions)
-        throw new ResourceLimitError("pattern transitions", maxTransitions);
+      const row = cache.get(q);
+      if (row?.has(symbol)) return row.get(symbol)!;
       const next = finish(advance(q, symbol));
-      row.set(symbol, next);
-      count++;
+      if (capacity > 0) {
+        if (count === capacity) {
+          cache.clear();
+          count = 0;
+        }
+        let current = cache.get(q);
+        if (!current) {
+          current = new Map();
+          cache.set(q, current);
+        }
+        current.set(symbol, next);
+        count++;
+      }
       return next;
     };
   }
