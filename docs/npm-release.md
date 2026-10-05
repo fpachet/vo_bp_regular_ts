@@ -59,3 +59,9 @@ References: [npm publish](https://docs.npmjs.com/cli/commands/npm-publish/),
   prerelease notes to show npm availability. The immutable published tarball
   retains its original prepublication documentation; current repository docs
   and release notes record the successful publication.
+
+- Registry added `latest` as well as `next` on first publication. Attempts to
+  remove `latest`, with personal browser 2FA approval using npm 11.4.2 and
+  11.21.0, returned HTTP 400. Both tags currently point to `0.4.0-rc.1`;
+  documented installation explicitly uses `@next` or the exact version.
+  Tag cleanup remains a registry limitation, not an installation failure.
