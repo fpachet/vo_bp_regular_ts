@@ -4,6 +4,7 @@ import {
   compileProduct,
   ProductBPResult,
   optimizeProduct,
+  seededRng,
 } from "../../dist/core/src/index.js";
 import {
   allOf,
@@ -27,9 +28,13 @@ self.onmessage = ({ data: input }) => {
               .map((s) => s.trim())
               .filter(Boolean)
           : [...text];
-    const graph = ContextGraph.fromSequences(d.sequences, {
-      maxOrder: input.order,
-    });
+    const graph =
+      input.backoffWeight === null
+        ? ContextGraph.fromSequences(d.sequences, { maxOrder: input.order })
+        : ContextGraph.fromBackoffSequences(d.sequences, {
+            maxOrder: input.order,
+            backoffWeight: input.backoffWeight,
+          });
     const parts = [];
     if (input.prefix) parts.push(prefixAcceptor(convert(input.prefix)));
     if (input.suffix) parts.push(suffixAcceptor(convert(input.suffix)));
@@ -61,7 +66,11 @@ self.onmessage = ({ data: input }) => {
       bp = new ProductBPResult(p);
     const best = input.action === "best" ? optimizeProduct(p) : null;
     self.postMessage({
-      sequence: best ? best.sequence : bp.feasible ? bp.sample() : null,
+      sequence: best
+        ? best.sequence
+        : bp.feasible
+          ? bp.sample(input.seed === null ? Math.random : seededRng(input.seed))
+          : null,
       feasible: bp.feasible,
       logWeight: best?.logWeight,
       diagnostics: {

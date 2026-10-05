@@ -1,0 +1,60 @@
+name: Library validation
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['20', '22', '24']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:package
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm run test:browser
+  python-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm run build
+      - name: Generate fixtures from pinned Python reference
+        env:
+          REFERENCE_DIRECTORY: ${{ runner.temp }}/markov-python
+          FIXTURE_PATH: ${{ runner.temp }}/python-golden.json
+        run: |
+          revision=$(node --input-type=module -e 'import fs from "node:fs";console.log(JSON.parse(fs.readFileSync("fixtures/python-golden.json")).referenceRevision)')
+          git clone --filter=blob:none --no-checkout https://github.com/fpachet/vo-regular-bp.git "$REFERENCE_DIRECTORY"
+          git -C "$REFERENCE_DIRECTORY" checkout "$revision"
+          python scripts/generate_fixtures.py "$REFERENCE_DIRECTORY" "$FIXTURE_PATH"
+      - name: Compare fresh Python outputs with TypeScript
+        env:
+          MARKOV_FIXTURES: ${{ runner.temp }}/python-golden.json
+        run: node --test tests/*.test.mjs

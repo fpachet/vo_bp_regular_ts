@@ -136,6 +136,23 @@
         </select>
         <label for="order">Source maximum order</label
         ><input id="order" type="number" min="0" max="8" value="2" />
+        <label for="backoff">Backoff mixture weight</label
+        ><input
+          id="backoff"
+          type="number"
+          min="0"
+          max="1"
+          step="0.05"
+          placeholder="Disabled (strict training)"
+        />
+        <label for="seed">Seed</label
+        ><input
+          id="seed"
+          type="number"
+          min="0"
+          max="4294967295"
+          placeholder="Random"
+        />
         <label for="length">Fixed length</label
         ><input id="length" type="number" min="0" max="2000" value="12" />
         <label for="prefix">Required prefix</label
@@ -148,7 +165,8 @@
         ><input id="required" />
         <label for="copy">MAXORDER · maximum copied substring length</label
         ><input id="copy" type="number" min="0" placeholder="Disabled" /><small
-          >Use a source order below this limit to allow novelty.</small
+          >Use a lower source order or enable a backoff mixture to allow
+          novelty.</small
         >
         <label for="position">Position · zero-based</label
         ><input id="position" type="number" min="0" value="0" /><label

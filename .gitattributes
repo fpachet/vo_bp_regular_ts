@@ -1,0 +1,2 @@
+# Keep the downloaded reference corpus byte-for-byte, including original spacing.
+benchmarks/corpora/alice.txt -text -whitespace

@@ -24,7 +24,10 @@ const iid = () =>
     { maxOrder: 0 },
   );
 const fixtures = JSON.parse(
-  readFileSync(new URL("../fixtures/python-golden.json", import.meta.url)),
+  readFileSync(
+    process.env.MARKOV_FIXTURES ??
+      new URL("../fixtures/python-golden.json", import.meta.url),
+  ),
 );
 for (const f of fixtures.cases)
   test(`Python golden: ${f.name}`, () => {

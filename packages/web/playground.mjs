@@ -58,6 +58,9 @@ function run(action) {
     dataset: $("dataset").value,
     length,
     order,
+    backoffWeight:
+      $("backoff").value === "" ? null : Number($("backoff").value),
+    seed: $("seed").value === "" ? null : Number($("seed").value),
     prefix: $("prefix").value,
     suffix: $("suffix").value,
     forbidden: $("forbidden").value,
@@ -75,6 +78,7 @@ $("dataset").onchange = () => {
     d = datasets[name],
     sep = name === "melody" || name === "journeys" ? "," : "";
   $("order").value = d.maxOrder;
+  $("backoff").value = "";
   $("length").value = d.length;
   $("prefix").value = d.prefix.join(sep);
   $("suffix").value = d.suffix.join(sep);

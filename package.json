@@ -1,13 +1,15 @@
 {
   "name": "markov-constraints",
-  "version": "0.1.0",
+  "version": "0.2.0-rc.1",
   "type": "module",
   "description": "Exact controlled generation for variable-order Markov models",
   "license": "MIT",
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "docs/api.md",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": {
@@ -26,12 +28,31 @@
     "benchmark": "node benchmarks/run.mjs",
     "playground": "python3 -m http.server 8080 --bind 127.0.0.1",
     "prepack": "npm run build",
-    "build:site": "npm run build && node scripts/build_site.mjs"
+    "build:site": "npm run build && node scripts/build_site.mjs",
+    "test:package": "node scripts/check_package.mjs",
+    "test:browser": "npm run build:site && playwright test",
+    "benchmark:realistic": "npm run build && node benchmarks/realistic.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "typescript": "^5.9.0"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpachet/vo_bp_regular_ts.git"
+  },
+  "homepage": "https://fpachet.github.io/vo_bp_regular_ts/",
+  "bugs": {
+    "url": "https://github.com/fpachet/vo_bp_regular_ts/issues"
+  },
+  "keywords": [
+    "markov",
+    "variable-order",
+    "constraints",
+    "exact-sampling",
+    "typescript"
+  ]
 }

@@ -168,25 +168,88 @@ export class ContextGraph<S extends Symbol = Symbol> {
     sequences: Iterable<Iterable<S>>,
     options: GraphOptions<S> & { maxOrder: number },
   ): ContextGraph<S> {
-    integer(options.maxOrder, "maxOrder");
-    const enc = new SymbolEncoder<S>();
-    const counts = new Map<string, { context: S[]; counts: Map<S, number> }>();
-    for (const sequence of sequences) {
-      const tokens = [...sequence];
-      for (let i = 0; i < tokens.length; i++)
-        for (let k = 0; k <= Math.min(i, options.maxOrder); k++) {
-          const context = tokens.slice(i - k, i),
-            key = JSON.stringify(context.map((s) => enc.encode(s)));
-          let row = counts.get(key);
-          if (!row) {
-            row = { context, counts: new Map() };
-            counts.set(key, row);
-          }
-          const s = tokens[i];
-          row.counts.set(s, (row.counts.get(s) ?? 0) + 1);
+    return this.fromCounts(collectCounts(sequences, options.maxOrder), options);
+  }
+  /** Geometric mixture of normalized continuation rows at every known suffix.
+   * This is Python from_backoff_sequences, not a generation-time backoff policy.
+   */
+  static fromBackoffSequences<S extends Symbol>(
+    sequences: Iterable<Iterable<S>>,
+    options: GraphOptions<S> & { maxOrder: number; backoffWeight?: number },
+  ): ContextGraph<S> {
+    const backoff = options.backoffWeight ?? 0.25;
+    if (!Number.isFinite(backoff) || backoff < 0 || backoff > 1)
+      throw new RangeError("backoffWeight must be in [0,1]");
+    const counts = collectCounts(sequences, options.maxOrder);
+    const key = (context: readonly S[]) => JSON.stringify(context);
+    const known = new Map(counts.map((row) => [key(row.context), row]));
+    const contexts = counts.map((row) => row.context);
+    const start = options.startState ?? [];
+    if (!known.has(key(start))) contexts.push([...start]);
+    const distributions: Distribution<S>[] = [];
+    for (const context of contexts) {
+      const scores = new Map<S, number>();
+      for (let order = context.length; order >= 0; order--) {
+        const suffix = order ? context.slice(-order) : [];
+        const row = known.get(key(suffix));
+        if (!row) continue;
+        const total = [...row.counts.values()].reduce((a, b) => a + b, 0);
+        const factor = backoff ** (context.length - order);
+        for (const [symbol, count] of row.counts) {
+          const contribution = factor * (count / total);
+          if (contribution > 0)
+            scores.set(symbol, (scores.get(symbol) ?? 0) + contribution);
         }
+      }
+      const total = [...scores.values()].reduce((a, b) => a + b, 0);
+      if (total > 0)
+        distributions.push({
+          context,
+          probabilities: new Map(
+            [...scores].map(([symbol, score]) => [symbol, score / total]),
+          ),
+        });
     }
-    return this.fromCounts([...counts.values()], options);
+    return this.fromProbabilities(distributions, options);
+  }
+  /** Versioned data-only snapshot suitable for JSON and Worker transfer. */
+  toJSON(): SerializedContextGraph<S> {
+    return {
+      version: 1,
+      contexts: this.contexts.map((c) => [...c]),
+      rows: this.rows.map((row) => row.map((e) => ({ ...e }))),
+      startState: this.startState,
+      maxOrder: this.maxOrder,
+    };
+  }
+  static fromJSON<S extends Symbol = Symbol>(
+    data: SerializedContextGraph<S>,
+  ): ContextGraph<S> {
+    if (
+      !data ||
+      data.version !== 1 ||
+      !Array.isArray(data.contexts) ||
+      !data.contexts.every(Array.isArray) ||
+      !Array.isArray(data.rows) ||
+      !data.rows.every(Array.isArray)
+    )
+      throw new TypeError("Invalid version 1 ContextGraph snapshot");
+    integer(data.startState, "startState");
+    integer(data.maxOrder, "maxOrder");
+    return new ContextGraph(
+      data.contexts,
+      data.rows,
+      data.startState,
+      data.maxOrder,
+    );
+  }
+  /** Resolve an exact known context; no implicit suffix fallback for overrides. */
+  contextId(context: readonly S[]): number {
+    const id = this.contexts.findIndex(
+      (c) => c.length === context.length && c.every((s, i) => s === context[i]),
+    );
+    if (id < 0) throw new RangeError("Unknown start context");
+    return id;
   }
   probability(sequence: readonly S[]): number {
     let q = this.startState,
@@ -259,4 +322,36 @@ export function logTransitionWeight<S>(a: Acceptor<S>, q: State, s: S): number {
   if (w !== -Infinity && !Number.isFinite(w))
     throw new Error("Invalid log transition weight");
   return w;
+}
+
+export interface SerializedContextGraph<S extends Symbol = Symbol> {
+  version: 1;
+  contexts: S[][];
+  rows: Edge<S>[][];
+  startState: number;
+  maxOrder: number;
+}
+function collectCounts<S extends Symbol>(
+  sequences: Iterable<Iterable<S>>,
+  maxOrder: number,
+): { context: S[]; counts: Map<S, number> }[] {
+  integer(maxOrder, "maxOrder");
+  const enc = new SymbolEncoder<S>();
+  const counts = new Map<string, { context: S[]; counts: Map<S, number> }>();
+  for (const sequence of sequences) {
+    const tokens = [...sequence];
+    const tokenIds = tokens.map((s) => enc.encode(s));
+    for (let i = 0; i < tokens.length; i++)
+      for (let k = 0; k <= Math.min(i, maxOrder); k++) {
+        const key = JSON.stringify(tokenIds.slice(i - k, i));
+        let row = counts.get(key);
+        if (!row) {
+          row = { context: tokens.slice(i - k, i), counts: new Map() };
+          counts.set(key, row);
+        }
+        const symbol = tokens[i];
+        row.counts.set(symbol, (row.counts.get(symbol) ?? 0) + 1);
+      }
+  }
+  return [...counts.values()];
 }
