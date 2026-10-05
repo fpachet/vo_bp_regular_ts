@@ -160,6 +160,9 @@ function run(action) {
 $("sample").onclick = () => run("sample");
 $("best").onclick = () => run("best");
 $("dataset").onchange = () => {
+  worker?.terminate();
+  for (const id of ["sample", "best", "benchmark"]) $(id).disabled = false;
+  $("status").textContent = "Ready.";
   const name = $("dataset").value,
     d = datasets[name],
     sep = name === "melody" || name === "journeys" ? "," : "";
@@ -181,7 +184,7 @@ $("benchmark").onclick = () => run("benchmark");
 function textSettings() {
   if ($("dataset").value !== "text") return;
   if ($("wordMode").checked) $("fullText").checked = true;
-  $("order").value = 1;
+  $("order").value = $("wordMode").checked ? 1 : 2;
   $("length").value = $("wordMode").checked ? 8 : 64;
   $("prefix").value = $("wordMode").checked ? "Alice" : "A";
   $("suffix").value = ".";
