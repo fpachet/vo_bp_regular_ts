@@ -98,3 +98,16 @@ The runner uses three independent processes per mode and checks partition/sample
 agreement before saving results. The synthetic source is deliberately small;
 its horizon demonstrates beta/layer sharing, not a large-vocabulary workload.
 Use production corpora to select cache and checkpoint settings for an application.
+
+
+## Validation
+
+264 tests passed on Node 20, 22 and 24. Each of the 91 Python reference cases is
+also exercised across four memory configurations, checking partitions, seeded
+samples, conditional probabilities, optima and marginals. Long underflow and
+extreme soft weights are checked separately. Fresh Python regeneration and the
+packed strict TypeScript consumer passed. All 18 Chromium/Firefox checks passed,
+including low-memory/pruning controls; the deployed Worker was checked live.
+
+- [Implementation CI](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37310644699)
+- [Pages deployment](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37310644851)

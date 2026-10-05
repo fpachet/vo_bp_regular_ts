@@ -1,6 +1,7 @@
 # Memory optimization plan
 
-Status: in progress. Baseline: commit 2c8c801, version 0.3.0-rc.1.
+Status: complete. Implemented, benchmarked, validated, pushed and deployed.
+Results: [memory-results.md](memory-results.md). Baseline: commit 2c8c801, version 0.3.0-rc.1.
 
 1. Bound sparse pattern caches, evicting cached results without changing languages.
 2. Pack and deduplicate time-layer state arrays and share their lookup indices.

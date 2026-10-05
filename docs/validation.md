@@ -56,3 +56,16 @@ Validated implementation: https://github.com/fpachet/vo_bp_regular_ts/actions/ru
 Validated deployment: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37308325796
 
 Performance gains and practical limits: [feature-results.md](feature-results.md).
+
+
+## 0.4.0-rc.1 memory milestone
+
+264 tests passed on Node 20/22/24, including four memory configurations per Python
+case and extreme log-space cases. Fresh Python parity and the packed external
+TypeScript consumer passed. All 18 Chromium/Firefox checks passed. Retained
+heap plus buffer memory and peak RSS are measured separately in three independent
+processes per mode; see [memory-results.md](memory-results.md).
+
+CI: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37310644699
+
+Pages: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37310644851
