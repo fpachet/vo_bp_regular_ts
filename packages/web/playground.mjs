@@ -26,7 +26,8 @@ $("stop").onclick = () => {
 };
 $("play").onclick = async () => {
   try {
-    await audio?.close();
+    // Create/resume synchronously in the click gesture (required by Firefox).
+    audio?.close();
     audio = new AudioContext();
     await audio.resume();
     let at = audio.currentTime + 0.05;
