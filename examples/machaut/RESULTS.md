@@ -82,11 +82,41 @@ approximately 130 kB (44 kB gzip); notation is a separate on-demand ~1.37 MB
 
 ## Limits and next research steps
 
-Generated rhythm is uniformly quarter notes. Inspection preserves source timing;
-4/4 notation is a modern grid. Voice selection and final labels are heuristics
+Generated rhythm supports equal quarters or learned compound duration tokens
+(described below). Inspection preserves original source timing; 4/4 notation
+is a modern grid. Voice selection and final labels are heuristics
 requiring musicological review. Source transcription reuse terms are unspecified;
 the app’s MIT license does not cover those third-party transcriptions.
 Complex repeated-span constraints remain bounded exact inference and can exhaust
-resource limits. Compressed MusicXML, MEI, compound rhythmic tokens, multiple
+resource limits. Compressed MusicXML, MEI, rests/beat-count constraints, multiple
 simultaneous voices, historical cadence/modal inference, learned phrase structure
 and a validated stylistic evaluation are future work.
+
+
+## Learned rhythm extension
+
+Optional compound pitch/duration tokens now train on source inter-onset timing
+rounded to a sixteenth-note grid. All three pitch representations support learned
+rhythm, conditioned pitch rules, seeded generation, explanations, neutral playback
+and duration-preserving exports. Dotted notation and tied segments map back to the
+original generated event when clicked. Original quarter-note benchmark samples
+and partitions remain unchanged.
+
+The supplied six-piece corpus yields several duration values; generated notes
+are contiguous and no rests or fixed beat-count constraints are introduced.
+Repeated spans constrain pitches, not rhythm. The interval anchor's duration is
+an independent empirical sample, with its probability recorded separately.
+
+A three-run Node 24.3.0 ARM64 local benchmark at order 3, 32 notes, seed 12345
+measured medians of 113 ms (absolute), 238 ms (intervals), and 95 ms (relative),
+using respectively 0.61, 2.12, and 0.58 MiB inference buffers. These exclude source
+and acceptor objects and are observational. Raw data: `benchmark-rhythm-results.json`.
+Reproduce with `node --import tsx scripts/benchmark-rhythm.ts` from the app directory.
+Joint order 5 exceeded the 3,000,000-edge budget in the default interval browser
+trial; selecting learned rhythm therefore starts at order 3. Order remains adjustable.
+
+Validation: 24 application tests pass locally, covering quantization, joint token
+support, exact pitch conditions, repeated spans/cadences, ordinary sampling, seeded
+reproducibility, probability normalization and MIDI/MusicXML round trips. Browser
+CI additionally tests learned rhythm in each representation, tied-score clicks,
+playback and exports in Chromium and Firefox.

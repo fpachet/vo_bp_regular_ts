@@ -15,3 +15,14 @@
 
 All six stages are complete. Implementation, browser/deployment validation and
 measured improvements are recorded in [RESULTS.md](RESULTS.md).
+
+
+## Duration extension
+
+- [x] Add optional learned compound pitch/duration tokens to all representations.
+- [x] Quantize source inter-onset timing; record anchor semantics and token dictionary.
+- [x] Preserve all pitch constraints and original quarter-note seeded behavior.
+- [x] Engrave dotted values and tied bar splits, with event-aware score clicks.
+- [x] Retain durations in playback, MIDI, MusicXML and experiment exports.
+- [x] Test quantization, joint token support, reproducibility, probability normalization and round trips.
+- [ ] Verify Chromium/Firefox integration and deploy.

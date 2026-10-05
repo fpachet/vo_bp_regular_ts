@@ -112,7 +112,11 @@ function allowed(
     (!first || c.start === null || p === c.start)
   );
 }
-export function musicalAcceptor(rep: Representation, c: MusicalConstraints) {
+export function musicalAcceptor(
+  rep: Representation,
+  c: MusicalConstraints,
+  pitchToken: (symbol: number) => number = (s) => s,
+) {
   validateConstraints(c);
   const interval = rep === "intervals",
     anchor = initialPitch(c),
@@ -144,12 +148,13 @@ export function musicalAcceptor(rep: Representation, c: MusicalConstraints) {
         String(state),
       ) as Q;
       if (positional && i >= c.length) return null;
+      const token = pitchToken(symbol);
       const p =
         rep === "intervals"
-          ? previous + symbol
+          ? previous + token
           : rep === "relative"
-            ? c.referenceFinal + symbol
-            : symbol;
+            ? c.referenceFinal + token
+            : token;
       if (!allowed(c, p, i, previous < 0)) return null;
       const delta = previous < 0 ? null : p - previous;
       if (

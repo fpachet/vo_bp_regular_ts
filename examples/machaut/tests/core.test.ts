@@ -5,7 +5,7 @@ import ToneMidi from "@tonejs/midi";
 import { loadMidi, midiVoices } from "../src/corpus/midi";
 import { loadMusicXML } from "../src/corpus/musicxml";
 import { note, tokens, type Melody, type Representation } from "../src/music";
-import { train } from "../src/markov/train";
+import { train, rhythmicDuration } from "../src/markov/train";
 import {
   musicalAcceptor,
   constraintViolations,
@@ -298,3 +298,148 @@ test("unseen start context falls back to observed suffix distributions in the pu
   assert.ok(row.some((e) => e.symbol === 65));
   assert.ok(Math.abs(row.reduce((s, e) => s + e.probability, 0) - 1) < 1e-10);
 });
+
+test("rhythm quantizes inter-onset spacing rather than MIDI release articulation", () => {
+  const m: Melody = {
+    id: "timing",
+    metadata: { id: "timing", title: "Timing" },
+    notes: [note(60, 0.83, 0), note(62, 0.49, 1), note(64, 1.49, 1.5)],
+  };
+  assert.deepEqual(
+    m.notes.map((_, i) => rhythmicDuration(m, i)),
+    [1, 0.5, 1.5],
+  );
+  const trained = train([m], {
+    representation: "intervals",
+    maxOrder: 1,
+    backoffWeight: 0.25,
+    rhythm: "corpus",
+  });
+  assert.deepEqual(trained.sequences[0].map(trained.decode), [
+    { pitch: 2, duration: 0.5 },
+    { pitch: 2, duration: 1.5 },
+  ]);
+  assert.deepEqual(trained.anchorDurations, [1]);
+});
+for (const rep of ["absolute", "relative", "intervals"] as const) {
+  test(`${rep}: learned joint rhythm preserves constraints, timing, probabilities and exports`, () => {
+    const source = JSON.parse(
+      readFileSync(
+        new URL("../public/corpus/melodies.json", import.meta.url),
+        "utf8",
+      ),
+    ) as Melody[];
+    const opts: GenerationOptions = {
+      model: {
+        representation: rep,
+        rhythm: "corpus",
+        maxOrder: 3,
+        backoffWeight: 0.25,
+      },
+      seed: 12345,
+      mode: "constrained",
+      constraints: {
+        ...c,
+        length: 32,
+        start: null,
+        final: 74,
+        referenceFinal: 74,
+        minPitch: 62,
+        maxPitch: 86,
+        maxSpan: null,
+        maxLeap: 7,
+        allowedPitchClasses: [0, 2, 4, 5, 7, 9, 11],
+        fixed: {},
+        cadence: {
+          finalPitch: 74,
+          allowedPenultimateIntervals: [-2, -1, 1, 2],
+        },
+      },
+    };
+    const r = generate(source, opts);
+    assert.deepEqual(generate(source, opts).notes, r.notes);
+    assert.deepEqual(r.violations, []);
+    assert.ok(new Set(r.notes.map((n) => n.duration)).size > 1);
+    assert.ok(r.notes.every((n) => r.stats.durations.includes(n.duration)));
+    for (let i = 1; i < r.notes.length; i++)
+      assert.equal(
+        r.notes[i].onset,
+        r.notes[i - 1].onset + r.notes[i - 1].duration,
+      );
+    for (const ex of r.explanations) {
+      assert.ok(
+        Math.abs(
+          ex.continuations.reduce((s, t) => s + t.conditionedProbability, 0) -
+            1,
+        ) < 1e-10,
+      );
+      const index = ex.position - 1,
+        n = r.notes[index];
+      const pitch =
+        rep === "intervals"
+          ? n.midi - r.notes[index - 1].midi
+          : rep === "relative"
+            ? n.midi - 74
+            : n.midi;
+      assert.ok(
+        r.tokenTable.some(
+          (t) => t.pitch === pitch && t.duration === n.duration,
+        ),
+      );
+    }
+    const xml = exportMusicXML(r.notes);
+    const midi = loadMidi(exportMidi(r.notes), { id: "round", title: "Round" });
+    const loaded = loadMusicXML(xml, { id: "round", title: "Round" });
+    assert.deepEqual(loaded.notes, r.notes);
+    assert.deepEqual(midi.notes, r.notes);
+  });
+}
+test("dotted notation and tied segments retain original note indices", () => {
+  const notes = [note(60, 1.5, 0), note(62, 5.5, 1.5), note(64, 0.25, 7)];
+  const indices: (number | null)[] = [];
+  const xml = exportMusicXML(notes, "Rhythm", indices);
+  assert.ok(xml.includes("<type>quarter</type><dot/>"));
+  assert.ok(indices.filter((i) => i === 1).length > 1);
+  assert.deepEqual(
+    loadMusicXML(xml, { id: "round", title: "Round" }).notes,
+    notes,
+  );
+  assert.equal(indices.length, (xml.match(/<note>/g) ?? []).length);
+});
+
+for (const rep of ["absolute", "relative", "intervals"] as const) {
+  test(`${rep}: joint rhythm retains positional repeat/cadence and ordinary sampling`, () => {
+    const source = corpus.map((m) => {
+      let onset = 0;
+      return {
+        ...m,
+        notes: m.notes.map((n, i) => {
+          const duration = [0.5, 1, 1.5][i % 3];
+          const result = note(n.midi, duration, onset);
+          onset += duration;
+          return result;
+        }),
+      };
+    });
+    const opts = options(rep);
+    opts.model.rhythm = "corpus";
+    opts.constraints = {
+      ...c,
+      fixed: {},
+      repeat: { from: 0, to: 5, count: 3 },
+      cadence: {
+        finalPitch: 60,
+        lastNIntervals: [
+          [-2, 0],
+          [0, 0],
+        ],
+      },
+    };
+    const r = generate(source, opts);
+    assert.deepEqual(r.violations, []);
+    assert.ok(r.notes.every((n) => [0.5, 1, 1.5].includes(n.duration)));
+    const ordinary = generate(source, { ...opts, mode: "ordinary" });
+    assert.equal(ordinary.logPartitionFunction, null);
+    assert.ok(ordinary.notes.every((n) => [0.5, 1, 1.5].includes(n.duration)));
+  });
+}

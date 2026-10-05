@@ -134,3 +134,38 @@ test("Machaut corpus page: local voices, score preview, MIDI/MusicXML imports an
   expect((await jsonDownload(page)).corpus).toHaveLength(8);
   expect(errors).toEqual([]);
 });
+
+test("Machaut: learned durations, tied score explanations, playback and export", async ({
+  page,
+}) => {
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await page.locator("#rhythm").selectOption("corpus");
+  for (const representation of ["intervals", "absolute", "relative"]) {
+    await page.locator("#representation").selectOption(representation);
+    await ready(page);
+    const r = await jsonDownload(page);
+    expect(r.model.rhythm).toBe("corpus");
+    expect(r.violations).toEqual([]);
+    expect(new Set(r.notes.map((n) => n.duration)).size).toBeGreaterThan(1);
+    await expect(page.locator("#score-subtitle")).toContainText(
+      "learned rhythm",
+    );
+    const glyph = page
+      .locator('#score [aria-label^="Explain score note 6 "]')
+      .first();
+    await expect(glyph).toBeVisible();
+    await glyph.click();
+    await expect(page.locator("#explanation")).toContainText("Note 6:");
+    await expect(page.locator("#explanation")).toContainText("Duration");
+    const download = page.waitForEvent("download");
+    await page.locator("#download-xml").click();
+    const xml = await readFile(await (await download).path(), "utf8");
+    expect(xml).toContain('<tie type="start"/>');
+    await page.locator("#play").click();
+    await page.locator("#stop").click();
+  }
+  expect(errors).toEqual([]);
+});

@@ -1,0 +1,694 @@
+{
+  "node": "v24.3.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "repetitions": 3,
+  "method": "Three builds/inferences in one process per representation; median elapsed training+generation+explanation+diagnostic time. Buffers exclude source, acceptor Maps and object metadata. Not a hardware-independent performance guarantee.",
+  "constraints": {
+    "length": 32,
+    "start": null,
+    "final": 74,
+    "referenceFinal": 74,
+    "minPitch": 62,
+    "maxPitch": 86,
+    "maxSpan": null,
+    "maxLeap": 7,
+    "allowedPitchClasses": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "fixed": {},
+    "forbiddenIntervals": [],
+    "cadence": {
+      "finalPitch": 74,
+      "allowedPenultimateIntervals": [
+        -2,
+        -1,
+        1,
+        2
+      ]
+    },
+    "repeat": null
+  },
+  "rows": [
+    {
+      "representation": "absolute",
+      "elapsedMs": [
+        124.25575,
+        113.25062500000001,
+        98.51054199999999
+      ],
+      "medianMs": 113.25062500000001,
+      "productStates": 761,
+      "productEdges": 760865,
+      "bufferBytes": 637336,
+      "logPartitionFunction": -4.767282702334234,
+      "diagnostics": {
+        "averageAbsoluteInterval": 1.903225806451613,
+        "maximumInterval": 4,
+        "range": 16,
+        "stepwisePercent": 61.29032258064516,
+        "repeatedPercent": 12.903225806451612,
+        "final": 74,
+        "ngramOrder": 3,
+        "copiedNgrams": 29,
+        "longestCopiedNotes": 10
+      },
+      "notes": [
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 1.5,
+          "onset": 0
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 1.5
+        },
+        {
+          "midi": 67,
+          "pitchClass": 7,
+          "duration": 1,
+          "onset": 2
+        },
+        {
+          "midi": 65,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 3
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 2,
+          "onset": 3.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 2,
+          "onset": 5.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 7.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 8
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 8.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 9
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 9.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 10
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 10.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 11
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 12
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 12.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 13
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 13.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 14
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 15
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 0.5,
+          "onset": 15.5
+        },
+        {
+          "midi": 81,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 16
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 1,
+          "onset": 16.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 17.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 18
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 1,
+          "onset": 18.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 19.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 4,
+          "onset": 20
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 0.5,
+          "onset": 24
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 24.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 1,
+          "onset": 25
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 26
+        }
+      ]
+    },
+    {
+      "representation": "intervals",
+      "elapsedMs": [
+        239.097417,
+        237.62854199999992,
+        236.3693340000001
+      ],
+      "medianMs": 237.62854199999992,
+      "productStates": 2909,
+      "productEdges": 2517632,
+      "bufferBytes": 2223104,
+      "logPartitionFunction": -7.436559222954454,
+      "diagnostics": {
+        "averageAbsoluteInterval": 1.8709677419354838,
+        "maximumInterval": 7,
+        "range": 9,
+        "stepwisePercent": 67.74193548387096,
+        "repeatedPercent": 12.903225806451612,
+        "final": 74,
+        "ngramOrder": 3,
+        "copiedNgrams": 18,
+        "longestCopiedNotes": 6
+      },
+      "notes": [
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 3,
+          "onset": 0
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 1.5,
+          "onset": 3
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 4.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 6
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 6.5
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 1,
+          "onset": 7
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 8
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 4,
+          "onset": 8.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 12.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 13
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 1,
+          "onset": 13.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 14.5
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 1,
+          "onset": 15
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 16
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 0.5,
+          "onset": 16.5
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 1,
+          "onset": 17
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 18
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 0.5,
+          "onset": 18.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 19
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 19.5
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 1,
+          "onset": 20
+        },
+        {
+          "midi": 67,
+          "pitchClass": 7,
+          "duration": 0.5,
+          "onset": 21
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 21.5
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 1,
+          "onset": 22
+        },
+        {
+          "midi": 71,
+          "pitchClass": 11,
+          "duration": 0.5,
+          "onset": 23
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 23.5
+        },
+        {
+          "midi": 69,
+          "pitchClass": 9,
+          "duration": 1,
+          "onset": 24
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 25
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 25.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 26
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 26.5
+        }
+      ]
+    },
+    {
+      "representation": "relative",
+      "elapsedMs": [
+        101.50766700000008,
+        95.35404199999994,
+        90.62304100000006
+      ],
+      "medianMs": 95.35404199999994,
+      "productStates": 709,
+      "productEdges": 727014,
+      "bufferBytes": 604668,
+      "logPartitionFunction": -4.554303880704654,
+      "diagnostics": {
+        "averageAbsoluteInterval": 1.7419354838709677,
+        "maximumInterval": 5,
+        "range": 9,
+        "stepwisePercent": 70.96774193548387,
+        "repeatedPercent": 16.129032258064516,
+        "final": 74,
+        "ngramOrder": 3,
+        "copiedNgrams": 25,
+        "longestCopiedNotes": 9
+      },
+      "notes": [
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 2,
+          "onset": 0
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 1,
+          "onset": 2
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 1,
+          "onset": 3
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 1,
+          "onset": 4
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 2,
+          "onset": 6
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 8
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 8.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 2,
+          "onset": 9.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 1,
+          "onset": 11.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 12.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 1,
+          "onset": 13.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 14.5
+        },
+        {
+          "midi": 72,
+          "pitchClass": 0,
+          "duration": 0.5,
+          "onset": 15
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 15.5
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 16
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 16.5
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 17
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 0.5,
+          "onset": 17.5
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 3.75,
+          "onset": 18
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 1,
+          "onset": 21.75
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 1,
+          "onset": 22.75
+        },
+        {
+          "midi": 81,
+          "pitchClass": 9,
+          "duration": 1,
+          "onset": 23.75
+        },
+        {
+          "midi": 81,
+          "pitchClass": 9,
+          "duration": 0.5,
+          "onset": 24.75
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 0.5,
+          "onset": 25.25
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 1,
+          "onset": 25.75
+        },
+        {
+          "midi": 79,
+          "pitchClass": 7,
+          "duration": 0.5,
+          "onset": 26.75
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 27.25
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 1,
+          "onset": 27.75
+        },
+        {
+          "midi": 77,
+          "pitchClass": 5,
+          "duration": 0.5,
+          "onset": 28.75
+        },
+        {
+          "midi": 76,
+          "pitchClass": 4,
+          "duration": 0.5,
+          "onset": 29.25
+        },
+        {
+          "midi": 74,
+          "pitchClass": 2,
+          "duration": 1,
+          "onset": 29.75
+        }
+      ]
+    }
+  ]
+}

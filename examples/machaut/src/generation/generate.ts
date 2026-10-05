@@ -1,5 +1,5 @@
 import { runBP, seededRng, type ProductBPResult } from "markov-constraints";
-import { note, type Melody } from "../music";
+import { note, pitchName, type Melody } from "../music";
 import { train, type ModelOptions, logSourceWeight } from "../markov/train";
 import {
   musicalAcceptor,
@@ -18,9 +18,12 @@ export interface NoteExplanation {
   position: number;
   pitch: number;
   context: number[];
+  contextLabels: string[];
+  duration: number;
   continuations: {
     token: number;
     pitch: number;
+    duration: number;
     sourceProbability: number;
     conditionedProbability: number;
     reason: string;
@@ -56,7 +59,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     c = options.constraints,
     rep = options.model.representation;
   const horizon = rep === "intervals" ? c.length - 1 : c.length;
-  const dfa = musicalAcceptor(rep, c);
+  const dfa = musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
   let bp: ProductBPResult<number> | undefined,
     sequence: number[] = [];
   if (options.mode === "constrained") {
@@ -87,7 +90,8 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
   }
   let previous = initialPitch(c);
   const pitches = rep === "intervals" ? [previous] : [];
-  for (const s of sequence) {
+  for (const symbol of sequence) {
+    const s = trained.decode(symbol).pitch;
     const p =
       rep === "intervals"
         ? previous + s
@@ -97,7 +101,20 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     pitches.push(p);
     previous = p;
   }
-  const notes = pitches.map((p, i) => note(p, 1, i));
+  const anchorDuration =
+    options.model.rhythm === "corpus" && rep === "intervals"
+      ? trained.anchorDurations[
+          Math.floor(rng() * trained.anchorDurations.length)
+        ]
+      : 1;
+  const durations = sequence.map((s) => trained.decode(s).duration);
+  if (rep === "intervals") durations.unshift(anchorDuration);
+  let onset = 0;
+  const notes = pitches.map((p, i) => {
+    const n = note(p, durations[i], onset);
+    onset += n.duration;
+    return n;
+  });
   const violations = constraintViolations(pitches, c);
   if (bp && violations.length)
     throw new Error(
@@ -112,12 +129,13 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     const productRow = bp?.product.row(productId);
     const context = trained.graph.contexts[contextId];
     const continuations = trained.graph.outgoing(contextId).map((e) => {
+      const decoded = trained.decode(e.symbol);
       const p =
         rep === "intervals"
-          ? previous + e.symbol
+          ? previous + decoded.pitch
           : rep === "relative"
-            ? c.referenceFinal + e.symbol
-            : e.symbol;
+            ? c.referenceFinal + decoded.pitch
+            : decoded.pitch;
       const edge = productRow?.find((edge) => edge.symbol === e.symbol);
       const future = bp && edge ? beta(bp, rows!, t + 1, edge.next) : -Infinity;
       const probability = bp
@@ -128,6 +146,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       return {
         token: e.symbol,
         pitch: p,
+        duration: decoded.duration,
         sourceProbability: e.probability,
         conditionedProbability: probability,
         reason: bp
@@ -143,6 +162,11 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       position: t + (rep === "intervals" ? 2 : 1),
       pitch: pitches[t + (rep === "intervals" ? 1 : 0)],
       context,
+      duration: notes[t + (rep === "intervals" ? 1 : 0)].duration,
+      contextLabels: context.map((s) => {
+        const d = trained.decode(s);
+        return `${rep === "absolute" ? pitchName(d.pitch) : `${d.pitch > 0 ? "+" : ""}${d.pitch}`}${options.model.rhythm === "corpus" ? ` / ${d.duration} beats` : ""}`;
+      }),
       continuations,
     });
     const chosen = trained.graph
@@ -172,7 +196,20 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     seed: options.seed,
     mode: options.mode,
     rhythm:
-      "Equal quarter notes; source durations are preserved in corpus inspection only",
+      options.model.rhythm === "corpus"
+        ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses sounding duration; no rests generated"
+        : "Equal quarter notes",
+    tokenTable: trained.tokenTable,
+    anchorDuration: rep === "intervals" ? anchorDuration : null,
+    anchorDurationProbability:
+      rep === "intervals"
+        ? trained.anchorDurations.filter((d) => d === anchorDuration).length /
+          trained.anchorDurations.length
+        : null,
+    anchorDurationSemantics:
+      rep === "intervals" && options.model.rhythm === "corpus"
+        ? "Independent empirical sample of source opening durations, after conditioned interval sampling"
+        : null,
     anchor: rep === "intervals" ? initialPitch(c) : null,
     notes,
     stats: trained.stats,

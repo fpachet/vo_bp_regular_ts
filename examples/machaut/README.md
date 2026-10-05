@@ -38,9 +38,31 @@ runtime: corpus files, notation renderer and Markov engine are bundled locally.
   corpus snapshot download/import, and a `/corpus/` inspection page.
 - A leave-one-piece-out pilot CLI with held-out, shuffled and generated scores.
 
-Generated melodies use equal quarter notes. Source durations and rests are
-retained for inspection/export, but are not modelled. Modern 4/4 engraving is a
-display convention; neither modal classification nor mensural rhythm is inferred.
+Choose **Equal quarter notes** (the original reproducible pitch-only model) or
+**Learned rhythm**. Learned rhythm trains compound `(pitch token, duration)`
+tokens in all three representations and conditions their joint distribution on
+all pitch constraints. Switching rhythm selects order 3 for learned rhythm or
+order 5 for quarter notes; the order remains adjustable. Compound vocabularies
+are larger and high orders can exceed the existing exact solver budgets. Durations are quarter-note units: 0.25 is a sixteenth,
+0.5 an eighth, 1 a quarter, 1.5 a dotted quarter, and 2 a half.
+
+Training rounds inter-onset spacing to the nearest 0.25 quarter-note units,
+with a minimum of 0.25. This avoids treating MIDI note-off articulation as
+notated rhythm. The final source note uses its sounding duration instead.
+Original corpus timings are preserved. Gaps are folded into the preceding
+note; this mode generates contiguous notes, not rests. In interval mode the
+opening duration is sampled independently from the empirical distribution of
+source opening durations, after sampling the conditioned interval sequence.
+Later durations belong to the arriving note's interval token. This choice is
+recorded in experiment JSON alongside the token dictionary and anchor-duration
+probability. Source and conditional log scores describe the emitted model tokens;
+in interval mode the independent anchor-duration probability is reported separately.
+
+Length, fixed positions, cadences and repeats still count **notes**, and repeated
+spans constrain pitches only; they do not require equal durations. Total beat
+count is reported but is not constrained. Dotted values and ties across bar
+lines retain their event duration in notation, playback, exports and score-click
+explanations. The modern 4/4 engraving grid is a display convention; neither modal classification nor mensural rhythm is inferred.
 An interval model emits N−1 intervals and requires an anchor pitch. If Start is
 unset, the reference final supplies that anchor. Relative-final models transpose
 each piece’s last sounding note to zero during training; the reference final
@@ -133,5 +155,5 @@ is observational and may differ across runs; notes are reproducible given the
 same inputs and library version.
 
 Future research: review voice/final annotations, establish a licensed broader
-corpus, preserve phrase/rhythmic structure in compound tokens, evaluate
+corpus, add rests, beat-count constraints and rhythmic repeats, evaluate
 transposition-invariant copying, and design stronger held-out stylistic baselines.
