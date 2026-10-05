@@ -1,8 +1,8 @@
 # npm prerelease checklist
 
 Target: `markov-constraints@0.4.0-rc.1`, public access, `next` tag.
-Registry lookup on 2026-10-05 returned E404 for the name; publication still
-depends on registry acceptance and an authenticated maintainer account.
+Registry lookup on 2026-10-05 returned E404 for the name; the validated artifact was subsequently published by `fpachet` after account
+authentication and personal 2FA approval.
 
 1. Run `npm test` and `npm run test:package`; wait for Node 20/22/24, Python
    parity, Chromium and Firefox CI checks on the release commit.
@@ -50,6 +50,12 @@ References: [npm publish](https://docs.npmjs.com/cli/commands/npm-publish/),
   artifact and verified it in a fresh strict TypeScript consumer, including
   the executable README quick start and browser Bundler type resolution.
 - Tarball SHA-256: `ee3a2b08c89f820a4586aba8cf36c73c1d96cc7e70bd9ba82653dfb4ff811453`.
-- npm publication and registry-install verification remain blocked by missing
-  maintainer authentication (`npm whoami` returns `ENEEDAUTH`). The package is
-  installable from the GitHub release; npm availability is not claimed.
+- Published the identical tarball as `markov-constraints@0.4.0-rc.1` on npm
+  under `next`, following personal browser 2FA approval by `fpachet`.
+- Registry SHA-1: `aa036a2698cbb94a72aea5e5c326471c8f7a5a15`, matching the
+  validated artifact. Fresh npm installation passed strict NodeNext/browser
+  Bundler typechecking, inference/marginals/optimization and README execution.
+- Updated README, installation guide, API guide, playground links and GitHub
+  prerelease notes to show npm availability. The immutable published tarball
+  retains its original prepublication documentation; current repository docs
+  and release notes record the successful publication.

@@ -1,19 +1,17 @@
 # Install and use 0.4.0-rc.1
 
 `markov-constraints` has no runtime dependencies. It supports Node 20+, strict
-TypeScript, and modern browsers/Workers through ESM. Publication to npm is
-pending maintainer authentication; the validated GitHub prerelease tarball is
-the installation option until then.
-
-Download `markov-constraints-0.4.0-rc.1.tgz` from the
-[GitHub prerelease](https://github.com/fpachet/vo_bp_regular_ts/releases/tag/v0.4.0-rc.1), then:
+TypeScript, and modern browsers/Workers through ESM. The [npm package](https://www.npmjs.com/package/markov-constraints) is available
+as a prerelease:
 
 ```sh
-npm install ./markov-constraints-0.4.0-rc.1.tgz
+npm install markov-constraints@next
 ```
 
-After npm publication, install with `npm install markov-constraints@next`, or
-pin `npm install markov-constraints@0.4.0-rc.1` for reproducible deployments.
+Pin `npm install markov-constraints@0.4.0-rc.1` for reproducible deployments.
+You can also download the exact validated tarball from the
+[GitHub prerelease](https://github.com/fpachet/vo_bp_regular_ts/releases/tag/v0.4.0-rc.1)
+and install with `npm install ./markov-constraints-0.4.0-rc.1.tgz`.
 
 ## Node.js
 

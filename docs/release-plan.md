@@ -50,6 +50,7 @@ Progress and measurements will be recorded below as stages complete.
 
 The public package API, installation guide, executable README examples, exact
 artifact validation and GitHub prerelease are complete. See
-[npm release checklist and results](npm-release.md). Publication to npm and a
-fresh registry installation require maintainer authentication; those steps
-remain pending. The GitHub release tarball is available now.
+[npm release checklist and results](npm-release.md). The identical validated artifact is published to npm as
+`markov-constraints@0.4.0-rc.1`. Fresh registry installation, strict NodeNext and
+browser Bundler typechecking, and executable examples passed. The GitHub
+release tarball remains available.

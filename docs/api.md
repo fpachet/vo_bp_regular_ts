@@ -112,7 +112,8 @@ floating-point rounding.
 ## Installation and release checks
 
 See [installation](install.md) for Node, TypeScript, browser and Worker usage.
-Until published to npm, install the validated GitHub release tarball.
+Install the published prerelease with `npm install markov-constraints@next`,
+or use the identical validated GitHub release tarball.
 `npm run test:package` packs into a temporary directory, installs offline into an
 independent project, typechecks a strict TS consumer and executes its ESM output.
 
