@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Markov Constraints · Playground</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #172d37;
+        background: #f4f6f3;
+      }
+      body {
+        max-width: 1100px;
+        margin: 48px auto;
+        padding: 0 24px;
+      }
+      h1 {
+        font-size: 42px;
+        letter-spacing: -2px;
+        margin-bottom: 8px;
+      }
+      .intro {
+        max-width: 700px;
+        color: #52646c;
+        line-height: 1.6;
+      }
+      .flow {
+        padding: 18px 0;
+        color: #226e65;
+        font-family: monospace;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 28px;
+      }
+      section {
+        background: white;
+        padding: 24px;
+        border: 1px solid #d9e2de;
+        border-radius: 12px;
+      }
+      label {
+        display: block;
+        margin: 14px 0 5px;
+        font-size: 14px;
+      }
+      input,
+      select,
+      textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #b8c8c1;
+        border-radius: 6px;
+        font: inherit;
+      }
+      textarea {
+        font-family: monospace;
+        font-size: 12px;
+      }
+      button {
+        background: #176c60;
+        color: white;
+        border: 0;
+        padding: 12px;
+        margin: 16px 8px 0 0;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.5;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 18px;
+        line-height: 1.7;
+        min-height: 100px;
+      }
+      dl {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        font-size: 14px;
+      }
+      dd {
+        margin: 0;
+        text-align: right;
+        font-family: monospace;
+      }
+      small {
+        display: block;
+        color: #61746a;
+        line-height: 1.5;
+      }
+      #status {
+        color: #826121;
+        min-height: 24px;
+      }
+      @media (max-width: 760px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        body {
+          margin: 24px auto;
+        }
+        h1 {
+          font-size: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Markov Constraints</h1>
+    <p class="intro">
+      Exact controlled generation for variable-order Markov models. Train a
+      model, define a regular language, and sample from the conditioned
+      distribution—or find its most probable sequence.
+    </p>
+    <div class="flow">
+      Context graph × constraint DFA → reachable product → backward DP →
+      generation
+    </div>
+    <div class="layout">
+      <section>
+        <h2>Model & constraints</h2>
+        <label for="dataset">Dataset</label
+        ><select id="dataset">
+          <option value="toy">Toy strings</option>
+          <option value="text">English text · Alice</option>
+          <option value="melody">Melody · MIDI pitches</option>
+          <option value="dna">DNA</option>
+          <option value="journeys">User journeys</option>
+        </select>
+        <label for="order">Source maximum order</label
+        ><input id="order" type="number" min="0" max="8" value="2" />
+        <label for="length">Fixed length</label
+        ><input id="length" type="number" min="0" max="2000" value="12" />
+        <label for="prefix">Required prefix</label
+        ><input id="prefix" value="B" /><label for="suffix"
+          >Required suffix</label
+        ><input id="suffix" value="A" /><label for="forbidden"
+          >Forbidden substring</label
+        ><input id="forbidden" value="BRA" /><label for="required"
+          >Required substring</label
+        ><input id="required" />
+        <label for="copy">MAXORDER · maximum copied substring length</label
+        ><input id="copy" type="number" min="0" placeholder="Disabled" /><small
+          >Use a source order below this limit to allow novelty.</small
+        >
+        <label for="position">Position · zero-based</label
+        ><input id="position" type="number" min="0" value="0" /><label
+          for="positionSymbol"
+          >Allowed symbols at position</label
+        ><input id="positionSymbol" placeholder="Disabled" />
+        <label for="custom">Custom DFA · JSON table</label
+        ><textarea
+          id="custom"
+          rows="4"
+          placeholder='{"startState":0,"accepting":[0],"transitions":{"0":{"A":0,"B":0}}}'
+        ></textarea
+        ><small
+          >Blank fields disable optional constraints. Melody uses
+          comma-separated pitches; journeys use comma-separated tokens.
+          Computation runs in a Web Worker.</small
+        >
+      </section>
+      <section>
+        <h2>Generate</h2>
+        <button id="sample">Sample exactly</button
+        ><button id="best">Find most probable</button>
+        <p id="status" role="status">Ready.</p>
+        <pre id="output" aria-live="polite">
+Your sequence will appear here.</pre>
+        <h3>Inference diagnostics</h3>
+        <dl id="diagnostics"></dl>
+        <small
+          >Exact with respect to the supplied model, subject to floating-point
+          arithmetic. Ordinary mass can underflow; log mass remains available.
+          Optimization may repeat patterns.</small
+        >
+        <h3>Greedy is not optimization</h3>
+        <p class="intro">
+          If P(a)=0.60 and P(b)=0.40, greedy chooses a. But a splits equally
+          into ax and ay, each with probability 0.30. If b always continues to
+          x, bx is the most probable complete sequence at 0.40. Exact sampling
+          explores all three with their conditional probabilities.
+        </p>
+      </section>
+    </div>
+    <script type="module" src="./playground.mjs"></script>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "node": "v24.3.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "ts": [
+    {
+      "name": "toy",
+      "graph": 0.10954199999999759,
+      "product": 0.10966699999999818,
+      "backward": 0.08741600000000105,
+      "sample": 0.02499999999999858,
+      "sample100": 0.5723330000000004,
+      "optimization": 0.1480409999999992,
+      "states": 19,
+      "layerStates": 379,
+      "edges": 468
+    },
+    {
+      "name": "text",
+      "graph": 0.9054169999999999,
+      "product": 4.149417,
+      "backward": 7.789457999999996,
+      "sample": 0.0744590000000045,
+      "sample100": 2.905083999999988,
+      "optimization": 7.7118750000000205,
+      "states": 346,
+      "layerStates": 40998,
+      "edges": 68729
+    },
+    {
+      "name": "melody",
+      "graph": 0.0710420000000056,
+      "product": 0.11104199999999764,
+      "backward": 0.10404199999999264,
+      "sample": 0.03133399999998687,
+      "sample100": 1.0609170000000177,
+      "optimization": 0.14145899999999756,
+      "states": 19,
+      "layerStates": 526,
+      "edges": 530
+    },
+    {
+      "name": "synthetic",
+      "graph": 5.543999999999983,
+      "product": 0.3438330000000178,
+      "backward": 0.6706250000000011,
+      "sample": 0.020875000000017963,
+      "sample100": 1.2906250000000057,
+      "optimization": 0.7651250000000118,
+      "states": 144,
+      "layerStates": 5226,
+      "edges": 5225
+    }
+  ],
+  "python": [
+    {
+      "name": "toy",
+      "graph": 0.12024992611259222,
+      "product": 0.19599997904151678,
+      "backward": 0.3613330191001296,
+      "sample": 0.02945901360362768,
+      "sample100": 2.0609169732779264,
+      "optimization": 0.3794170916080475,
+      "states": 19,
+      "layerStates": 379,
+      "edges": 468
+    },
+    {
+      "name": "text",
+      "graph": 2.2355830296874046,
+      "product": 20.94995800871402,
+      "backward": 48.82679204456508,
+      "sample": 0.08979206904768944,
+      "sample100": 8.405333035625517,
+      "optimization": 45.54454202298075,
+      "states": 346,
+      "layerStates": 40998,
+      "edges": 68729
+    },
+    {
+      "name": "melody",
+      "graph": 0.1056670444086194,
+      "product": 0.24049996864050627,
+      "backward": 0.48500008415430784,
+      "sample": 0.04849990364164114,
+      "sample100": 4.085625056177378,
+      "optimization": 0.47037494368851185,
+      "states": 19,
+      "layerStates": 526,
+      "edges": 530
+    },
+    {
+      "name": "synthetic",
+      "graph": 9.360584081150591,
+      "product": 2.455624984577298,
+      "backward": 4.792500054463744,
+      "sample": 0.06254191976040602,
+      "sample100": 5.208833026699722,
+      "optimization": 4.520665970630944,
+      "states": 144,
+      "layerStates": 5226,
+      "edges": 5225
+    }
+  ]
+}

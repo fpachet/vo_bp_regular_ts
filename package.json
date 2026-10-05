@@ -1,0 +1,36 @@
+{
+  "name": "markov-constraints",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Exact controlled generation for variable-order Markov models",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/core/src/index.d.ts",
+      "import": "./dist/core/src/index.js"
+    },
+    "./constraints": {
+      "types": "./dist/constraints/src/index.d.ts",
+      "import": "./dist/constraints/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "examples": "node examples/domains.mjs",
+    "benchmark": "node benchmarks/run.mjs",
+    "playground": "python3 -m http.server 8080 --bind 127.0.0.1",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
