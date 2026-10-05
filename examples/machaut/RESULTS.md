@@ -158,3 +158,11 @@ samples and partition functions still match the saved pre-optimization baseline.
 Tests cover exact mass via exhaustive weighted enumeration, opening-duration
 conditioning, supported final durations, reproducibility, unchanged exports,
 infeasibility and ordinary-mode violations.
+
+
+The combined default 8-note opening-repeat/meter case initially exceeded 150,000
+unique states. Looking ahead from captured opening pitches to fixed/final/cadence
+requirements at their copied positions preserves the accepted language and reduces
+this case to 40,549 states, 252,685 time-indexed edges and ~4.78 MiB inference
+buffers (about 347 ms in the local browser). Exhaustive independent enumeration
+verifies language equivalence; all 31 application tests pass.

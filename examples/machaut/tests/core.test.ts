@@ -575,3 +575,24 @@ test("interval opening duration participates in meter conditioning", () => {
     assert.equal(r.notes.at(-1)!.onset + r.notes.at(-1)!.duration, 16);
   }
 });
+
+test("repeat look-ahead preserves the independently enumerated language", () => {
+  const constraints = {
+    ...c,
+    fixed: { "7": [62] },
+    repeat: { from: 0, to: 5, count: 3 },
+  };
+  const dfa = musicalAcceptor("absolute", constraints);
+  for (let code = 0; code < 3 ** 8; code++) {
+    let value = code;
+    const pitches = Array.from({ length: 8 }, () => {
+      const p = [60, 62, 64][value % 3];
+      value = Math.floor(value / 3);
+      return p;
+    });
+    assert.equal(
+      dfa.accepts(pitches),
+      constraintViolations(pitches, constraints).length === 0,
+    );
+  }
+});

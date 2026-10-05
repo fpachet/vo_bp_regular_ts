@@ -170,7 +170,27 @@ export function musicalAcceptor(
       let nextOpening = opening;
       if (c.repeat) {
         const r = c.repeat;
-        if (i >= r.from && i < r.from + r.count) nextOpening = [...opening, p];
+        if (i >= r.from && i < r.from + r.count) {
+          // The copied occurrence must satisfy its own fixed/final pitch rules.
+          // Rejecting an impossible opening value early preserves the language.
+          const target = r.to + i - r.from;
+          if (!allowed(c, p, target, false)) return null;
+          if (
+            target === c.length - 1 &&
+            ((c.final !== null && p !== c.final) ||
+              (c.cadence && p !== c.cadence.finalPitch))
+          )
+            return null;
+          if (
+            target === c.length - 2 &&
+            c.cadence?.allowedPenultimateIntervals &&
+            !c.cadence.allowedPenultimateIntervals.includes(
+              p - c.cadence.finalPitch,
+            )
+          )
+            return null;
+          nextOpening = [...opening, p];
+        }
         if (i >= r.to && i < r.to + r.count && p !== opening[i - r.to])
           return null;
       }
