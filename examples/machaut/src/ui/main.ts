@@ -30,9 +30,9 @@ app.innerHTML = `<header><div class="topline"><div class="brand">Ars nova · A s
   isCorpus
     ? `<section class="panel full"><h2><span class="section-number">I.</span>The source melodies</h2><p class="source-note">A small pilot corpus of six MIDI transcriptions from APEMUTAM. One voice is selected from each piece by highest mean pitch. This is a reproducible extraction heuristic, not a critical edition or a verified cantus attribution. Finals are the last sounding pitches, not inferred historical modes.</p><div id="corpus-table" class="corpus-table"></div></section><section class="panel full"><h2>Import your repertoire</h2><div class="import-panel"><div><label for="import-file">MIDI or uncompressed MusicXML</label><input id="import-file" type="file" accept=".mid,.midi,.MID,.xml,.musicxml"></div><div><label for="import-voice">Melodic voice</label><select id="import-voice" disabled><option>Choose a file first</option></select></div><button id="import-add" class="primary" disabled>Add selected voice</button></div><p class="hint">Imports stay in this browser tab. Download the corpus snapshot to reuse them on the generator page. Chords are reduced to the upper note; overlapping sustains are clipped; source durations are retained.</p><button class="secondary" id="snapshot">Download corpus snapshot</button><p class="status" id="status" role="status"></p></section>`
     : `<aside class="controls"><section class="panel"><h2><span class="section-number">I.</span>Corpus &amp; model</h2><label for="repertoire">Repertoire</label><select id="repertoire"><option value="all">All six pieces</option><option value="rondeau">Rondeaux</option><option value="virelai">Virelai</option></select><label for="representation">Representation</label><select id="representation"><option value="intervals">Melodic intervals</option><option value="absolute">Absolute pitch</option><option value="relative">Pitch relative to source final</option></select><div class="pair"><div><label for="order">Maximum order</label><input id="order" type="number" value="5" min="1" max="10"></div><div><label for="backoff">Backoff weight</label><input id="backoff" type="number" value="0.25" min="0" max="1" step="0.05"></div></div><p class="hint">Fixed suffix mixture, including order zero. Larger backoff weights increase lower-order support.</p><label for="snapshot-file">Use a saved corpus snapshot</label><input id="snapshot-file" type="file" accept=".json"><p class="hint"><a href="${new URL("corpus/", root)}">Inspect or import MIDI / MusicXML →</a></p></section>
-<section class="panel"><h2><span class="section-number">II.</span>Musical conditions</h2><label for="mode">Generation mode</label><select id="mode"><option value="constrained">Globally constrained</option><option value="ordinary">Ordinary Markov sampling</option></select><div class="pair"><div><label for="length">Number of notes</label><input id="length" type="number" value="32" min="8" max="128"></div><div><label for="seed">Random seed</label><input id="seed" type="number" value="12345" min="0" max="4294967295"></div></div><div class="pair"><div><label for="start">Starting pitch</label><select id="start"><option value="">Unconstrained / anchor</option></select></div><div><label for="final">Final / reference pitch</label><select id="final"></select></div></div><label class="check"><input id="force-final" type="checkbox" checked>Force final pitch</label><div class="pair"><div><label for="low">Lowest pitch</label><select id="low"></select></div><div><label for="high">Highest pitch</label><select id="high"></select></div></div><div class="pair"><div><label for="leap">Maximum leap (semitones)</label><input id="leap" type="number" value="7" min="0" max="24"></div><div><label for="span">Maximum span (optional)</label><input id="span" type="number" placeholder="Unbounded" min="0" max="48"></div></div><label class="check"><input id="cadence" type="checkbox" checked>End by a step into the final</label><label class="check"><input id="repeat" type="checkbox">Repeat opening 3 notes at the end</label><details><summary>Phrase, pitch-set &amp; cadence controls</summary><label for="classes">Allowed pitch classes (C=0)</label><input id="classes" value="0,2,4,5,7,9,11"><label for="fixed">Fixed / phrase-end notes</label><textarea id="fixed" placeholder="8:69; 16:74; 24:69; 32:74"></textarea><p class="hint">One-based positions, MIDI pitches. Use 16:72|74 for alternatives.</p><button id="phrase-example" class="secondary" type="button">Apply 32-note phrase example</button><label for="forbidden">Forbidden signed intervals</label><input id="forbidden" placeholder="6,-6"><label for="cadence-patterns">Alternative cadence interval endings</label><input id="cadence-patterns" placeholder="-2,2; -1,1"><p class="hint">Optional exact interval tails, separated by semicolons.</p></details><p class="hint">Interval models require a starting anchor: when Start is unset, the reference pitch is used. Ordinary mode ignores musical constraints and reports violations.</p></section><div class="toolbar"><button id="generate" class="primary generate">Generate melody →</button><button id="cancel" class="secondary" disabled>Cancel</button></div><p class="status" id="status" role="status">Loading the local corpus…</p></aside>`
+<section class="panel"><h2><span class="section-number">II.</span>Musical conditions</h2><label for="mode">Generation mode</label><select id="mode"><option value="constrained">Globally constrained</option><option value="ordinary">Ordinary Markov sampling</option></select><div class="pair"><div><label for="length">Number of notes</label><input id="length" type="number" value="32" min="8" max="128"></div><div><label for="seed">Random seed</label><input id="seed" type="number" value="12345" min="0" max="4294967295"></div></div><div class="pair"><div><label for="start">Starting pitch</label><select id="start"><option value="">Unconstrained / anchor</option></select></div><div><label for="final">Final / reference pitch</label><select id="final"></select></div></div><label class="check"><input id="force-final" type="checkbox" checked>Force final pitch</label><div class="pair"><div><label for="low">Lowest pitch</label><select id="low"></select></div><div><label for="high">Highest pitch</label><select id="high"></select></div></div><div class="pair"><div><label for="leap">Maximum leap (semitones)</label><input id="leap" type="number" value="7" min="0" max="24"></div><div><label for="span">Maximum span (optional)</label><input id="span" type="number" placeholder="Unbounded" min="0" max="48"></div></div><label class="check"><input id="cadence" type="checkbox" checked>End by a step into the final</label><label class="check"><input id="repeat" type="checkbox">Repeat opening 3 notes at the end</label><details><summary>Phrase, pitch-set &amp; cadence controls</summary><label for="classes">Allowed pitch classes (C=0)</label><input id="classes" value="0,2,4,5,7,9,11"><label for="fixed">Fixed / phrase-end notes</label><textarea id="fixed" placeholder="8:69; 16:74; 24:69; 32:74"></textarea><p class="hint">One-based positions, MIDI pitches. Use 16:72|74 for alternatives.</p><button id="phrase-example" class="secondary" type="button">Apply 32-note phrase example</button><label for="forbidden">Forbidden signed intervals</label><input id="forbidden" placeholder="6,-6"><label for="cadence-patterns">Alternative cadence interval endings</label><input id="cadence-patterns" placeholder="-2,2; -1,1"><p class="hint">Optional exact interval tails, separated by semicolons.</p></details><p class="hint">Interval models require a starting anchor: when Start is unset, the reference pitch is used. Ordinary mode ignores musical constraints and reports violations.</p></section></aside>`
 }
-<div class="output ${isCorpus ? "full" : ""}"><section class="panel"><div class="score-head"><div><h2><span class="section-number">${isCorpus ? "II." : "III."}</span>${isCorpus ? "Selected source voice" : "A new melodic possibility"}</h2><div id="score-subtitle" class="subtitle">${isCorpus ? "Choose a piece above to inspect its extracted voice." : "Equal quarter notes · modern notation · no historical rhythm claim"}</div></div><div class="toolbar"><button id="play" class="secondary" disabled>Play</button><button id="stop" class="secondary">Stop</button><label class="visually-hidden" for="tempo">Playback tempo</label><input id="tempo" type="number" value="96" min="30" max="240" aria-label="Playback tempo" style="width:75px"></div></div><div id="score" class="score-wrap"><div class="empty">${isCorpus ? "Explore the repertoire" : "A voice from the corpus, a path through constraints."}</div></div><div id="metrics" class="metrics"></div><div class="toolbar"><button id="download-midi" class="secondary" disabled>Download MIDI</button><button id="download-xml" class="secondary" disabled>MusicXML</button><button id="download-json" class="secondary" disabled>Experiment JSON</button>${isCorpus ? "" : '<button id="regenerate" class="secondary" disabled>New seed →</button>'}</div><p class="hint">The 4/4 engraving grid is a modern display convention. It is not a mensural transcription.</p></section>${isCorpus ? "" : `<section class="panel"><h2><span class="section-number">IV.</span>Why this note?</h2><p class="hint">Select a note below. Compare source probabilities with probabilities conditioned on every future requirement.</p><div id="note-list" class="note-list"></div><div id="explanation" class="explanation">Note explanations appear after generation.</div></section><section class="panel"><h2>Model &amp; generation diagnostics</h2><div id="stats" class="stats-grid"></div><p id="diagnostic-detail" class="source-note"></p><details><summary>Method &amp; limits</summary><p class="source-note">The model is a fixed variable-order suffix mixture, conditioned by a deterministic finite acceptor using sparse log-space belief propagation. Exactness is relative to this supplied source and constraints, within floating-point precision. This six-piece pilot does not establish historical style. More elaborate repeats and long interval horizons may exceed explicit product budgets; simplify constraints or lower order when that happens.</p></details></section>`}</div></main><footer>Built with <a href="https://www.npmjs.com/package/markov-constraints">markov-constraints 0.4.0-rc.1</a> · Local corpus from <a href="https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/Machaut.html">APEMUTAM</a> · Generation runs in a cancellable browser Worker.<br>Source transcription reuse terms were not specified by the collection. Source URLs, checksums and extraction choices are retained with each piece; the application’s MIT license does not license those transcriptions.</footer>`;
+<div class="output ${isCorpus ? "full" : ""}"><section class="panel">${isCorpus ? "" : '<div class="toolbar"><button id="generate" class="primary">Generate melody →</button><button id="cancel" class="secondary" disabled>Cancel</button></div><p class="status" id="status" role="status">Loading the local corpus…</p>'}<div class="score-head"><div><h2><span class="section-number">${isCorpus ? "II." : "III."}</span>${isCorpus ? "Selected source voice" : "A new melodic possibility"}</h2><div id="score-subtitle" class="subtitle">${isCorpus ? "Choose a piece above to inspect its extracted voice." : "Equal quarter notes · modern notation · no historical rhythm claim"}</div></div><div class="toolbar"><button id="play" class="secondary" disabled>Play</button><button id="stop" class="secondary">Stop</button><label class="visually-hidden" for="tempo">Playback tempo</label><input id="tempo" type="number" value="96" min="30" max="240" aria-label="Playback tempo" style="width:75px"></div></div><div id="score" class="score-wrap"><div class="empty">${isCorpus ? "Explore the repertoire" : "A voice from the corpus, a path through constraints."}</div></div><div id="metrics" class="metrics"></div><div class="toolbar"><button id="download-midi" class="secondary" disabled>Download MIDI</button><button id="download-xml" class="secondary" disabled>MusicXML</button><button id="download-json" class="secondary" disabled>Experiment JSON</button>${isCorpus ? "" : '<button id="regenerate" class="secondary" disabled>New seed →</button>'}</div><p class="hint">The 4/4 engraving grid is a modern display convention. It is not a mensural transcription.</p></section>${isCorpus ? "" : `<section class="panel"><h2><span class="section-number">IV.</span>Why this note?</h2><p class="hint">Select a note below. Compare source probabilities with probabilities conditioned on every future requirement.</p><div id="note-list" class="note-list"></div><div id="explanation" class="explanation">Note explanations appear after generation.</div></section><section class="panel"><h2>Model &amp; generation diagnostics</h2><div id="stats" class="stats-grid"></div><p id="diagnostic-detail" class="source-note"></p><details><summary>Method &amp; limits</summary><p class="source-note">The model is a fixed variable-order suffix mixture, conditioned by a deterministic finite acceptor using sparse log-space belief propagation. Exactness is relative to this supplied source and constraints, within floating-point precision. This six-piece pilot does not establish historical style. More elaborate repeats and long interval horizons may exceed explicit product budgets; simplify constraints or lower order when that happens.</p></details></section>`}</div></main><footer>Built with <a href="https://www.npmjs.com/package/markov-constraints">markov-constraints 0.4.0-rc.1</a> · Local corpus from <a href="https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/Machaut.html">APEMUTAM</a> · Generation runs in a cancellable browser Worker.<br>Source transcription reuse terms were not specified by the collection. Source URLs, checksums and extraction choices are retained with each piece; the application’s MIT license does not license those transcriptions.</footer>`;
 const el = <T extends HTMLElement>(id: string) =>
   document.getElementById(id)! as T;
 const value = (id: string) => el<HTMLInputElement>(id).value;
@@ -74,6 +74,23 @@ async function renderScore(notes: NoteEvent[], title: string) {
             el("score").querySelectorAll<SVGGElement>(".vf-stavenote");
           if (glyphs.length === notes.length)
             glyphs.forEach((glyph, index) => {
+              // SVG groups have no painted hit area in Firefox. Include the
+              // full note/stem box so clicking or tapping selects the note.
+              const box = glyph.getBBox();
+              const hit = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "rect",
+              );
+              for (const [attribute, value] of Object.entries({
+                x: box.x - 3,
+                y: box.y - 3,
+                width: box.width + 6,
+                height: box.height + 6,
+              }))
+                hit.setAttribute(attribute, String(value));
+              hit.setAttribute("fill", "transparent");
+              hit.setAttribute("pointer-events", "all");
+              glyph.prepend(hit);
               glyph.style.cursor = "pointer";
               glyph.setAttribute("role", "button");
               glyph.setAttribute("tabindex", "0");
@@ -261,6 +278,7 @@ async function showResult(r: GenerationResult) {
   currentJSON = r;
   stop();
   available();
+  el<HTMLButtonElement>("regenerate").disabled = true;
   el("metrics").innerHTML =
     metric("Final pitch", pitchName(r.notes.at(-1)!.midi)) +
     metric("Melodic range", String(r.diagnostics.range) + " st") +
@@ -325,12 +343,15 @@ function generate() {
       clearTimeout(timeout);
       worker?.terminate();
       worker = null;
-      busy(false);
-      if (data.ok)
-        void showResult(data.result).catch((error) =>
-          status("Notation failed: " + String(error), true),
-        );
-      else status(data.error, true);
+      el<HTMLButtonElement>("cancel").disabled = true;
+      if (data.ok) {
+        void showResult(data.result)
+          .catch((error) => status("Notation failed: " + String(error), true))
+          .finally(() => busy(false));
+      } else {
+        busy(false);
+        status(data.error, true);
+      }
     };
     worker.onerror = (event) => {
       clearTimeout(timeout);
@@ -504,7 +525,15 @@ async function init() {
         !data.melodies.length
       )
         throw new Error("Invalid corpus snapshot");
-      corpus = data.melodies.map(validateMelody);
+      const importedCorpus: Melody[] = data.melodies.map(validateMelody);
+      if (
+        importedCorpus.length > 50 ||
+        importedCorpus.reduce((n, m) => n + m.notes.length, 0) > 20000
+      )
+        throw new Error(
+          "Corpus snapshots are limited to 50 pieces and 20,000 notes",
+        );
+      corpus = importedCorpus;
       el<HTMLSelectElement>("repertoire").value = "all";
       el<HTMLSelectElement>("repertoire").options[0].textContent =
         `All ${corpus.length} pieces`;
@@ -521,4 +550,15 @@ void init().catch((error) => status(String(error), true));
 window.addEventListener("pagehide", () => {
   worker?.terminate();
   stop();
+});
+
+let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (currentNotes.length)
+      void renderScore(currentNotes, "Melody").catch((error) =>
+        status(String(error), true),
+      );
+  }, 150);
 });

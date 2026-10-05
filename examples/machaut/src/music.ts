@@ -44,7 +44,17 @@ export function note(midi: number, duration = 1, onset = 0): NoteEvent {
   return { midi, pitchClass: midi % 12, duration, onset };
 }
 export function validateMelody(melody: Melody): Melody {
-  if (!melody.notes.length) throw new Error("No pitched notes found");
+  if (!melody || !Array.isArray(melody.notes) || !melody.notes.length)
+    throw new Error("No pitched notes found");
+  if (
+    typeof melody.id !== "string" ||
+    !melody.metadata ||
+    typeof melody.metadata.title !== "string"
+  )
+    throw new Error("Invalid melody metadata");
+  if (melody.notes.length > 5000)
+    throw new Error("A melodic voice is limited to 5,000 notes");
+  if (melody.metadata.final !== undefined) note(melody.metadata.final);
   let end = -Infinity;
   for (const n of melody.notes) {
     note(n.midi, n.duration, n.onset);
