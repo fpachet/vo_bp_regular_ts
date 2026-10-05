@@ -21,9 +21,9 @@ runtime: corpus files, notation renderer and Markov engine are bundled locally.
 
 ## Included MVP
 
-The default viewpoint is **absolute pitch × duration**, with learned rhythm and
+The default viewpoint is **absolute pitch × duration**, with order **3**, learned rhythm and
 the metered final-note constraint enabled. Interval and relative-final viewpoints
-remain available in the Representation control.
+remain available in the Viewpoint control.
 
 - Six attributed source MIDI transcriptions, 427 extracted melodic notes.
 - Absolute pitches, signed intervals, and pitches relative to each source final.
@@ -45,8 +45,7 @@ remain available in the Representation control.
 Choose **Equal quarter notes** (the original reproducible pitch-only model) or
 **Learned rhythm**. Learned rhythm trains compound `(pitch token, duration)`
 tokens in all three representations and conditions their joint distribution on
-all pitch constraints. Switching rhythm selects order 1 for metered learned rhythm, order 3 for free
-learned rhythm, or order 5 for quarter notes; the order remains adjustable. Compound vocabularies
+all pitch constraints. Switching rhythm selects order 3 for learned rhythm, or order 5 for quarter notes; the order remains adjustable. Compound vocabularies
 are larger and high orders can exceed the existing exact solver budgets. Durations are quarter-note units: 0.25 is a sixteenth,
 0.5 an eighth, 1 a quarter, 1.5 a dotted quarter, and 2 a half.
 

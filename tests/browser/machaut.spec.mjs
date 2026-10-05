@@ -37,6 +37,10 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   expect(first.notes).toHaveLength(32);
   expect(first.notes.at(-1).midi).toBe(74);
   expect(first.model.representation).toBe("absolute");
+  expect(first.model.maxOrder).toBe(3);
+  await expect(page.locator("#representation option:checked")).toHaveText(
+    "Pitch × duration",
+  );
   expect(first.model.rhythm).toBe("corpus");
   expect(first.model.metricalStrength).toBe(1);
   expect(first.metricalPrior.phases).toHaveLength(16);
@@ -157,6 +161,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#rhythm").selectOption("corpus");
+  await page.locator("#order").fill("1");
   for (const representation of ["intervals", "absolute", "relative"]) {
     await page.locator("#representation").selectOption(representation);
     await ready(page);
@@ -215,6 +220,7 @@ test("Machaut: final duration varies across seeds without changing sampled notes
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#representation").selectOption("intervals");
+  await page.locator("#order").fill("1");
   await ready(page);
   const first = await jsonDownload(page);
   await page.locator("#seed").fill("12346");
@@ -241,4 +247,12 @@ test("Machaut: learned meter can be disabled and remains reproducible", async ({
   expect((await jsonDownload(page)).notes).toEqual(first.notes);
   await page.locator("#rhythm").selectOption("quarter");
   await expect(page.locator("#metrical-strength")).toBeDisabled();
+  await expect(page.locator("#representation option:checked")).toHaveText(
+    "Absolute pitch",
+  );
+  await page.locator("#rhythm").selectOption("corpus");
+  await expect(page.locator("#representation option:checked")).toHaveText(
+    "Pitch × duration",
+  );
+  await expect(page.locator("#order")).toHaveValue("3");
 });
