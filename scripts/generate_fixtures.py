@@ -5,7 +5,7 @@ import sys, json, math, random, itertools, subprocess
 from pathlib import Path
 reference=Path(sys.argv[1]).resolve()
 sys.path.insert(0,str(reference))
-from vo_regular_bp import ContextGraph, DFA, run_bp, most_probable_sequence, positional_acceptor, forbidden_substring_acceptor, all_of, max_order_acceptor, meter_acceptor
+from vo_regular_bp import ContextGraph, DFA, run_bp, most_probable_sequence, positional_acceptor, forbidden_substring_acceptor, all_of, max_order_acceptor, meter_acceptor, cumulative_meter_acceptor
 rng=random.Random(271828)
 cases=[]
 def add(name,g,a,n,exhaustive=True):
@@ -64,6 +64,12 @@ for name,backoff in [('strict-maxorder',None),('backoff-maxorder',.25)]:
     sequences=['abab'];g=ContextGraph.from_sequences(sequences,max_order=1) if backoff is None else ContextGraph.from_backoff_sequences(sequences,max_order=1,backoff_weight=backoff)
     add(name,g,max_order_acceptor(sequences,1),6)
     cases[-1]['training']=dict(sequences=sequences,maxOrder=1,backoffWeight=backoff)
+for j in range(12):
+    g=ContextGraph.from_counts({(): {'a':2,'b':1,'PAD':1}},max_order=0)
+    total=2+j%5;n=5
+    a=cumulative_meter_acceptor(n,lambda s: 0 if s=='PAD' else 1 if s=='a' else 2,max_cost=total,accept_costs={total},end_symbol='PAD',predicate=lambda c,s,k: s!='PAD' or c==total)
+    add(f'cumulative-meter-{j}',g,a,n)
+    cases[-1]['meter']=dict(total=total,length=n)
 try: revision=subprocess.check_output(['git','-C',str(reference),'rev-parse','HEAD'],text=True).strip()
 except Exception:revision='unknown'
 Path(sys.argv[2] if len(sys.argv)>2 else 'fixtures/python-golden.json').write_text(json.dumps(dict(referenceRevision=revision,seed=271828,cases=cases),indent=2,allow_nan=False)+'\n')

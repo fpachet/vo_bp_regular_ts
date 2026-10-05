@@ -1,3 +1,5 @@
+import { patternMachine, type PatternOptions } from "./patterns.js";
+export type { PatternOptions } from "./patterns.js";
 import {
   DFA,
   integer,
@@ -79,73 +81,29 @@ export function prefixAcceptor<S extends Symbol>(prefix: readonly S[]): DFA<S> {
     accept: (q) => q === prefix.length,
   });
 }
-function endsWith<S>(xs: readonly S[], pattern: readonly S[]): boolean {
-  return (
-    xs.length >= pattern.length &&
-    pattern.every((s, i) => s === xs[xs.length - pattern.length + i])
-  );
-}
-function patternMachine<S extends Symbol>(
-  patterns: readonly (readonly S[])[],
-  mode: "forbid" | "require" | "suffix",
-): DFA<S> {
-  if (mode === "forbid" && patterns.some((p) => !p.length))
-    throw new Error("Empty forbidden pattern");
-  if (!patterns.length) return trueAcceptor<S>();
-  const prefixes: S[][] = [[]];
-  const seen = new Set(["[]"]);
-  for (const p of patterns)
-    for (let k = 1; k <= p.length; k++) {
-      const x = p.slice(0, k),
-        key = JSON.stringify(x);
-      if (!seen.has(key)) {
-        seen.add(key);
-        prefixes.push(x);
-      }
-    }
-  const complete = (x: readonly S[]) => patterns.some((p) => endsWith(x, p));
-  const found = prefixes.length;
-  return new DFA({
-    startState:
-      mode === "require" && patterns.some((p) => !p.length) ? found : 0,
-    transition: (q, s) => {
-      if (q === found) return found;
-      const x = [...prefixes[Number(q)], s];
-      if (complete(x)) {
-        if (mode === "forbid") return null;
-        if (mode === "require") return found;
-      }
-      let best = 0;
-      for (let i = 1; i < prefixes.length; i++)
-        if (
-          prefixes[i].length > prefixes[best].length &&
-          endsWith(x, prefixes[i])
-        )
-          best = i;
-      return best;
-    },
-    accept: (q) =>
-      mode === "forbid" ||
-      (mode === "require" ? q === found : complete(prefixes[Number(q)])),
-  });
-}
 export function forbiddenSubstringAcceptor<S extends Symbol>(
   patterns: readonly (readonly S[])[],
+  options: PatternOptions<S> = {},
 ): DFA<S> {
-  return patternMachine(patterns, "forbid");
+  return patternMachine(patterns, "forbid", options);
 }
 /** Require at least one occurrence of this pattern. */
 export function requiredSubstringAcceptor<S extends Symbol>(
   pattern: readonly S[],
+  options: PatternOptions<S> = {},
 ): DFA<S> {
-  return patternMachine([pattern], "require");
+  return patternMachine([pattern], "require", options);
 }
-export function suffixAcceptor<S extends Symbol>(suffix: readonly S[]): DFA<S> {
-  return patternMachine([suffix], "suffix");
+export function suffixAcceptor<S extends Symbol>(
+  suffix: readonly S[],
+  options: PatternOptions<S> = {},
+): DFA<S> {
+  return patternMachine([suffix], "suffix", options);
 }
 export function maxOrderAcceptor<S extends Symbol>(
   references: Iterable<Iterable<S>>,
   maxOrder: number,
+  options: PatternOptions<S> = {},
 ): DFA<S> {
   integer(maxOrder, "maxOrder");
   const patterns: S[][] = [],
@@ -161,7 +119,7 @@ export function maxOrderAcceptor<S extends Symbol>(
       }
     }
   }
-  return forbiddenSubstringAcceptor(patterns);
+  return forbiddenSubstringAcceptor(patterns, options);
 }
 /** Per-position class pattern, matching Python meter_acceptor (not cumulative duration). */
 export function meterAcceptor<S extends Symbol, C>(
@@ -178,3 +136,36 @@ export function meterAcceptor<S extends Symbol, C>(
     accept: (q) => q === pattern.length,
   });
 }
+
+/** Accept any listed suffix, useful for alternative terminal motifs. */
+export function suffixesAcceptor<S extends Symbol>(
+  suffixes: readonly (readonly S[])[],
+  options: PatternOptions<S> = {},
+): DFA<S> {
+  return patternMachine(suffixes, "suffix", options);
+}
+/** Every occurrence of after requires an earlier occurrence of before. */
+export function precedenceAcceptor<S extends Symbol>(
+  before: S,
+  after: S,
+): DFA<S> {
+  return new DFA({
+    startState: 0,
+    transition: (q, s) =>
+      s === after && q === 0 ? null : s === before ? 1 : q,
+    accept: () => true,
+  });
+}
+export function visitLimitAcceptor<S extends Symbol>(
+  symbol: S,
+  maximum: number,
+): DFA<S> {
+  integer(maximum, "maximum");
+  return new DFA({
+    startState: 0,
+    transition: (q, s) =>
+      s === symbol ? (Number(q) < maximum ? Number(q) + 1 : null) : q,
+    accept: () => true,
+  });
+}
+export * from "./meter.js";

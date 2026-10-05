@@ -300,6 +300,82 @@ export class ProductBPResult<S extends Symbol> {
       ? Math.min(0, p - this.logPartitionFunction)
       : NEG;
   }
+  /** Unnormalized log weight on the compiled product (no conditioning division). */
+  logSequenceWeight(sequence: readonly S[]): number {
+    if (sequence.length !== this.product.length) return NEG;
+    let id = 0,
+      value = 0;
+    for (const symbol of sequence) {
+      const edge = this.product.rows[id]?.find((e) => e.symbol === symbol);
+      if (!edge) return NEG;
+      value += edge.logWeight;
+      id = edge.next;
+    }
+    return this.product.acceptor.isAccepting(this.product.states[id].acceptor)
+      ? value
+      : NEG;
+  }
+  /** Exact symbol marginals and expected source-edge counts, computed on demand.
+   * Only the current forward layer is retained; beta tables are reused.
+   */
+  marginals(options: { maxEdgeRecords?: number } = {}): MarginalResult<S> {
+    this.requireFeasible();
+    const maxRecords = options.maxEdgeRecords ?? 1000000;
+    integer(maxRecords, "maxEdgeRecords");
+    const symbolProbabilities: Map<S, number>[] = [];
+    const edgeLogs = new Map<number, Map<S, number>>();
+    let records = 0;
+    let alpha = new Map<number, number>([[0, 0]]);
+    for (let t = 0; t < this.product.length; t++) {
+      const nextAlpha = new Map<number, number>(),
+        symbols = new Map<S, number>();
+      for (const [id, forward] of alpha)
+        for (const edge of this.product.rows[id]) {
+          const next = forward + edge.logWeight;
+          nextAlpha.set(
+            edge.next,
+            logAdd(nextAlpha.get(edge.next) ?? NEG, next),
+          );
+          const mass =
+            next + this.beta(t + 1, edge.next) - this.logPartitionFunction;
+          if (mass === NEG) continue;
+          symbols.set(
+            edge.symbol,
+            logAdd(symbols.get(edge.symbol) ?? NEG, mass),
+          );
+          const context = this.product.states[id].context;
+          let row = edgeLogs.get(context);
+          if (!row) {
+            row = new Map();
+            edgeLogs.set(context, row);
+          }
+          if (!row.has(edge.symbol)) {
+            if (records >= maxRecords)
+              throw new ResourceLimitError("marginal edge records", maxRecords);
+            records++;
+          }
+          row.set(edge.symbol, logAdd(row.get(edge.symbol) ?? NEG, mass));
+        }
+      symbolProbabilities.push(
+        new Map([...symbols].map(([symbol, log]) => [symbol, Math.exp(log)])),
+      );
+      alpha = nextAlpha;
+    }
+    const expectedTransitions: ExpectedTransition<S>[] = [];
+    for (const [context, row] of edgeLogs)
+      for (const [symbol, log] of row) {
+        const edge = this.product.graph
+          .outgoing(context)
+          .find((e) => e.symbol === symbol)!;
+        expectedTransitions.push({
+          contextState: context,
+          symbol,
+          nextContextState: edge.nextState,
+          expectedCount: Math.exp(log),
+        });
+      }
+    return { symbolProbabilities, expectedTransitions };
+  }
   conditionalProbability(sequence: readonly S[]): number {
     return Math.exp(this.logConditionalProbability(sequence));
   }
@@ -357,4 +433,15 @@ export function mostProbableSequence<S extends Symbol>(
   options: InferenceOptions<S>,
 ): Optimum<S> {
   return optimizeProduct(compileProduct(g, a, options));
+}
+
+export interface ExpectedTransition<S> {
+  contextState: number;
+  symbol: S;
+  nextContextState: number;
+  expectedCount: number;
+}
+export interface MarginalResult<S> {
+  symbolProbabilities: Map<S, number>[];
+  expectedTransitions: ExpectedTransition<S>[];
 }

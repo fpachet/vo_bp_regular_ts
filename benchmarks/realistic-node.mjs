@@ -36,11 +36,14 @@ const graphMs = median(build),
   acceptor = forbiddenSubstringAcceptor([workload.forbidden]),
   options = { length: workload.length };
 global.gc?.();
-const before = process.memoryUsage().heapUsed;
+const beforeMemory = process.memoryUsage();
+const before = beforeMemory.heapUsed;
 const product = compileProduct(graph, acceptor, options),
   bp = new ProductBPResult(product);
 global.gc?.();
-const retained = (process.memoryUsage().heapUsed - before) / 2 ** 20;
+const afterMemory=process.memoryUsage();
+const retained = (afterMemory.heapUsed - before) / 2 ** 20;
+const retainedArrayBuffersMB=(afterMemory.arrayBuffers-beforeMemory.arrayBuffers)/2**20;
 // Evaluate plain probability DP as a benchmark-only prototype. It is not the library engine.
 function probabilityPrototype() {
   let values = new Map(
@@ -80,6 +83,8 @@ const result = {
   edges: product.productEdgeCount,
   logPartition: bp.logPartitionFunction,
   retainedProductMB: retained,
+  retainedArrayBuffersMB,
+  retainedTotalMB:retained+retainedArrayBuffersMB,
   peakRSSMB: process.resourceUsage().maxRSS / 1024,
 };
 console.log(JSON.stringify(result));

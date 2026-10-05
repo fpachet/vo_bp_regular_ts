@@ -37879,6 +37879,2458 @@
         "maxOrder": 1,
         "backoffWeight": 0.25
       }
+    },
+    {
+      "name": "cumulative-meter-0",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3
+          },
+          {
+            "PAD": 4
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.0048828125,
+      "logPartition": -5.322033893165353,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "PAD",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -5.545177444479562
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.8
+        },
+        {
+          "sequence": [
+            "b",
+            "PAD",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.2
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 8,
+      "productStateCount": 8,
+      "meter": {
+        "total": 2,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-1",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4
+          },
+          {
+            "a": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 8
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.01171875,
+      "logPartition": -4.446565155811453,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -4.852030263919617
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.6666666666666667
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666669
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666666
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 10,
+      "productStateCount": 9,
+      "meter": {
+        "total": 3,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-2",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7
+          },
+          {
+            "PAD": 8
+          },
+          {
+            "a": 9
+          },
+          {
+            "PAD": 10
+          },
+          {
+            "PAD": 10
+          },
+          {
+            "PAD": 11
+          },
+          {
+            "PAD": 11
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.0283203125,
+      "logPartition": -3.564175975612979,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "PAD"
+        ],
+        "logWeight": -4.1588830833596715
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.5517241379310346
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275865
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275862
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275865
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.03448275862068966
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 15,
+      "productStateCount": 12,
+      "meter": {
+        "total": 4,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-3",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7,
+            "b": 8
+          },
+          {
+            "a": 8
+          },
+          {
+            "a": 9,
+            "b": 10
+          },
+          {
+            "a": 10
+          },
+          {
+            "PAD": 11
+          },
+          {
+            "a": 12
+          },
+          {
+            "PAD": 13
+          },
+          {
+            "PAD": 13
+          },
+          {},
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {},
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.068359375,
+      "logPartition": -2.682976563550094,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        "logWeight": -3.4657359027997265
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.03125,
+          "conditional": 0.45714285714285724
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571428
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.028571428571428577
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.028571428571428577
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.02857142857142857
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 18,
+      "productStateCount": 14,
+      "meter": {
+        "total": 5,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-4",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7,
+            "b": 8
+          },
+          {
+            "a": 8,
+            "b": 9
+          },
+          {
+            "a": 10,
+            "b": 11
+          },
+          {
+            "a": 11,
+            "b": 12
+          },
+          {
+            "a": 12
+          },
+          {
+            "PAD": 13
+          },
+          {
+            "a": 14,
+            "b": 15
+          },
+          {
+            "a": 15
+          },
+          {
+            "PAD": 16
+          },
+          {
+            "PAD": 16
+          },
+          {},
+          {},
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {},
+          {},
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.1025390625,
+      "logPartition": -2.2775114554419296,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "b",
+          "a",
+          "a",
+          "a"
+        ],
+        "logWeight": -4.1588830833596715
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "b"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "b",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.03809523809523809
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.009523809523809525
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 23,
+      "productStateCount": 17,
+      "meter": {
+        "total": 6,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-5",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3
+          },
+          {
+            "PAD": 4
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.0048828125,
+      "logPartition": -5.322033893165353,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "PAD",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -5.545177444479562
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.8
+        },
+        {
+          "sequence": [
+            "b",
+            "PAD",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.2
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 8,
+      "productStateCount": 8,
+      "meter": {
+        "total": 2,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-6",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4
+          },
+          {
+            "a": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 8
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.01171875,
+      "logPartition": -4.446565155811453,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -4.852030263919617
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.6666666666666667
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666669
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666666
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 10,
+      "productStateCount": 9,
+      "meter": {
+        "total": 3,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-7",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7
+          },
+          {
+            "PAD": 8
+          },
+          {
+            "a": 9
+          },
+          {
+            "PAD": 10
+          },
+          {
+            "PAD": 10
+          },
+          {
+            "PAD": 11
+          },
+          {
+            "PAD": 11
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.0283203125,
+      "logPartition": -3.564175975612979,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "PAD"
+        ],
+        "logWeight": -4.1588830833596715
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.5517241379310346
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275865
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275862
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.13793103448275865
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.03448275862068966
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 15,
+      "productStateCount": 12,
+      "meter": {
+        "total": 4,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-8",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7,
+            "b": 8
+          },
+          {
+            "a": 8
+          },
+          {
+            "a": 9,
+            "b": 10
+          },
+          {
+            "a": 10
+          },
+          {
+            "PAD": 11
+          },
+          {
+            "a": 12
+          },
+          {
+            "PAD": 13
+          },
+          {
+            "PAD": 13
+          },
+          {},
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {},
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.068359375,
+      "logPartition": -2.682976563550094,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        "logWeight": -3.4657359027997265
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.03125,
+          "conditional": 0.45714285714285724
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571428
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.028571428571428577
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.11428571428571431
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.028571428571428577
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.02857142857142857
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 18,
+      "productStateCount": 14,
+      "meter": {
+        "total": 5,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-9",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4,
+            "b": 5
+          },
+          {
+            "a": 6,
+            "b": 7
+          },
+          {
+            "a": 7,
+            "b": 8
+          },
+          {
+            "a": 8,
+            "b": 9
+          },
+          {
+            "a": 10,
+            "b": 11
+          },
+          {
+            "a": 11,
+            "b": 12
+          },
+          {
+            "a": 12
+          },
+          {
+            "PAD": 13
+          },
+          {
+            "a": 14,
+            "b": 15
+          },
+          {
+            "a": 15
+          },
+          {
+            "PAD": 16
+          },
+          {
+            "PAD": 16
+          },
+          {},
+          {},
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {},
+          {},
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.1025390625,
+      "logPartition": -2.2775114554419296,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "b",
+          "a",
+          "a",
+          "a"
+        ],
+        "logWeight": -4.1588830833596715
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "a",
+            "b"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "b",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "a",
+            "b",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.03809523809523809
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "a",
+            "a"
+          ],
+          "weight": 0.015625,
+          "conditional": 0.1523809523809524
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "a",
+            "b",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "b",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "a",
+            "a",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.0380952380952381
+        },
+        {
+          "sequence": [
+            "b",
+            "b",
+            "b",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.009523809523809525
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 23,
+      "productStateCount": 17,
+      "meter": {
+        "total": 6,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-10",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3
+          },
+          {
+            "PAD": 4
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.0048828125,
+      "logPartition": -5.322033893165353,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "PAD",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -5.545177444479562
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.00390625,
+          "conditional": 0.8
+        },
+        {
+          "sequence": [
+            "b",
+            "PAD",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0009765625,
+          "conditional": 0.2
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 8,
+      "productStateCount": 8,
+      "meter": {
+        "total": 2,
+        "length": 5
+      }
+    },
+    {
+      "name": "cumulative-meter-11",
+      "alphabet": [
+        "PAD",
+        "a",
+        "b"
+      ],
+      "contexts": [
+        []
+      ],
+      "rows": [
+        [
+          {
+            "symbol": "a",
+            "probability": 0.5,
+            "nextState": 0
+          },
+          {
+            "symbol": "b",
+            "probability": 0.25,
+            "nextState": 0
+          },
+          {
+            "symbol": "PAD",
+            "probability": 0.25,
+            "nextState": 0
+          }
+        ]
+      ],
+      "startState": 0,
+      "maxOrder": 0,
+      "dfa": {
+        "transitions": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 3,
+            "b": 4
+          },
+          {
+            "a": 4
+          },
+          {
+            "a": 5
+          },
+          {
+            "PAD": 6
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 7
+          },
+          {
+            "PAD": 8
+          },
+          {}
+        ],
+        "weights": [
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0,
+            "b": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "a": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {
+            "PAD": 1.0
+          },
+          {}
+        ],
+        "accepting": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      },
+      "length": 5,
+      "partition": 0.01171875,
+      "logPartition": -4.446565155811453,
+      "best": {
+        "feasible": true,
+        "sequence": [
+          "a",
+          "a",
+          "a",
+          "PAD",
+          "PAD"
+        ],
+        "logWeight": -4.852030263919617
+      },
+      "accepted": [
+        {
+          "sequence": [
+            "a",
+            "a",
+            "a",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.0078125,
+          "conditional": 0.6666666666666667
+        },
+        {
+          "sequence": [
+            "a",
+            "b",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666669
+        },
+        {
+          "sequence": [
+            "b",
+            "a",
+            "PAD",
+            "PAD",
+            "PAD"
+          ],
+          "weight": 0.001953125,
+          "conditional": 0.16666666666666666
+        }
+      ],
+      "exhaustive": true,
+      "productEdgeCount": 10,
+      "productStateCount": 9,
+      "meter": {
+        "total": 3,
+        "length": 5
+      }
     }
   ]
 }

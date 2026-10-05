@@ -29,7 +29,8 @@ https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37304787502
 Validated Pages deployment:
 https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37304787518
 
-Remaining limits: no npm registry publication/authentication, browser performance
-benchmark, cumulative-duration meter or WebAudio playback. Probability-space DP
+The 0.3.0-rc.1 feature milestone adds browser performance measurements,
+cumulative-duration meter and WebAudio playback; see feature-results.md.
+Remaining limits: no npm registry publication/authentication. Probability-space DP
 is a benchmark prototype; the public library retains stable log inference.
 The product budgets intentionally stop large requests rather than approximating.

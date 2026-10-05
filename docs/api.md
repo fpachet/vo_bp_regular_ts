@@ -127,3 +127,43 @@ For an actual npm release, confirm package-name ownership, registry authenticati
 and the intended dist-tag; then publish the tarball with `npm publish <tarball>
 --tag next --access public`. No npm publication or credentials are configured by
 this repository automatically.
+
+## Pattern automata, meter and domain rules
+
+Substring builders and `maxOrderAcceptor` now accept an optional
+`{alphabet, maxStates, maxTransitions}`. The default uses Aho–Corasick failure
+links with lazy sparse transition caches. Providing `alphabet` builds bounded
+finite tables and rejects symbols outside that alphabet. Dense tables trade
+construction time/memory for faster traversal. Defaults: 100,000 trie states,
+1,000,000 cached/table transitions; explicit larger budgets are supported.
+
+`suffixesAcceptor([['T','A','A'], ['T','A','G'], ['T','G','A']])` accepts any
+listed ending. `precedenceAcceptor('Cart','Checkout')` permits Checkout only
+when Cart has appeared earlier. `visitLimitAcceptor('Search',2)` bounds visits.
+These constraints combine through `allOf`.
+
+`cumulativeMeterAcceptor(length, cost, options)` accumulates nonnegative integer
+costs over exactly `length` emitted symbols. Options include `maxCost`,
+`acceptCosts` (a set or predicate), `endSymbol` (absorbing), `maxStates`, and
+`predicate(totalBeforeEmission, symbol, oneBasedPosition)`.
+
+`paddedDurationAcceptor(total,{length,padSymbol,duration})` enforces exactly the
+requested duration, followed by zero-cost absorbing PAD. Non-PAD events must
+have positive durations unless `allowZeroDurationEvents` is true. Compose a
+cumulative meter predicate to forbid crossing bar boundaries.
+
+## Marginals and sequence weights
+
+`bp.logSequenceWeight(sequence)` returns the unnormalized accepted sequence log
+weight, or negative infinity for rejected sequences. For a feasible result,
+`bp.marginals({maxEdgeRecords:1000000})` returns:
+
+- `symbolProbabilities`: one `Map<Symbol,number>` per position.
+- `expectedTransitions`: `{contextState,symbol,nextContextState,expectedCount}`
+  records aggregated over all positions and constraint states.
+
+The method runs a forward pass using the stored log backward values. It retains
+only the current forward layer; it computes no marginals until requested.
+Expected counts sum to the fixed sequence length; each position's symbol
+probabilities sum to one within floating-point tolerance. Very small ordinary
+probabilities can underflow. The edge-record budget bounds output aggregation.

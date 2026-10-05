@@ -48,6 +48,19 @@
       }
       input,
       select,
+      input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+      }
+      #training {
+        max-height: 180px;
+        overflow: auto;
+        font-size: 13px;
+      }
+      #samplingBenchmark {
+        font-size: 12px;
+        min-height: 0;
+      }
       textarea {
         box-sizing: border-box;
         width: 100%;
@@ -55,6 +68,19 @@
         border: 1px solid #b8c8c1;
         border-radius: 6px;
         font: inherit;
+      }
+      input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+      }
+      #training {
+        max-height: 180px;
+        overflow: auto;
+        font-size: 13px;
+      }
+      #samplingBenchmark {
+        font-size: 12px;
+        min-height: 0;
       }
       textarea {
         font-family: monospace;
@@ -134,6 +160,29 @@
           <option value="dna">DNA</option>
           <option value="journeys">User journeys</option>
         </select>
+        <label
+          ><input id="fullText" type="checkbox" /> Full Alice corpus (text
+          only)</label
+        >
+        <label
+          ><input id="wordMode" type="checkbox" /> Word tokens (full
+          corpus)</label
+        >
+        <label
+          ><input id="meter" type="checkbox" /> Pitch:duration melody with exact
+          meter</label
+        >
+        <label for="totalDuration"
+          >Melody duration · quarter-note units, bars of 4</label
+        ><input id="totalDuration" type="number" min="1" value="16" />
+        <label
+          ><input id="domainRules" type="checkbox" checked /> DNA: alternative
+          stops; journeys: ordering and visit limits</label
+        >
+        <label
+          ><input id="marginals" type="checkbox" checked /> Compute position
+          marginals</label
+        >
         <label for="order">Source maximum order</label
         ><input id="order" type="number" min="0" max="8" value="2" />
         <label for="backoff">Backoff mixture weight</label
@@ -189,9 +238,23 @@
         <h2>Generate</h2>
         <button id="sample">Sample exactly</button
         ><button id="best">Find most probable</button>
+        <button id="benchmark">Benchmark sampling</button
+        ><button id="cancel">Cancel</button>
         <p id="status" role="status">Ready.</p>
         <pre id="output" aria-live="polite">
 Your sequence will appear here.</pre>
+        <button id="play" disabled>Play melody</button
+        ><button id="stop">Stop</button
+        ><button id="midi" disabled>Download MIDI</button
+        ><span id="audioStatus"></span>
+        <h3>Training preview</h3>
+        <pre id="training"></pre>
+        <h3>Position marginals</h3>
+        <label for="marginalPosition"
+          >Position · zero-based (top 12 symbols)</label
+        ><input id="marginalPosition" type="range" min="0" max="0" value="0" />
+        <div id="marginalChart"></div>
+        <pre id="samplingBenchmark"></pre>
         <h3>Inference diagnostics</h3>
         <dl id="diagnostics"></dl>
         <small

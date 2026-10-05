@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0-rc.1
+
+- Aho–Corasick substring/MAXORDER automata with sparse caches and optional finite tables.
+- Alternative suffixes, exact cumulative meter/PAD, precedence and visit limits.
+- On-demand log-space marginals, expected transitions and sequence log weights.
+- Full Alice word/character examples, metered melodies with WebAudio/MIDI, richer DNA/journeys.
+- Playground training previews, probabilities, marginals, cancellation and varied-seed cache benchmarks.
+- Twelve new Python meter fixtures; typed-array memory and cold/warm performance reports.
+
 ## 0.2.0-rc.1
 
 - Python-equivalent explicit backoff-mixture model for useful MAXORDER novelty.

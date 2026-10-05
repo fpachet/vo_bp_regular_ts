@@ -1,0 +1,33 @@
+{
+  "runtime": "v24.3.0",
+  "platform": "darwin",
+  "seedBatches": 10,
+  "samples": 1000,
+  "length": 100,
+  "rows": [
+    {
+      "cap": 0,
+      "cachedEdges": 0,
+      "coldMs": 0.12145800000001827,
+      "warm1000Ms": 21.784458,
+      "retainedHeapMB": 0.04087066650390625,
+      "retainedArrayBuffersMB": 0.012828826904296875
+    },
+    {
+      "cap": 256,
+      "cachedEdges": 255,
+      "coldMs": 0.1776659999999879,
+      "warm1000Ms": 21.34612500000003,
+      "retainedHeapMB": 0.07456207275390625,
+      "retainedArrayBuffersMB": 0.015071868896484375
+    },
+    {
+      "cap": 100000,
+      "cachedEdges": 5282,
+      "coldMs": 0.14274999999997817,
+      "warm1000Ms": 8.370542,
+      "retainedHeapMB": 0.488739013671875,
+      "retainedArrayBuffersMB": 0.016994476318359375
+    }
+  ]
+}

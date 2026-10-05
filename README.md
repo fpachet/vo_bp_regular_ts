@@ -296,3 +296,22 @@ It implements the fixed-source finite-horizon core. Generation-time order polici
 research graph merging, and specialized Python backends are outside version 0.1.
 
 MIT licensed; Python attribution is retained in LICENSE.
+
+### Extended features and examples
+
+The 0.3 release candidate adds Aho–Corasick pattern constraints, alternative
+suffixes, cumulative meter/PAD, ordering/visit constraints, position marginals
+and expected transition counts. See [API](docs/api.md) and the
+[feature completion plan](docs/feature-plan.md).
+
+Run `npm run examples:rich` for full Alice character/word generation with
+measured copying, exact metered pitch-duration melodies and a generated MIDI
+file, DNA alternative stop codons/motifs, and constrained journeys. The
+[playground](https://fpachet.github.io/vo_bp_regular_ts/) provides the same domain
+controls, training previews, WebAudio playback, MIDI download, position
+marginals, sequence probabilities and browser sampling timings. Full-book word
+inference is substantially larger than the toy examples; its default horizon is
+8 words, with explicit larger transition budgets and cancellation available.
+
+Reproduce performance results with `npm run benchmark:patterns`,
+`npm run benchmark:sampling`, and `npm run benchmark:realistic`.

@@ -1,0 +1,37 @@
+{
+  "node": "v24.3.0",
+  "platform": "darwin",
+  "streamLength": 2000,
+  "rows": [
+    {
+      "sparseColdWalk": 0.32516599999999585,
+      "patterns": 100,
+      "legacyBuild": 0.11870900000000972,
+      "sparseBuild": 0.22366599999999437,
+      "denseBuild": 4.467250000000007,
+      "legacyWalk": 2.6547919999999863,
+      "sparseWalk": 0.19112499999999955,
+      "denseWalk": 0.10137500000000443
+    },
+    {
+      "sparseColdWalk": 0.22050000000001546,
+      "patterns": 1000,
+      "legacyBuild": 0.7654159999999877,
+      "sparseBuild": 0.807249999999982,
+      "denseBuild": 35.710500000000025,
+      "legacyWalk": 30.809124999999995,
+      "sparseWalk": 0.13912499999997863,
+      "denseWalk": 0.09795900000000302
+    },
+    {
+      "sparseColdWalk": 0.31883299999992687,
+      "patterns": 5000,
+      "legacyBuild": 4.078291000000036,
+      "sparseBuild": 3.166584000000057,
+      "denseBuild": 152.199292,
+      "legacyWalk": 124.31750000000011,
+      "sparseWalk": 0.11400000000003274,
+      "denseWalk": 0.11779200000000856
+    }
+  ]
+}

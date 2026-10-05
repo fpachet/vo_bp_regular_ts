@@ -52,3 +52,69 @@ test("seed reproducibility, backoff/MAXORDER, custom DFA and errors", async ({
     page.getByRole("button", { name: "Sample exactly", exact: true }),
   ).toBeEnabled();
 });
+
+test("metered melody, playback, MIDI and browser benchmark", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/");
+  await page.locator("#dataset").selectOption("melody");
+  await page.locator("#meter").check();
+  await page.locator("#sample").click();
+  await expect(page.locator("#status")).toHaveText("Completed.");
+  const sequence = (await page.locator("#output").innerText())
+    .trim()
+    .split(" ");
+  expect(
+    sequence.reduce(
+      (n, s) => n + (s === "PAD" ? 0 : Number(s.split(":")[1])),
+      0,
+    ),
+  ).toBe(16);
+  expect(sequence.at(-1)).toBe("PAD");
+  await page.locator("#play").click();
+  await expect(page.locator("#audioStatus")).toHaveText("Playing.");
+  await page.locator("#stop").click();
+  await expect(page.locator("#audioStatus")).toHaveText("Stopped.");
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator("#midi").click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("markov-melody.mid");
+  await page.locator("#benchmark").click();
+  await expect(page.locator("#status")).toHaveText("Completed.");
+  const rows = JSON.parse(await page.locator("#samplingBenchmark").innerText());
+  expect(rows.map((r) => r.cap)).toEqual([0, 256, 100000]);
+  expect(rows[1].cachedEdges).toBeLessThanOrEqual(256);
+  expect(rows[2].cachedEdges).toBeGreaterThan(256);
+  await testInfo.attach("browser-performance", {
+    body: JSON.stringify(
+      {
+        browser: testInfo.project.name,
+        sampling: rows,
+        diagnostics: await page.locator("#diagnostics").innerText(),
+      },
+      null,
+      2,
+    ),
+    contentType: "application/json",
+  });
+  await expect(page.locator("#marginalChart")).toContainText("100.00%");
+});
+test("full Alice characters and words with copying limits", async ({
+  page,
+}) => {
+  test.setTimeout(120000);
+  await page.goto("/");
+  await page.locator("#dataset").selectOption("text");
+  await page.locator("#fullText").check();
+  await page.locator("#sample").click();
+  await expect(page.locator("#status")).toHaveText("Completed.", {
+    timeout: 60000,
+  });
+  await expect(page.locator("#diagnostics")).toContainText("Training tokens");
+  await page.locator("#wordMode").check();
+  await page.locator("#sample").click();
+  await expect(page.locator("#status")).toHaveText("Completed.", {
+    timeout: 60000,
+  });
+  await expect(page.locator("#output")).toContainText("Alice");
+});

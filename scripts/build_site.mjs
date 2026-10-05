@@ -8,9 +8,15 @@ await cp(new URL("../dist/", import.meta.url), new URL("dist/", output), {
   recursive: true,
 });
 await mkdir(new URL("examples/", output), { recursive: true });
+for (const name of ["datasets.mjs", "domain-utils.mjs", "midi.mjs"])
+  await cp(
+    new URL(`../examples/${name}`, import.meta.url),
+    new URL(`examples/${name}`, output),
+  );
+await mkdir(new URL("assets/", output), { recursive: true });
 await cp(
-  new URL("../examples/datasets.mjs", import.meta.url),
-  new URL("examples/datasets.mjs", output),
+  new URL("../benchmarks/corpora/alice.txt", import.meta.url),
+  new URL("assets/alice.txt", output),
 );
 for (const file of ["index.html", "playground.mjs", "worker.mjs"]) {
   const source = await readFile(
@@ -21,7 +27,8 @@ for (const file of ["index.html", "playground.mjs", "worker.mjs"]) {
     new URL(file, output),
     source
       .replaceAll("../../dist/", "./dist/")
-      .replaceAll("../../examples/", "./examples/"),
+      .replaceAll("../../examples/", "./examples/")
+      .replaceAll("../../benchmarks/corpora/", "./assets/"),
   );
 }
 await writeFile(new URL(".nojekyll", output), "");
