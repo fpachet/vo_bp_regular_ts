@@ -294,3 +294,26 @@ source pitch/duration associations, fixed final pitch, cadence and exact meter.
 Compilation took roughly 2.4 seconds with 18,042 states and about 20 MiB of packed
 buffers on this local run. These are training-data checks, not held-out historical
 style validation.
+
+### Browser sound
+
+Playback uses `smplr` with MusyngKite sampled Recorder (default), Harp,
+Fiddle, Organ and Voice. Select a sound and press Play; the first use downloads
+that instrument's samples. Loaded instruments are cached for this page session.
+Network failures are shown beside the controls; retry or download MIDI.
+
+Generation → performance rendering → sampler → Web Audio reverb → output.
+
+`src/audio/performance.ts` converts quarter-note beats to seconds at the selected
+BPM without modifying the symbolic melody or exports. Natural performance adds
+96% articulation, a small deterministic dynamic pattern, and a softer final
+note held to 115%; disabling it preserves exact symbolic timing and duration.
+There is no timing jitter or inferred phrase treatment. Reverb defaults to a
+restrained 12% send and can be adjusted during playback.
+
+`src/ui/playback.ts` owns the shared AudioContext, lazy instrument cache, audio
+clock scheduling and cancellation. Stop also mutes the reverb output. Instrument
+changes and melody replacement cancel pending loads' playback requests.
+The instrument table and sampler construction are the places to plug in future
+historical samples using `smplr.Sampler`; the generator and performance function
+need no changes. General MIDI names do not establish historical authenticity.

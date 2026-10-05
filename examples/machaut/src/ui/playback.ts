@@ -1,46 +1,78 @@
+import { Reverb, Soundfont } from "smplr";
 import type { NoteEvent } from "../music";
-let context: AudioContext | null = null;
+import { renderPerformance } from "../audio/performance";
+
+export const instruments = {
+  recorder: "Recorder", orchestral_harp: "Harp", fiddle: "Fiddle",
+  church_organ: "Organ", choir_aahs: "Voice",
+} as const;
+export type InstrumentId = keyof typeof instruments;
+let context: AudioContext | undefined;
+let master: GainNode;
+let reverb: Reverb | undefined;
+const cache = new Map<InstrumentId, Soundfont>();
+let revision = 0;
+let active: Soundfont | undefined;
+const effected = new WeakSet<Soundfont>();
+
 export function stop() {
-  const old = context;
-  context = null;
-  if (old) void old.close().catch(() => {});
+  revision++;
+  active?.stop();
+  active = undefined;
+  if (context) master.gain.setValueAtTime(0, context.currentTime);
 }
-export async function play(notes: NoteEvent[], bpm: number) {
+
+export function setReverb(amount: number) {
+  active?.output.setEffectMix("room", Math.max(0, Math.min(0.3, amount)));
+}
+
+export async function play(notes: NoteEvent[], bpm: number, options: {
+  instrument?: InstrumentId; natural?: boolean; reverb?: number;
+  loading?: (value: boolean) => void;
+} = {}) {
   stop();
-  const audio = new AudioContext();
-  context = audio;
-  await Promise.race([
-    audio.resume(),
-    new Promise((_, reject) =>
-      setTimeout(
-        () => reject(new Error("Audio output unavailable; try MIDI download")),
-        3000,
-      ),
-    ),
-  ]);
-  if (context !== audio) return;
-  const now = audio.currentTime + 0.06,
-    beat = 60 / bpm;
-  for (const n of notes) {
-    const osc = audio.createOscillator(),
-      gain = audio.createGain();
-    osc.type = "triangle";
-    osc.frequency.value = 440 * 2 ** ((n.midi - 69) / 12);
-    const start = now + n.onset * beat,
-      end = start + n.duration * beat;
-    gain.gain.setValueAtTime(0, start);
-    gain.gain.linearRampToValueAtTime(0.12, start + 0.015);
-    gain.gain.setValueAtTime(0.1, Math.max(start + 0.015, end - 0.04));
-    gain.gain.linearRampToValueAtTime(0, end);
-    osc.connect(gain);
-    gain.connect(audio.destination);
-    osc.start(start);
-    osc.stop(end + 0.02);
+  if (!notes.length) return;
+  const request = revision;
+  // Called directly from Play: create/resume before any network await.
+  if (!context) {
+    context = new AudioContext();
+    master = context.createGain();
+    master.gain.value = 0;
+    master.connect(context.destination);
   }
-  setTimeout(
-    () => {
-      if (context === audio) stop();
-    },
-    (notes.at(-1)!.onset + notes.at(-1)!.duration) * beat * 1000 + 200,
-  );
+  const audio = context;
+  options.loading?.(true);
+  try {
+    await audio.resume();
+    const id = options.instrument ?? "recorder";
+    let instrument = cache.get(id);
+    if (!instrument) {
+      instrument = Soundfont(audio, { instrument: id, kit: "MusyngKite", destination: master });
+      cache.set(id, instrument);
+      try { await instrument.ready; }
+      catch (error) { cache.delete(id); throw error; }
+    } else await instrument.ready;
+    if (request !== revision) return;
+    if (!reverb) {
+      const room = Reverb(audio);
+      await room.ready();
+      room.getParam("decay")?.setValueAtTime(0.35, audio.currentTime);
+      room.connect(master);
+      reverb = room;
+    }
+    if (request !== revision) return;
+    if (!effected.has(instrument)) {
+      instrument.output.addEffect("room", reverb, 0);
+      effected.add(instrument);
+    }
+    instrument.output.setEffectMix("room", options.reverb ?? 0.12);
+    active = instrument;
+    master.gain.setValueAtTime(1, audio.currentTime);
+    const start = audio.currentTime + 0.06;
+    for (const note of renderPerformance(notes, bpm, options.natural ?? true)) {
+      instrument.start({ note: note.midi, time: start + note.onset, duration: note.duration, velocity: note.velocity });
+    }
+  } finally {
+    options.loading?.(false);
+  }
 }
