@@ -42,6 +42,7 @@ export interface NoteExplanation {
   sampledDuration: number;
   continuations: {
     token: number;
+    restAfter: number;
     pitch: number;
     duration: number;
     sourceProbability: number;
@@ -96,8 +97,9 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
       "Phrase-end positions must be one-based internal note positions",
     );
 
+  const restsEnabled = options.model.rhythm === "corpus" && !!options.model.phraseRests;
   const includeAnchor =
-    (strength > 0 ||
+    (restsEnabled || strength > 0 ||
       phraseStrength > 0 ||
       (!!options.ending && options.mode === "constrained")) &&
     options.model.rhythm === "corpus" &&
@@ -113,7 +115,7 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
     c = options.constraints,
     rep = options.model.representation;
   const prior = strength ? (prepared?.meter ?? learnMeter(corpus)) : undefined;
-  const phrasePrior = phraseStrength ? (prepared?.phrases ?? learnPhraseDurations(corpus)) : undefined;
+  const phrasePrior = (phraseStrength || restsEnabled) ? (prepared?.phrases ?? learnPhraseDurations(corpus)) : undefined;
   const trainingMs = performance.now() - began;
   const inferenceStarted = performance.now();
   let samplingStarted = inferenceStarted;
@@ -128,7 +130,7 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
         })
       : musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
   const hardEnding = options.mode === "constrained" ? options.ending : null;
-  const dfa =
+  let dfa =
     hardEnding || prior || phrasePrior
       ? meteredAcceptor(
           pitchDfa,
@@ -139,6 +141,23 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
           strength,
         )
       : pitchDfa;
+  if (restsEnabled && phrasePositions.length > 0) {
+    const body = dfa;
+    const lastRestPosition = Math.max(0, ...phrasePositions);
+    dfa = new DFA<number>({
+      startState: JSON.stringify([body.startState, 0]),
+      transition: (state, symbol) => {
+        const [inner, position] = JSON.parse(String(state));
+        const rest = trained.decode(symbol).restAfter ?? 0;
+        // Rests are jointly sampled tokens; never trim a final rest after sampling.
+        if (rest > 0 && phrasePositions.length > 0 && !phrasePositions.includes(position + 1)) return null;
+        const next = body.nextState(inner, symbol);
+        return next === null ? null : JSON.stringify([next, Math.min(position + 1, lastRestPosition + 1)]);
+      },
+      accept: state => body.isAccepting(JSON.parse(String(state))[0]),
+      weight: (state, symbol) => body.transitionWeight(JSON.parse(String(state))[0], symbol),
+    });
+  }
   const wrapped = phrasePrior
     ? withPhraseEnding(
         trained.graph,
@@ -152,7 +171,7 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
   let inferenceSequence: number[] = [];
   let bp: ProductBPResult<number> | undefined,
     sequence: number[] = [];
-  if (options.mode === "constrained" || prior || phrasePrior) {
+  if (options.mode === "constrained" || prior || phrasePrior || restsEnabled) {
     bp = runBP(wrapped?.graph ?? trained.graph, wrapped?.dfa ?? dfa, {
       length: horizon + (wrapped ? 1 : 0),
       maxProductStates: 150000,
@@ -207,10 +226,12 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
       : 1;
   const durations = sequence.map((s) => trained.decode(s).duration);
   if (offset) durations.unshift(anchorDuration);
+  const rests = sequence.map(s => trained.decode(s).restAfter ?? 0);
+  if (offset) rests.unshift(0);
   let onset = 0;
   const sampledNotes = pitches.map((p, i) => {
-    const n = note(p, durations[i], onset);
-    onset += n.duration;
+    const n = note(p, durations[i] - rests[i], onset);
+    onset += durations[i];
     return n;
   });
   const notes = sampledNotes;
@@ -248,6 +269,7 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
         : e.probability;
       return {
         token: e.symbol,
+        restAfter: decoded.restAfter ?? 0,
         pitch: p,
         duration: decoded.duration,
         sourceProbability: e.probability,
@@ -323,8 +345,10 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
     mode: options.mode,
     rhythm:
       options.model.rhythm === "corpus"
-        ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses documented release-pattern estimate when available, otherwise sounding duration; no rests generated"
+        ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses documented release-pattern estimate when available, otherwise sounding duration; rests preserved only when phraseRests is enabled"
         : "Equal quarter notes",
+    restSemantics: restsEnabled ? "Joint pitch/spacing/rest tokens from conservative internal silence candidates; quarter-beat grid; no final rest; total spacing preserved" : null,
+    rests: notes.flatMap((n, i) => rests[i] > 0 ? [{ afterNote: i + 1, onset: n.onset + n.duration, duration: rests[i] }] : []),
     tokenTable: trained.tokenTable,
     anchorDuration: rep === "intervals" ? notes[0].duration : null,
     anchorDurationProbability:
@@ -386,7 +410,7 @@ export function generate(corpus: Melody[], options: GenerationOptions, cache?: G
               ? Math.log(
                   phraseWeight(
                     phrasePrior,
-                    n.duration,
+                    durations[i],
                     i === notes.length - 1 ? "terminal" : "internal",
                     phraseStrength,
                   ),

@@ -272,7 +272,9 @@ Compare ordinary and exact constrained generation, control finals/range/leaps,
 inspect copying and note probabilities, and download MIDI, MusicXML or experiment
 JSON. Its [standalone source and usage guide](examples/machaut/README.md) documents
 corpus extraction, joint pitch × duration generation, learned meter and
-phrase-ending duration priors, and the research limitations. Internal phrase
+phrase-ending duration priors, optional joint phrase-rest tokens, and the research limitations.
+Learned rests preserve total rhythmic spacing and appear consistently in notation,
+playback and exports; they are never boosted or forced, so samples can have no rests. Internal phrase
 boundaries are documented timing candidates; raw source timing is retained.
 
 ## Validation and benchmarks

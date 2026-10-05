@@ -5,6 +5,7 @@ export interface ModelOptions {
   maxOrder: number;
   backoffWeight: number;
   rhythm?: "quarter" | "corpus";
+  phraseRests?: boolean;
   includeIntervalAnchor?: boolean;
   metricalStrength?: number;
   phraseEndStrength?: number;
@@ -13,6 +14,7 @@ export interface MusicToken {
   pitch: number;
   duration: number;
   anchor?: boolean;
+  restAfter?: number;
 }
 export function train(corpus: Melody[], options: ModelOptions) {
   if (!corpus.length) throw new Error("Select at least one corpus piece");
@@ -55,7 +57,8 @@ export function train(corpus: Melody[], options: ModelOptions) {
       const index =
         i + (options.representation === "intervals" && !includeAnchor ? 1 : 0);
       const duration = rhythmicDuration(m, index);
-      const key = `${anchor ? "anchor" : pitch}:${duration}`;
+      const restAfter = options.phraseRests ? phraseRest(m, index, duration) : 0;
+      const key = `${anchor ? "anchor" : pitch}:${duration}:${restAfter}`;
       let id = tokenIds.get(key);
       if (id === undefined) {
         id = tokenTable.length;
@@ -63,6 +66,7 @@ export function train(corpus: Melody[], options: ModelOptions) {
         tokenTable.push({
           pitch,
           duration,
+          ...(options.phraseRests ? { restAfter } : {}),
           ...(anchor ? { anchor: true } : {}),
         });
       }
@@ -148,4 +152,17 @@ export function rhythmicDuration(m: Melody, index: number): number {
     ? spacing
     : (m.metadata.finalRhythm?.duration ?? n.duration);
   return Math.max(0.25, Math.round(duration * 4) / 4);
+}
+
+/** Only clear internal silence candidates become rests, not routine MIDI releases. */
+export function phraseRest(m: Melody, index: number, spacing = rhythmicDuration(m, index)): number {
+  const next = m.notes[index + 1];
+  if (!next) return 0;
+  const rawSpacing = next.onset - m.notes[index].onset;
+  const gap = rawSpacing - m.notes[index].duration;
+  const candidate = m.metadata.phraseEnds
+    ? m.metadata.phraseEnds.some(e => e.kind === "internal" && e.note === index + 1)
+    : gap >= Math.max(0.5, 0.35 * rawSpacing) - 1e-7;
+  if (!candidate || gap < 0.5 - 1e-7) return 0;
+  return Math.max(0, Math.min(spacing - 0.25, Math.round(gap * 4) / 4));
 }

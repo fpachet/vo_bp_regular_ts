@@ -626,3 +626,41 @@ test("cached generation preserves complete results and invalidates corpus/model 
   assert.equal(next.reused, false);
   assert.notEqual(anchored.trained, next.trained);
 });
+
+test("joint phrase-rest tokens preserve spacing, meter, exports and all pitch representations", () => {
+  const sources: Melody[] = [{
+    id: "rests", metadata: { id: "rests", title: "rests" },
+    notes: [note(60, 0.5, 0), note(62, 1, 1), note(60, 0.5, 2), note(60, 1, 3)],
+  }];
+  const conditions: MusicalConstraints = {
+    ...c, length: 8, fixed: {}, cadence: null, maxLeap: 4,
+  };
+  for (const representation of ["absolute", "relative", "intervals"] as const) {
+    const settings: GenerationOptions = {
+      model: { representation, rhythm: "corpus", phraseRests: true, maxOrder: 2, backoffWeight: 0.25, metricalStrength: 1, phraseEndStrength: 1 },
+      constraints: conditions, seed: 123, mode: "constrained",
+      ending: { barBeats: 4, minDuration: 1 },
+    };
+    const r = generate(sources, settings);
+    assert.equal(r.notes.length, 8);
+    assert.equal(r.notes.at(-1)!.onset + r.notes.at(-1)!.duration, 8);
+    assert.equal(r.violations.length, 0);
+    assert.ok(r.rests.length > 0);
+    for (const rest of r.rests) {
+      const previous = r.notes[rest.afterNote - 1], next = r.notes[rest.afterNote];
+      assert.ok(next);
+      assert.equal(previous.onset + previous.duration, rest.onset);
+      assert.equal(rest.onset + rest.duration, next.onset);
+      assert.equal(previous.duration + rest.duration, 1);
+    }
+    assert.deepEqual(r.notes, generate(sources, settings).notes);
+    const xml = exportMusicXML(r.notes);
+    assert.ok(xml.includes("<rest/>"));
+    const midi = new ToneMidi.Midi(exportMidi(r.notes));
+    assert.deepEqual(midi.tracks[0].notes.map(n => n.durationTicks / midi.header.ppq), r.notes.map(n => n.duration));
+    const restricted = generate(sources, { ...settings, phraseEndPositions: [1, 2] });
+    assert.ok(restricted.rests.every(rest => [1, 2].includes(rest.afterNote)));
+    const disabled = generate(sources, { ...settings, model: { ...settings.model, phraseRests: false } });
+    assert.deepEqual(disabled.rests, []);
+  }
+});

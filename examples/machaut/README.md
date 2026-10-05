@@ -50,16 +50,20 @@ seed, including when the seed is fixed. Experiment JSON records the seed used.
 Choose **Equal quarter notes** (the original reproducible pitch-only model) or
 **Learned rhythm**. Learned rhythm trains compound `(pitch token, duration)`
 tokens in all three representations and conditions their joint distribution on
-all pitch constraints. Switching rhythm selects order 3 for learned rhythm, or order 5 for quarter notes; the order remains adjustable. Compound vocabularies
+all pitch constraints. Switching rhythm selects order 2 for learned rhythm with
+phrase rests, order 3 without rests, or order 5 for quarter notes; the order remains adjustable. Compound vocabularies
 are larger and high orders can exceed the existing exact solver budgets. Durations are quarter-note units: 0.25 is a sixteenth,
 0.5 an eighth, 1 a quarter, 1.5 a dotted quarter, and 2 a half.
 
 Training rounds inter-onset spacing to the nearest 0.25 quarter-note units,
 with a minimum of 0.25. This avoids treating MIDI note-off articulation as
 notated rhythm. The final source note uses a documented within-voice MIDI release-pattern estimate when supported; otherwise it uses rounded sounding duration. Raw MIDI timings remain unchanged.
-Original corpus timings are preserved. Gaps are folded into the preceding
-note; this mode generates contiguous notes, not rests. In interval mode with meter or phrase priors enabled, the opening duration is an explicit
-source token conditioned jointly with the entire melody. Without meter or phrase priors it is
+Original corpus timings are preserved. With phrase rests disabled, gaps are
+folded into the preceding note. With phrase rests enabled, clear internal silence
+candidates are separated into sounding duration and rest while preserving total
+spacing (see Learned phrase rests below). In interval mode with meter, phrase
+priors, or phrase rests enabled, the opening duration is an explicit
+source token conditioned jointly with the entire melody. Without meter, phrase priors, or phrase rests it is
 sampled independently from empirical source opening durations after sampling
 the conditioned interval sequence.
 Later durations belong to the arriving note's interval token. This choice is
@@ -167,7 +171,7 @@ is observational and may differ across runs; notes are reproducible given the
 same inputs and library version.
 
 Future research: review voice/final annotations, establish a licensed broader
-corpus, add rests, beat-count constraints and rhythmic repeats, evaluate
+corpus, evaluate learned rests, add beat-count constraints and rhythmic repeats, evaluate
 transposition-invariant copying, and design stronger held-out stylistic baselines.
 
 ## Meter and final-position constraint
@@ -336,3 +340,33 @@ Notation keeps one OpenSheetMusicDisplay instance. Unchanged MusicXML is not
 reloaded on resize; only layout is redrawn and note interaction is reattached.
 The notation timing beside the score measures load/layout separately from model
 generation (the first renderer download and queue wait are excluded).
+
+### Learned phrase rests
+
+With corpus rhythm, “Learn phrase rests” adds a rest component to each joint
+pitch/rhythm token. Clear internal timing candidates supply observed silence:
+next onset minus sounding end, rounded to quarter-beat units and bounded to
+leave at least a quarter-beat sounding note. Routine release gaps are excluded;
+zero rest remains a learned alternative. Total inter-onset spacing is unchanged.
+The Markov model samples pitch, spacing and rest together, rather than inserting
+pauses after generation. Meter and phrase-duration weights use the total spacing.
+The last note is conditioned to have no following rest, including ordinary mode.
+Blank internal phrase positions permit learned rest tokens at any internal note;
+explicit positions restrict them to those notes. They do not force a rest.
+
+Generated note durations are sounding durations; their onsets retain total
+spacing. MIDI, MusicXML (including visible rests), and playback therefore agree.
+Experiment JSON includes an explicit `rests` list and token `restAfter` values;
+continuation explanations show spacing and rest separately. Disable the control
+to retain the previous no-rest model. This uses conservative timing candidates,
+not an assertion of editorial or historically verified phrase boundaries.
+
+The rest-enabled page starts at order 2 because the expanded joint vocabulary at
+order 3 exceeds the current browser inference edge budget on the full corpus.
+Higher orders remain explicit user choices; failed requests are not downgraded.
+
+Rest probabilities retain their empirical association with pitch and spacing.
+They are not boosted or forced to make rests more frequent. A rest-enabled
+melody can contain zero rests, and several consecutive samples may do so.
+Explicit phrase positions restrict allowed rest locations; they do not require
+silence. The subtitle reports the sampled rest count.

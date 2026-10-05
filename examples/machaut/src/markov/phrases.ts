@@ -212,7 +212,7 @@ export function withPhraseEnding(
     const row = graph.outgoing(i < graph.stateCount ? i : empty);
     const last = context.at(-1);
     const eof =
-      last === undefined
+      last === undefined || (decode(last).restAfter ?? 0) > 0
         ? 0
         : phraseWeight(prior, decode(last).duration, "terminal", strength) /
           (2 * scale);

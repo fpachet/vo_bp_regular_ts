@@ -38,7 +38,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   expect(first.notes).toHaveLength(32);
   expect(first.notes.at(-1).midi).toBe(74);
   expect(first.model.representation).toBe("absolute");
-  expect(first.model.maxOrder).toBe(3);
+  expect(first.model.maxOrder).toBe(2);
   await expect(page.locator("#representation option:checked")).toHaveText(
     "Pitch × duration",
   );
@@ -190,12 +190,16 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     await expect(glyph).toBeVisible();
     await glyph.click();
     await expect(page.locator("#explanation")).toContainText("Note 6:");
-    await expect(page.locator("#explanation")).toContainText("Model duration");
+    await expect(page.locator("#explanation")).toContainText("Spacing / rest");
     const download = page.waitForEvent("download");
     await page.locator("#download-xml").click();
     const xml = await readFile(await (await download).path(), "utf8");
     expect(xml).toContain("<duration>");
-    expect(xml).not.toContain("<rest/>");
+    expect(xml.includes("<rest/>")).toBe(r.rests.length > 0);
+    for (const rest of r.rests) {
+      expect(r.notes[rest.afterNote - 1].onset + r.notes[rest.afterNote - 1].duration).toBe(rest.onset);
+      expect(rest.onset + rest.duration).toBe(r.notes[rest.afterNote].onset);
+    }
     const finalGlyph = page
       .locator('#score [aria-label^="Explain score note 32 "]')
       .last();
@@ -259,7 +263,7 @@ test("Machaut: learned meter can be disabled and remains reproducible", async ({
   await expect(page.locator("#representation option:checked")).toHaveText(
     "Pitch × duration",
   );
-  await expect(page.locator("#order")).toHaveValue("3");
+  await expect(page.locator("#order")).toHaveValue("2");
 });
 
 test("Machaut: Generate changes the seed by default; fixed seed replays the melody", async ({
@@ -313,7 +317,7 @@ test("Machaut: persistent worker reuses model and invalidates model changes", as
   expect((await jsonDownload(page)).timings.modelReused).toBe(false);
   await ready(page);
   expect((await jsonDownload(page)).timings.modelReused).toBe(true);
-  await page.locator("#order").fill("2");
+  await page.locator("#order").fill("1");
   await ready(page);
   expect((await jsonDownload(page)).timings.modelReused).toBe(false);
 });
