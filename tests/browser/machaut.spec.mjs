@@ -36,6 +36,8 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   });
   expect(first.notes).toHaveLength(32);
   expect(first.notes.at(-1).midi).toBe(74);
+  expect(first.model.representation).toBe("absolute");
+  expect(first.model.rhythm).toBe("corpus");
   expect(first.violations).toEqual([]);
   expect(first.notes).toEqual(first.sampledNotes);
   expect(first.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
@@ -96,6 +98,7 @@ test("Machaut: representations, phrase conditions, ordinary comparison, infeasib
 test("Machaut: exact opening repeat works in the browser", async ({ page }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#status")).toContainText("ready");
+  await page.locator("#representation").selectOption("intervals");
   await page.locator("#order").fill("1");
   await page.locator("#length").fill("8");
   await page.locator("#cadence").uncheck();
@@ -206,6 +209,7 @@ test("Machaut: final duration varies across seeds without changing sampled notes
 }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
+  await page.locator("#representation").selectOption("intervals");
   await ready(page);
   const first = await jsonDownload(page);
   await page.locator("#seed").fill("12346");

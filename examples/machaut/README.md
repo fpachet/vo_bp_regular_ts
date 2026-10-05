@@ -21,6 +21,10 @@ runtime: corpus files, notation renderer and Markov engine are bundled locally.
 
 ## Included MVP
 
+The default viewpoint is **absolute pitch × duration**, with learned rhythm and
+the metered final-note constraint enabled. Interval and relative-final viewpoints
+remain available in the Representation control.
+
 - Six attributed source MIDI transcriptions, 427 extracted melodic notes.
 - Absolute pitches, signed intervals, and pitches relative to each source final.
 - Orders 1–10 and an explicit geometric backoff mixture, including order zero.
