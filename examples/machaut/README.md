@@ -196,7 +196,8 @@ repertoire or lower the order rather than expecting an approximate result.
 
 ### Learned metrical preferences
 
-The generator defaults to meter strength **1** for learned pitch × duration.
+The generator defaults to meter strength **0.25** for learned pitch × duration.
+This restrains concentration on repetitive patterns observed with strength 1.
 Set **Learned meter strength** to **0** to recover the previous model; values up
 to 3 increase the preference. Quarter-note mode disables it. Both generation
 modes retain the soft metrical model; ordinary mode ignores hard musical rules.
@@ -380,3 +381,10 @@ clear during rests/articulation gaps, at the end, on Stop, and when changing
 instrument or generating a melody. Resizing redraws the current highlight.
 Tied engraving segments share the generated-note highlight. Clicking a score
 note still selects its probability explanation independently of playback.
+
+### Page layout
+
+The main view focuses on repertoire, melody shape, generation and listening.
+Model settings, additional musical controls, melody metrics, diagnostics and
+source credits expand on demand. Existing advanced options, note explanations
+and downloads remain available.

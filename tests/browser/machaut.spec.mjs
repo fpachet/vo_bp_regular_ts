@@ -1,7 +1,13 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+async function visit(page, ...args) {
+  await page.goto(...args);
+  await page.locator("#status").waitFor();
+  await page.locator("details").evaluateAll(items => items.forEach(item => { if (!item.parentElement.closest("details")) item.open = true; }));
+}
 async function ready(page, fixedSeed = true) {
+  await page.locator("#lock-seed").evaluate(field => { field.closest("details").open = true; });
   await page.locator("#lock-seed").setChecked(fixedSeed);
   await page.locator("#generate").click();
   await expect(page.locator("#status")).toContainText("Ready ·", {
@@ -24,7 +30,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
     await new Promise((resolve) => setTimeout(resolve, 400));
     await route.continue();
   });
-  await page.goto("/machaut/", { waitUntil: "domcontentloaded" });
+  await visit(page, "/machaut/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#generate")).toBeDisabled();
   await expect(page.locator("#rhythm")).toBeDisabled();
   await expect(page.locator("#stats")).toContainText("1697");
@@ -75,7 +81,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
 test("Machaut: representations, phrase conditions, ordinary comparison, infeasibility and cancellation", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#status")).toContainText("ready");
   await page.locator("#rhythm").selectOption("quarter");
   await page
@@ -108,7 +114,7 @@ test("Machaut: representations, phrase conditions, ordinary comparison, infeasib
   await expect(page.locator("#generate")).toBeEnabled();
 });
 test("Machaut: exact opening repeat works in the browser", async ({ page }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#status")).toContainText("ready");
   await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#representation").selectOption("intervals");
@@ -128,7 +134,7 @@ test("Machaut corpus page: local voices, score preview, MIDI/MusicXML imports an
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/machaut/corpus/");
+  await visit(page, "/machaut/corpus/");
   await expect(page.locator("#corpus-table tbody tr")).toHaveCount(23);
   await page
     .getByRole("button", { name: "Dous viaire gracieus", exact: true })
@@ -150,6 +156,7 @@ test("Machaut corpus page: local voices, score preview, MIDI/MusicXML imports an
   expect(snapshot.melodies).toHaveLength(25);
   await page.getByRole("link", { name: "Generate", exact: true }).click();
   await expect(page.locator("#status")).toContainText("ready");
+  await page.getByText("Model settings", { exact: true }).click();
   await page.locator("#snapshot-file").setInputFiles(path);
   await expect(page.locator("#status")).toHaveText("Imported corpus snapshot.");
   await page.locator("#repertoire").selectOption("all");
@@ -164,7 +171,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#rhythm").selectOption("corpus");
@@ -214,7 +221,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
 test("Machaut: quarter-note mode disables incompatible long-ending condition", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#rhythm").selectOption("quarter");
   await expect(page.locator("#hold-ending")).toBeDisabled();
@@ -228,7 +235,7 @@ test("Machaut: quarter-note mode disables incompatible long-ending condition", a
 test("Machaut: generated ending duration stays sampled and reproducible", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#order").fill("1");
@@ -244,7 +251,7 @@ test("Machaut: generated ending duration stays sampled and reproducible", async 
 test("Machaut: learned meter can be disabled and remains reproducible", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#metrical-strength").fill("0");
   await page.locator("#phrase-strength").fill("0");
@@ -269,7 +276,7 @@ test("Machaut: learned meter can be disabled and remains reproducible", async ({
 test("Machaut: Generate changes the seed by default; fixed seed replays the melody", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await expect(page.locator("#lock-seed")).not.toBeChecked();
   const initial = await page.locator("#seed").inputValue();
@@ -290,7 +297,7 @@ test("Machaut: Generate changes the seed by default; fixed seed replays the melo
 test("Machaut: internal phrase durations and repertoire groups are recorded", async ({
   page,
 }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#order").fill("1");
@@ -311,7 +318,7 @@ test("Machaut: internal phrase durations and repertoire groups are recorded", as
 });
 
 test("Machaut: persistent worker reuses model and invalidates model changes", async ({ page }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await ready(page);
   expect((await jsonDownload(page)).timings.modelReused).toBe(false);
@@ -323,7 +330,7 @@ test("Machaut: persistent worker reuses model and invalidates model changes", as
 });
 
 test("Machaut: reused notation redraws on resize and retains note interaction", async ({ page }) => {
-  await page.goto("/machaut/");
+  await visit(page, "/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await ready(page);
   await expect(page.locator("#notation-time")).toContainText("Notation");
@@ -336,4 +343,13 @@ test("Machaut: reused notation redraws on resize and retains note interaction", 
   await expect(page.locator('#score [aria-label^="Explain score note 2 "]')).toBeVisible();
   await page.locator('#score [aria-label^="Explain score note 2 "]').first().press("Enter");
   await expect(page.locator("#explanation")).toContainText("Note 2:");
+});
+
+ test("Machaut: simple first view keeps model settings collapsed", async ({ page }) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await expect(page.locator("#order")).toBeHidden();
+  await expect(page.locator("#length")).toBeVisible();
+  await page.getByText("Model settings", { exact: true }).click();
+  await expect(page.locator("#order")).toBeVisible();
 });

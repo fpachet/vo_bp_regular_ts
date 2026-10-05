@@ -425,3 +425,17 @@ footer {
 .score-wrap .playing-note { filter: drop-shadow(0 0 3px #bd762e); }
 .score-wrap .playing-note path { fill: #a65314 !important; stroke: #a65314 !important; }
 .note-list button.playing-note { outline: 2px solid #a65314; outline-offset: 2px; }
+
+header { padding-top: 20px; padding-bottom: 20px; }
+h1 { margin-top: 16px; }
+.workspace { padding-top: 22px; gap: 24px; }
+.section-number { display: none; }
+.controls details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+summary { cursor: pointer; font-weight: 600; }
+.output > .panel:first-child { border-top: 3px solid var(--accent); }
+#generate { padding: 12px 22px; font-size: 17px; }
+#play { color: #fffdf8; background: var(--accent); border-color: var(--accent); }
+.audio-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 16px 0; }
+.audio-controls label { margin: 0; }
+.audio-controls select { width: 180px; }
+.audio-controls input[type="range"] { width: 140px; margin: 0; accent-color: var(--accent); }
