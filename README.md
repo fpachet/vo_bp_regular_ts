@@ -259,6 +259,18 @@ comma-separated tokens. The rich melody example provides WebAudio playback and M
 
 GitHub Pages deploys automatically after tests pass on `main`. `npm run build:site`
 creates the standalone `_site/` artifact with relative ESM and Worker imports.
+Install the standalone app dependencies first with
+`npm ci --prefix examples/machaut`; the site build includes its generator and
+corpus inspection pages.
+
+## Machaut melody application
+
+[**Open the Machaut Melody Laboratory**](https://fpachet.github.io/vo_bp_regular_ts/machaut/)
+trains on six locally stored source voices and uses the published npm library.
+Compare ordinary and exact constrained generation, control finals/range/leaps,
+inspect copying and note probabilities, and download MIDI, MusicXML or experiment
+JSON. Its [standalone source and usage guide](examples/machaut/README.md) documents
+corpus extraction, equal-duration generation and the research limitations.
 
 ## Validation and benchmarks
 

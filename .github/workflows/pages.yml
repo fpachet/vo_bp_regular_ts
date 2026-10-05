@@ -22,6 +22,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm ci --prefix examples/machaut
       - run: npm test
       - run: npx playwright install --with-deps chromium firefox
       - name: Provide audio output for headless WebAudio tests

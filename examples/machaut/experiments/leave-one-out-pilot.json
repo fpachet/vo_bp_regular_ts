@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "library": "markov-constraints@0.4.0-rc.1",
+  "maxOrder": 3,
+  "backoffWeight": 0.25,
+  "seedBase": 100,
+  "notes": "Exploratory pilot only. Relative representation uses each held-out piece’s inferred final; shuffled token sequences are a simple null baseline. Unseen tokens yield unsupported sequences, reported with null scores. No stylistic validity claim.",
+  "corpus": [
+    {
+      "id": "machrond1",
+      "sha256": "eeb90c5115cec9f16b432a6cd230fabe06300fb4da54e64527d4f1c4d4cb20a3"
+    },
+    {
+      "id": "machrond5",
+      "sha256": "3333f6c606ab1a364ebc0d4deb93a24da30893a27e5ff45ac44f7881e42f7a4e"
+    },
+    {
+      "id": "machrond6",
+      "sha256": "dcaeddf3b392ff786874cfffc6d8d9fd8ad049c3ef114a90b335b5316bf6d98e"
+    },
+    {
+      "id": "machrond12",
+      "sha256": "0dbb30b4891bd98fa976683389fbb59a8dfdae6b68abaf35e5ed6126f67a97c7"
+    },
+    {
+      "id": "machrond18",
+      "sha256": "b46ab3c47db8701ce19ff1e9e7b79bc825b877a80db8c1f7c0b3b717fcc23366"
+    },
+    {
+      "id": "mach2",
+      "sha256": "bb3f1700bcda86a8302ab61a349a93ec9670d24a0be9540591ae5b0f943d51d2"
+    }
+  ],
+  "rows": [
+    {
+      "heldOut": "machrond1",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 41,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -42.789682446550955,
+        "meanLogWeight": -1.0436507913792916,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond1",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 40,
+      "heldOutScore": {
+        "logWeight": -108.79769544612812,
+        "meanLogWeight": -2.719942386153203,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -136.91036376801256,
+        "meanLogWeight": -3.422759094200314,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -36.98277292678044,
+        "meanLogWeight": -0.924569323169511,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond1",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 41,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -48.79445974967723,
+        "meanLogWeight": -1.1901087743823715,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond5",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 121,
+      "heldOutScore": {
+        "logWeight": -278.11746398187523,
+        "meanLogWeight": -2.2984914378667374,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -388.9727989701506,
+        "meanLogWeight": -3.21465123115827,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -99.24242469736753,
+        "meanLogWeight": -0.8201853280774176,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond5",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 120,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -99.18650286820412,
+        "meanLogWeight": -0.8265541905683677,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond5",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 121,
+      "heldOutScore": {
+        "logWeight": -264.7559218347496,
+        "meanLogWeight": -2.188065469708674,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -384.5044944047239,
+        "meanLogWeight": -3.1777230942539165,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -110.07965576156323,
+        "meanLogWeight": -0.9097492211699441,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond6",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 99,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -94.3237910922761,
+        "meanLogWeight": -0.9527655665886474,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond6",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 98,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -93.56788096878059,
+        "meanLogWeight": -0.9547742955998019,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond6",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 99,
+      "heldOutScore": {
+        "logWeight": -167.17345245731156,
+        "meanLogWeight": -1.6886207318920359,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -322.88592261165854,
+        "meanLogWeight": -3.2614739657743286,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -99.6347885008958,
+        "meanLogWeight": -1.0064120050595535,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond12",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 72,
+      "heldOutScore": {
+        "logWeight": -162.64504559890707,
+        "meanLogWeight": -2.258958966651487,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -261.49408597502446,
+        "meanLogWeight": -3.631862305208673,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -61.277679416849445,
+        "meanLogWeight": -0.8510788807895756,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond12",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 71,
+      "heldOutScore": {
+        "logWeight": -158.86041799570484,
+        "meanLogWeight": -2.237470675995843,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -227.14777344888196,
+        "meanLogWeight": -3.1992644147729856,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -64.29874354703446,
+        "meanLogWeight": -0.90561610629626,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond12",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 72,
+      "heldOutScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "shuffledScore": {
+        "logWeight": null,
+        "meanLogWeight": null,
+        "supported": false
+      },
+      "generatedScore": {
+        "logWeight": -72.57455336614882,
+        "meanLogWeight": -1.0079799078631781,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond18",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 37,
+      "heldOutScore": {
+        "logWeight": -95.01888659650041,
+        "meanLogWeight": -2.568078016121633,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -140.3842078552148,
+        "meanLogWeight": -3.7941677798706706,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -36.73889464431882,
+        "meanLogWeight": -0.9929430984951032,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond18",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 36,
+      "heldOutScore": {
+        "logWeight": -78.80123083570395,
+        "meanLogWeight": -2.188923078769554,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -113.1020301345044,
+        "meanLogWeight": -3.141723059291789,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -37.03005878469101,
+        "meanLogWeight": -1.0286127440191946,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "machrond18",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 37,
+      "heldOutScore": {
+        "logWeight": -68.74104218981846,
+        "meanLogWeight": -1.8578660051302287,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -114.53452715053999,
+        "meanLogWeight": -3.095527760825405,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -27.517496903893885,
+        "meanLogWeight": -0.7437161325376725,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "mach2",
+      "representation": "absolute",
+      "trainingPieces": 5,
+      "tokens": 57,
+      "heldOutScore": {
+        "logWeight": -195.3309271397696,
+        "meanLogWeight": -3.426858370873151,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -226.46913987345152,
+        "meanLogWeight": -3.973142804797395,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -53.825474548718475,
+        "meanLogWeight": -0.9443065710301487,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "mach2",
+      "representation": "intervals",
+      "trainingPieces": 5,
+      "tokens": 56,
+      "heldOutScore": {
+        "logWeight": -153.29736673600408,
+        "meanLogWeight": -2.7374529774286445,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -170.6518401915353,
+        "meanLogWeight": -3.0473542891345593,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -50.4615100050699,
+        "meanLogWeight": -0.9010983929476767,
+        "supported": true
+      }
+    },
+    {
+      "heldOut": "mach2",
+      "representation": "relative",
+      "trainingPieces": 5,
+      "tokens": 57,
+      "heldOutScore": {
+        "logWeight": -129.2398083499802,
+        "meanLogWeight": -2.2673650587715826,
+        "supported": true
+      },
+      "shuffledScore": {
+        "logWeight": -195.1837153304232,
+        "meanLogWeight": -3.4242757075512844,
+        "supported": true
+      },
+      "generatedScore": {
+        "logWeight": -57.17126827712136,
+        "meanLogWeight": -1.0030047066161643,
+        "supported": true
+      }
+    }
+  ]
+}

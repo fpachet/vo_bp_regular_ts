@@ -1,0 +1,26 @@
+{
+  "name": "machaut-melody-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "corpus:prepare": "node --import tsx scripts/prepare-corpus.ts",
+    "experiment": "node --import tsx scripts/leave-one-out.ts",
+    "benchmark": "node --import tsx scripts/benchmark.ts"
+  },
+  "dependencies": {
+    "@tonejs/midi": "^2.0.28",
+    "fast-xml-parser": "^5.11.2",
+    "markov-constraints": "0.4.0-rc.1",
+    "opensheetmusicdisplay": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
+  }
+}

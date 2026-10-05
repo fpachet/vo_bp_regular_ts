@@ -30,6 +30,7 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - run: npm ci --prefix examples/machaut
       - run: npx playwright install --with-deps chromium firefox
       - name: Provide audio output for headless WebAudio tests
         run: |
@@ -69,3 +70,27 @@ jobs:
         env:
           MARKOV_FIXTURES: ${{ runner.temp }}/python-golden.json
         run: node --test tests/*.test.mjs
+  machaut:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['20', '22', '24']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: examples/machaut/package-lock.json
+      - run: npm ci
+        working-directory: examples/machaut
+      - run: npm test
+        working-directory: examples/machaut
+      - run: npm run build
+        working-directory: examples/machaut
+      - run: npm run experiment
+        working-directory: examples/machaut
+      - uses: actions/upload-artifact@v4
+        with:
+          name: machaut-experiment-node-${{ matrix.node }}
+          path: examples/machaut/experiment-results.json
