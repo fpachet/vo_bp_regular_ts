@@ -1,5 +1,7 @@
 # Markov Constraints — TypeScript
 
+[![npm version](https://img.shields.io/npm/v/markov-constraints/next)](https://www.npmjs.com/package/markov-constraints)
+
 **Exact controlled generation for variable-order Markov models.**
 
 Train a variable-order Markov model. Add any regular constraint. Sample exactly—or find the most probable solution.
@@ -19,7 +21,14 @@ Version **0.4.0-rc.1** is available on npm as a prerelease:
 npm install markov-constraints@next
 ```
 
-Pin `markov-constraints@0.4.0-rc.1` for reproducible deployments. The same
+For reproducible deployments, install the exact published version:
+
+```sh
+npm install markov-constraints@0.4.0-rc.1
+```
+
+This is a release candidate; the public API may change before a stable release.
+Use the explicit `next` tag or version when installing. The same
 validated tarball is attached to the
 [GitHub prerelease](https://github.com/fpachet/vo_bp_regular_ts/releases/tag/v0.4.0-rc.1).
 
