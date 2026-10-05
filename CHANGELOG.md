@@ -2,6 +2,10 @@
 
 ## 0.4.0-rc.1
 
+- Prepare public `markov-constraints` prerelease with `next` publishing defaults,
+  Node/browser/Worker installation guide and validated README examples.
+- Validate exact tarballs and registry installs in independent strict TypeScript
+  consumers, including NodeNext and browser Bundler module resolution.
 - Bound sparse pattern and temporary compiler caches with exact recomputation.
 - Pack edges into integer/Float64 buffers and share canonical layers/indices.
 - Add optional exact dead-state pruning and backward checkpointing.

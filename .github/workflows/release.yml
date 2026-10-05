@@ -16,7 +16,13 @@ jobs:
       - run: npm test
       - run: npm run test:package
       - run: npm pack
+      - name: Validate the exact release artifact
+        run: npm run test:package -- "$(node -p 'const p=require("./package.json"); `${p.name}-${p.version}.tgz`')"
+      - name: Record artifact checksum
+        run: sha256sum *.tgz > SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: npm-release-candidate
-          path: '*.tgz'
+          path: |
+            *.tgz
+            SHA256SUMS

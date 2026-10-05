@@ -1,26 +1,35 @@
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 const temp = mkdtempSync(join(tmpdir(), "markov-consumer-"));
 try {
-  const packed = execFileSync(
-    "npm",
-    [
-      "pack",
-      "--json",
-      "--pack-destination",
-      temp,
-      "--cache",
-      join(temp, "cache"),
-    ],
-    { encoding: "utf8" },
-  );
-  const [info] = JSON.parse(
-    packed.slice(
-      packed.indexOf("[{") >= 0 ? packed.indexOf("[{") : packed.indexOf("[\n"),
-    ),
-  );
+  const supplied = process.argv[2];
+  let artifact;
+  if (supplied) {
+    artifact = supplied.endsWith(".tgz") ? resolve(supplied) : supplied;
+  } else {
+    const packed = execFileSync(
+      "npm",
+      [
+        "pack",
+        "--json",
+        "--pack-destination",
+        temp,
+        "--cache",
+        join(temp, "cache"),
+      ],
+      { encoding: "utf8" },
+    );
+    const [info] = JSON.parse(
+      packed.slice(
+        packed.indexOf("[{") >= 0
+          ? packed.indexOf("[{")
+          : packed.indexOf("[\n"),
+      ),
+    );
+    artifact = join(temp, info.filename);
+  }
   writeFileSync(
     join(temp, "package.json"),
     JSON.stringify({ private: true, type: "module" }),
@@ -29,15 +38,36 @@ try {
     "npm",
     [
       "install",
-      "--offline",
+      ...(!supplied || supplied.endsWith(".tgz") ? ["--offline"] : []),
       "--ignore-scripts",
       "--package-lock=false",
       "--cache",
       join(temp, "cache"),
-      join(temp, info.filename),
+      artifact,
     ],
     { cwd: temp, stdio: "pipe" },
   );
+  const installed = JSON.parse(
+    readFileSync(
+      join(temp, "node_modules/markov-constraints/package.json"),
+      "utf8",
+    ),
+  );
+  const expected = JSON.parse(readFileSync(resolve("package.json"), "utf8"));
+  if (
+    installed.name !== expected.name ||
+    installed.version !== expected.version
+  )
+    throw new Error(
+      "Installed package identity differs from the release candidate",
+    );
+  const readme = readFileSync(
+    join(temp, "node_modules/markov-constraints/README.md"),
+    "utf8",
+  );
+  const quickStart = readme.match(/```ts\n([\s\S]*?)```/);
+  if (!quickStart) throw new Error("README quick start missing");
+  writeFileSync(join(temp, "quick-start.ts"), quickStart[1]);
   writeFileSync(
     join(temp, "consumer.ts"),
     `
@@ -71,6 +101,7 @@ console.log('Packed ESM exports and strict external TypeScript consumer passed.'
       "--lib",
       "ES2022,DOM",
       "consumer.ts",
+      "quick-start.ts",
     ],
     { cwd: temp, stdio: "inherit" },
   );
@@ -78,6 +109,32 @@ console.log('Packed ESM exports and strict external TypeScript consumer passed.'
     cwd: temp,
     stdio: "inherit",
   });
+  execFileSync(process.execPath, ["quick-start.js"], {
+    cwd: temp,
+    stdio: "pipe",
+  });
+  execFileSync(
+    process.execPath,
+    [
+      resolve("node_modules/typescript/bin/tsc"),
+      "--strict",
+      "--noEmit",
+      "--target",
+      "ES2022",
+      "--module",
+      "ESNext",
+      "--moduleResolution",
+      "Bundler",
+      "--lib",
+      "ES2022,DOM",
+      "consumer.ts",
+      "quick-start.ts",
+    ],
+    { cwd: temp, stdio: "inherit" },
+  );
+  console.log(
+    `README quick start, NodeNext and browser Bundler types passed for ${installed.name}@${installed.version}.`,
+  );
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

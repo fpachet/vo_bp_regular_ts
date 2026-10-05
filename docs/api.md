@@ -1,4 +1,4 @@
-# API guide — 0.2 release candidate
+# API guide — 0.4.0-rc.1
 
 The package root exports the core; `markov-constraints/constraints` exports DFA
 builders. There are no runtime dependencies. ESM is the supported module format;
@@ -51,17 +51,17 @@ snapshot mutations do not change the original or restored object.
 `runBP(graph, acceptor, options)`, `compileProduct(...)` and
 `mostProbableSequence(...)` share these options:
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| length | required | Nonnegative integer emission horizon |
-| startContext | graph start context | Exact known context before first emission |
-| startAcceptorState | acceptor start | Scalar DFA state before first emission |
-| maxLength | 100000 | Maximum requested horizon |
-| maxProductStates | 100000 | Unique reachable context/DFA pairs |
-| maxTimeIndexedStates | 5000000 | Sum of reachable states over layers |
-| maxProductEdges | 10000000 | Sum of reachable outgoing edges over time |
-| maxDfaTransitions | 1000000 | Cached DFA state/symbol calls, including rejection |
-| maxCachedSamplingEdges | 100000 | Lazy cached sampling CDF entries; zero disables |
+| Option                 | Default             | Meaning                                                     |
+| ---------------------- | ------------------- | ----------------------------------------------------------- |
+| length                 | required            | Nonnegative integer emission horizon                        |
+| startContext           | graph start context | Exact known context before first emission                   |
+| startAcceptorState     | acceptor start      | Scalar DFA state before first emission                      |
+| maxLength              | 100000              | Maximum requested horizon                                   |
+| maxProductStates       | 100000              | Unique reachable context/DFA pairs                          |
+| maxTimeIndexedStates   | 5000000             | Sum of reachable states over layers                         |
+| maxProductEdges        | 10000000            | Sum of reachable outgoing edges over time                   |
+| maxDfaTransitions      | 1000000             | Actual DFA evaluations on cache misses, including rejection |
+| maxCachedSamplingEdges | 100000              | Lazy cached sampling CDF entries; zero disables             |
 
 Overrides exclude the probability of any prefix. Unknown source contexts raise
 RangeError. Resource budgets reject compilation rather than silently truncating
@@ -96,8 +96,7 @@ const optimum = optimizeProduct(product);
 ```
 
 Product rows and DFA transitions are cached. Backward values remain sparse by
-layer; layer indices switch between Maps and compact integer arrays according
-to occupancy. Sampling lazily caches bounded cumulative future-mass weights and
+layer; dense lookup buffers are shared, and sparse layers use binary search. Sampling lazily caches bounded cumulative future-mass weights and
 uses binary search. Caches belong to a result and are released with it; reuse one
 result to amortize inference, and set cache size zero for minimum retained memory.
 `cachedSamplingEdgeCount` reports actual cached edge entries.
@@ -112,7 +111,8 @@ floating-point rounding.
 
 ## Installation and release checks
 
-Until published to npm, install the validated tarball produced by `npm pack`.
+See [installation](install.md) for Node, TypeScript, browser and Worker usage.
+Until published to npm, install the validated GitHub release tarball.
 `npm run test:package` packs into a temporary directory, installs offline into an
 independent project, typechecks a strict TS consumer and executes its ESM output.
 
@@ -131,11 +131,11 @@ this repository automatically.
 ## Pattern automata, meter and domain rules
 
 Substring builders and `maxOrderAcceptor` now accept an optional
-`{alphabet, maxStates, maxTransitions}`. The default uses Aho–Corasick failure
+`{alphabet, maxStates, maxTransitions, maxCachedTransitions}`. The default uses Aho–Corasick failure
 links with lazy sparse transition caches. Providing `alphabet` builds bounded
 finite tables and rejects symbols outside that alphabet. Dense tables trade
 construction time/memory for faster traversal. Defaults: 100,000 trie states,
-1,000,000 cached/table transitions; explicit larger budgets are supported.
+1,000,000 dense table transitions and 100,000 sparse cached transitions; explicit larger budgets are supported.
 
 `suffixesAcceptor([['T','A','A'], ['T','A','G'], ['T','G','A']])` accepts any
 listed ending. `precedenceAcceptor('Cart','Checkout')` permits Checkout only
@@ -184,11 +184,11 @@ approximates its language. Alphabet tables remain optional.
 
 Additional `InferenceOptions`:
 
-| Option | Default | Meaning |
-|---|---:|---|
-| maxCachedDfaTransitions | 100000 | Temporary compilation cache entries; zero disables; eviction recomputes |
-| checkpointInterval | 1 | Store every B-th backward layer plus the final layer; positive integer |
-| pruneDeadStates | false | Remove infeasible time-layer states and edges unused by any accepted path |
+| Option                  | Default | Meaning                                                                   |
+| ----------------------- | ------: | ------------------------------------------------------------------------- |
+| maxCachedDfaTransitions |  100000 | Temporary compilation cache entries; zero disables; eviction recomputes   |
+| checkpointInterval      |       1 | Store every B-th backward layer plus the final layer; positive integer    |
+| pruneDeadStates         |   false | Remove infeasible time-layer states and edges unused by any accepted path |
 
 `maxDfaTransitions` now bounds actual DFA evaluations on cache misses. Very small
 caches can cause repeated evaluations to consume this work budget faster.
@@ -228,3 +228,21 @@ measurements must include heap and external array buffers.
 snapshots; avoid those getters in memory-sensitive code. `product.row(id)`
 materializes only one edge row. `bp.logBetas` materializes all backward layers for
 inspection, which defeats checkpoint savings while the returned array is held.
+
+## Public API and compatibility
+
+The supported entry points are `markov-constraints` and
+`markov-constraints/constraints`; importing internal `dist/` paths is unsupported.
+The root exports model/DFA types, training and serialization, inference and
+optimization, errors, seeded randomness, and numerical helpers. The constraints
+entry point exports the regular-language builders and their options.
+
+`CompiledProduct` and its inspection buffers are advanced APIs: treat all model,
+product and backward arrays as read-only. Product IDs are implementation details;
+compare symbols/probabilities instead of relying on ID stability. Scalar DFA
+states must be strings or finite numbers. Callback acceptors must be deterministic.
+
+This is a prerelease: API changes may occur before a stable release. Pin
+`0.4.0-rc.1` when reproducibility matters. ESM is supported; CommonJS `require`
+and a standalone UMD browser bundle are not provided. Browser execution should
+use a bundler and a Worker for large inference jobs.
