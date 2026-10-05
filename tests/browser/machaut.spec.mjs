@@ -49,7 +49,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
     "Pitch × duration",
   );
   expect(first.model.rhythm).toBe("corpus");
-  expect(first.model.metricalStrength).toBe(1);
+  expect(first.model.metricalStrength).toBe(0.25);
   expect(first.model.phraseEndStrength).toBe(1);
   expect(first.phraseEndingPrior.terminal.observations).toBe(16);
   expect(first.metricalPrior.phases).toHaveLength(16);
