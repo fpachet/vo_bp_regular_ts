@@ -166,3 +166,10 @@ requirements at their copied positions preserves the accepted language and reduc
 this case to 40,549 states, 252,685 time-indexed edges and ~4.78 MiB inference
 buffers (about 347 ms in the local browser). Exhaustive independent enumeration
 verifies language equivalence; all 31 application tests pass.
+
+
+Final meter verification (runtime commit `a99a7f2`):
+
+- [Validation](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37338152279): all 31 application tests on Node 20/22/24 and 32 Chromium/Firefox browser cases passed, alongside library/package checks and Python parity.
+- [Pages deployment](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37338152417): succeeded; public default is learned metered rhythm at order 1.
+- Public interval examples: seed 12345 ends with 3 beats; seed 12346 with 2 beats. Both finish exactly at a bar boundary and preserve sampled durations.

@@ -35,4 +35,4 @@ measured improvements are recorded in [RESULTS.md](RESULTS.md).
 - [x] Preserve source-supported durations and probability explanations; report ordinary violations.
 - [x] Verify weighted enumeration, anchor conditioning, seed variation, and unchanged MIDI/XML exports.
 - [x] Measure real-corpus state/time costs and set a usable bounded default.
-- [ ] Validate Chromium/Firefox and deploy.
+- [x] Validate Chromium/Firefox and deploy.
