@@ -120,3 +120,14 @@ support, exact pitch conditions, repeated spans/cadences, ordinary sampling, see
 reproducibility, probability normalization and MIDI/MusicXML round trips. Browser
 CI additionally tests learned rhythm in each representation, tied-score clicks,
 playback and exports in Chromium and Firefox.
+
+
+Duration extension verification (commit `00e8735`):
+
+- [Library/application validation](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37326523368): passed, including application tests on Node 20/22/24, library/package checks, Python parity, and all 28 Chromium/Firefox browser cases.
+- [Pages deployment](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37326523629): passed; learned rhythm is available on the public generator.
+- Manual browser check: default learned interval model generated 32 notes / 27 beats at order 3, with varied values, dotted notation, ties and working event explanations. Desktop and narrow-width layouts were checked.
+
+The final public-page check exposed a loading race when selecting learned rhythm
+before corpus initialization; the rhythm selector now stays disabled until its
+preset handler is registered. The delayed-load browser regression covers this.

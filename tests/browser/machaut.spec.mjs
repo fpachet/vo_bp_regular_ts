@@ -25,7 +25,9 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   });
   await page.goto("/machaut/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#generate")).toBeDisabled();
+  await expect(page.locator("#rhythm")).toBeDisabled();
   await expect(page.locator("#stats")).toContainText("427");
+  await expect(page.locator("#rhythm")).toBeEnabled();
   await ready(page);
   const first = await jsonDownload(page);
   expect(first.library).toEqual({

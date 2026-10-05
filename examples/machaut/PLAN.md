@@ -25,4 +25,4 @@ measured improvements are recorded in [RESULTS.md](RESULTS.md).
 - [x] Engrave dotted values and tied bar splits, with event-aware score clicks.
 - [x] Retain durations in playback, MIDI, MusicXML and experiment exports.
 - [x] Test quantization, joint token support, reproducibility, probability normalization and round trips.
-- [ ] Verify Chromium/Firefox integration and deploy.
+- [x] Verify Chromium/Firefox integration and deploy.
