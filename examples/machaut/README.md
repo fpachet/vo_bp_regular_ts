@@ -14,7 +14,8 @@ npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite. For a static build, run `npm run build` and serve
+Use Node 24 for development; Vite requires Node 20.19 within the Node 20 line,
+or Node 22.12 or later. Open the URL printed by Vite. For a static build, run `npm run build` and serve
 `build/` over HTTP. The application needs no source-site or CDN connection at
 runtime: corpus files, notation renderer and Markov engine are bundled locally.
 
