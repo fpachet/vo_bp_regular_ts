@@ -168,7 +168,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     await expect(glyph).toBeVisible();
     await glyph.click();
     await expect(page.locator("#explanation")).toContainText("Note 6:");
-    await expect(page.locator("#explanation")).toContainText("Duration");
+    await expect(page.locator("#explanation")).toContainText("Model duration");
     const download = page.waitForEvent("download");
     await page.locator("#download-xml").click();
     const xml = await readFile(await (await download).path(), "utf8");
