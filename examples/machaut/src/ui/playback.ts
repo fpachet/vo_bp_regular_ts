@@ -13,10 +13,16 @@ let reverb: Reverb | undefined;
 const cache = new Map<InstrumentId, Soundfont>();
 let revision = 0;
 let active: Soundfont | undefined;
+let animationFrame: number | undefined;
+let notifyNote: ((index: number | null) => void) | undefined;
 const effected = new WeakSet<Soundfont>();
 
 export function stop() {
   revision++;
+  if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
+  animationFrame = undefined;
+  notifyNote?.(null);
+  notifyNote = undefined;
   // smplr.stop() only stops voices; future notes remain queued separately.
   active?.scheduler.stop();
   active?.stop();
@@ -32,6 +38,7 @@ export async function play(notes: NoteEvent[], bpm: number, options: {
   instrument?: InstrumentId; natural?: boolean; reverb?: number;
   phraseEnds?: readonly number[];
   loading?: (value: boolean) => void;
+  onNote?: (index: number | null) => void;
 } = {}) {
   stop();
   if (!notes.length) return;
@@ -72,9 +79,27 @@ export async function play(notes: NoteEvent[], bpm: number, options: {
     active = instrument;
     master.gain.setValueAtTime(1, audio.currentTime);
     const start = audio.currentTime + 0.06;
-    for (const note of renderPerformance(notes, bpm, options.natural ?? true, id, options.phraseEnds)) {
+    const performed = renderPerformance(notes, bpm, options.natural ?? true, id, options.phraseEnds);
+    for (const note of performed) {
       instrument.start({ note: note.midi, time: start + note.onset, duration: note.duration, velocity: note.velocity });
     }
+    notifyNote = options.onNote;
+    let last: number | null = null;
+    const follow = () => {
+      if (request !== revision) return;
+      const elapsed = audio.currentTime - start;
+      const index = performed.findIndex(n => elapsed >= n.onset && elapsed < n.onset + n.duration);
+      const current = index < 0 ? null : index;
+      if (current !== last) { notifyNote?.(current); last = current; }
+      if (elapsed < performed.at(-1)!.onset + performed.at(-1)!.duration) {
+        animationFrame = requestAnimationFrame(follow);
+      } else {
+        animationFrame = undefined;
+        notifyNote?.(null);
+        notifyNote = undefined;
+      }
+    };
+    animationFrame = requestAnimationFrame(follow);
   } finally {
     options.loading?.(false);
   }

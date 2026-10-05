@@ -54,6 +54,13 @@ let scoreQueue = Promise.resolve();
 let scoreDisplay: import("opensheetmusicdisplay").OpenSheetMusicDisplay | undefined;
 let loadedScoreXML = "";
 let scoreTitle = "Melody";
+let playingNote: number | null = null;
+function highlightNote(index: number | null) {
+  playingNote = index;
+  for (const glyph of el("score").querySelectorAll<SVGGElement>("[data-note-index]"))
+    glyph.classList.toggle("playing-note", index !== null && Number(glyph.dataset.noteIndex) === index);
+  document.getElementById("note-list")?.querySelectorAll("button").forEach((button, i) => button.classList.toggle("playing-note", i === index));
+}
 async function renderScore(notes: NoteEvent[], title: string) {
   scoreTitle = title;
   const request = ++activeScore;
@@ -81,6 +88,12 @@ async function renderScore(notes: NoteEvent[], title: string) {
       if (request === activeScore) {
         display.render();
         el("notation-time").textContent = `Notation ${Math.round(performance.now() - began)} ms`;
+        const mappedGlyphs = el("score").querySelectorAll<SVGGElement>(".vf-stavenote");
+        if (mappedGlyphs.length === noteIndices.length)
+          mappedGlyphs.forEach((glyph, i) => {
+            if (noteIndices[i] !== null) glyph.dataset.noteIndex = String(noteIndices[i]);
+          });
+        highlightNote(playingNote);
         if (!isCorpus && result && notes === result.notes) {
           const glyphs =
             el("score").querySelectorAll<SVGGElement>(".vf-stavenote");
@@ -160,6 +173,7 @@ el("play").onclick = () => {
   void play(currentNotes, num("tempo"), {
     instrument: el<HTMLSelectElement>("instrument").value as InstrumentId,
     natural: el<HTMLInputElement>("natural").checked,
+    onNote: highlightNote,
     reverb: num("reverb"),
     phraseEnds: result && currentNotes === result.notes
       ? [...new Set([...result.phraseEndPositions, ...result.rests.map(r => r.afterNote)])]

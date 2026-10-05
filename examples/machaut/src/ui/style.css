@@ -420,3 +420,8 @@ footer {
     gap: 12px;
   }
 }
+
+/* Playback is independent of the note selected for probability inspection. */
+.score-wrap .playing-note { filter: drop-shadow(0 0 3px #bd762e); }
+.score-wrap .playing-note path { fill: #a65314 !important; stroke: #a65314 !important; }
+.note-list button.playing-note { outline: 2px solid #a65314; outline-offset: 2px; }

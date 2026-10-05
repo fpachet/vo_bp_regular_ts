@@ -18,16 +18,23 @@ test("Machaut sample playback loads, cancels and reuses instrument", async ({ pa
   await expect(page.locator("#play")).toBeEnabled({ timeout: 20000 });
   await page.locator("#play").click();
   await expect(page.locator("#audio-status")).toHaveText("", { timeout: 60000 });
+  await expect(page.locator("#score .playing-note").first()).toBeVisible();
   await page.locator("#stop").click();
+  await expect(page.locator("#score .playing-note")).toHaveCount(0);
   const stoppedStarts = await page.evaluate(() => window.sampleStarts);
   // Queued samples must not start even while the muted context keeps running.
   await page.waitForTimeout(1500);
   expect(await page.evaluate(() => window.sampleStarts)).toBe(stoppedStarts);
   await page.locator("#play").click();
   await expect(page.locator("#audio-status")).toHaveText("");
+  await expect(page.locator("#score .playing-note").first()).toBeVisible();
+  await page.setViewportSize({ width: 1000, height: 800 });
+  await page.waitForTimeout(250);
+  await expect(page.locator("#score .playing-note").first()).toBeVisible();
   await page.locator("#instrument").selectOption("orchestral_harp");
   await page.locator("#play").click();
   await page.locator("#stop").click();
+  await expect(page.locator("#score .playing-note")).toHaveCount(0);
   await expect(page.locator("#play")).toBeEnabled();
   await expect(page.locator("#audio-status")).toHaveText("");
   expect(errors).toEqual([]);

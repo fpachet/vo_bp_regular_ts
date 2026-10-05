@@ -370,3 +370,13 @@ They are not boosted or forced to make rests more frequent. A rest-enabled
 melody can contain zero rests, and several consecutive samples may do so.
 Explicit phrase positions restrict allowed rest locations; they do not require
 silence. The subtitle reports the sampled rest count.
+
+### Following playback
+
+The sounding note is highlighted in the SVG score and the note list. A display
+animation reads `AudioContext.currentTime` against the same performed onset and
+release times used for sampling; visual frames do not schedule audio. Highlights
+clear during rests/articulation gaps, at the end, on Stop, and when changing
+instrument or generating a melody. Resizing redraws the current highlight.
+Tied engraving segments share the generated-note highlight. Clicking a score
+note still selects its probability explanation independently of playback.
