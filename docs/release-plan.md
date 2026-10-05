@@ -1,6 +1,6 @@
 # Release-candidate implementation plan
 
-Status: in progress. Scope: a dependable native TypeScript library, preserving
+Status: release-candidate implementation and verification complete. Scope: a dependable native TypeScript library, preserving
 Python fixed-source semantics. No npm publication until release validation is
 complete and registry ownership is established.
 
@@ -38,8 +38,10 @@ Progress and measurements will be recorded below as stages complete.
 - Release preparation complete locally: 0.2.0-rc.1, API guide, changelog and
   independent packed-package ESM/strict TS consumer check. Seed/backoff controls
   verified in the local browser. Node 20/22/24, fresh Python generation and
-  Chromium/Firefox Worker workflows are ready for remote CI verification.
-- Next verification: run CI and Pages deployment; resolve any failures before
-  declaring the candidate validated. Actual npm publication requires registry
-  package-name ownership and authentication; no account setup or publication is
-  claimed by this plan.
+  Chromium/Firefox Worker workflows passed remote CI verification.
+- Remote verification complete: Node 20/22/24, fresh Python 3.12 golden fixtures,
+  12 Chromium/Firefox browser cases and Pages deployment passed. Details and run
+  links are in docs/validation.md.
+- Release artifact: markov-constraints-0.2.0-rc.1.tgz built and validated. Actual
+  npm publication remains an account/registry setup step requiring package-name
+  ownership and authentication. No registry publication is claimed by this plan.

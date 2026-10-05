@@ -1,25 +1,35 @@
-# Validation record
+# Release-candidate validation record
 
-Validated on 2026-10-05, Node 24.3.0, macOS arm64.
+Version 0.2.0-rc.1, validated on 2026-10-05.
 
-- Strict TypeScript compilation and 44 Node tests pass.
-- 37 golden fixtures generated from the unmodified adjacent Python checkout;
-  reference commit and random seed recorded in fixtures/python-golden.json.
-- Python checks its DP partition and maximum against independent enumeration.
-- TypeScript compares partition, log partition, optimum and diagnostics against
-  Python, and every sequence probability for feasible tiny exhaustive fixtures.
-- Constraint constructors independently checked against string predicates;
-  sampling frequencies checked with a deterministic RNG and a fixed tolerance.
-- Rare 1,200-symbol horizon, subnormal source probabilities, huge/tiny soft
-  weights, weighted intersections, infeasibility, dead ends and empty horizons.
-- All five Node domain examples ran successfully.
-- Built tarball extracted into a temporary consumer directory: package root and
-  constraints subpath imports successfully inferred and sampled there.
-- Browser UI verified through the in-app browser: toy exact sample, global
-  optimum, and text with MAXORDER; module Worker completed and diagnostics
-  displayed. Screenshot: playground.png. Mobile layout visually inspected.
-- Node/Python warmed benchmark measurements recorded in benchmarks/report.md.
+- 136 Node tests pass locally and on GitHub CI under Node 20, 22 and 24.
+- 79 Python golden fixtures, including 40 randomized variable-order/backoff
+  models through order 4, weighted intersections and exhaustive tiny cases.
+- Fresh fixture generation from pinned Python commit
+  ae05b8799a9698d986afbe2b010194b32aa2c678 passed in CI with Python 3.12.
+- Graph continuation probabilities and canonical destinations match Python;
+  partitions, conditional probabilities, optima and diagnostics are checked.
+- Rare 1,200-symbol horizons, subnormal source probabilities, huge/tiny soft
+  factors, weighted intersections, empty horizons, infeasibility and dead ends.
+- Seeded reproducibility, JSON round trips, start overrides and resource budgets.
+- External packed-package ESM/strict TypeScript consumer passed on Node 20/22/24.
+- 12 automated browser cases pass across Chromium and Firefox, using the exact
+  Pages static artifact: all five datasets, sampling/optimization in module
+  Workers, seed reproducibility, backoff/MAXORDER and malformed custom DFA input.
+- Local browser verification of the new seed/backoff controls and reproducible
+  novelty generation. Screenshot: playground.png.
+- Full Alice corpus, transposed melody and branching synthetic benchmarks agree
+  with Python on log partitions within 1e-9 and product counts. Before/after
+  timings and memory measurements: benchmarks/realistic-report.md.
+- GitHub Pages deployment passed after both browser engines; npm tarball built.
 
-No npm publication, browser timing benchmark, cumulative-meter engine or
-WebAudio playback is claimed. The Alice corpus is a short public-domain excerpt,
-not a full-book scalability evaluation.
+Validated implementation CI:
+https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37304787502
+
+Validated Pages deployment:
+https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37304787518
+
+Remaining limits: no npm registry publication/authentication, browser performance
+benchmark, cumulative-duration meter or WebAudio playback. Probability-space DP
+is a benchmark prototype; the public library retains stable log inference.
+The product budgets intentionally stop large requests rather than approximating.
