@@ -24,6 +24,12 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npx playwright install --with-deps chromium firefox
+      - name: Provide audio output for headless WebAudio tests
+        run: |
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=ci_audio
+          pactl set-default-sink ci_audio
       - run: npm run test:browser
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

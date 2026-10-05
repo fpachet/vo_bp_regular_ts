@@ -29,7 +29,28 @@ $("play").onclick = async () => {
     // Create/resume synchronously in the click gesture (required by Firefox).
     audio?.close();
     audio = new AudioContext();
-    await audio.resume();
+    const context = audio;
+    $("audioStatus").textContent = "Starting audio…";
+    let timer;
+    try {
+      await Promise.race([
+        context.resume(),
+        new Promise((_, reject) => {
+          timer = setTimeout(
+            () =>
+              reject(
+                new Error(
+                  "Audio output unavailable. Check the browser audio permission or download MIDI.",
+                ),
+              ),
+            3000,
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(timer);
+    }
+    if (audio !== context) return;
     let at = audio.currentTime + 0.05;
     for (const symbol of lastSequence) {
       const event =
