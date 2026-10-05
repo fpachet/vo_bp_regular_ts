@@ -7,6 +7,7 @@ export interface ModelOptions {
   rhythm?: "quarter" | "corpus";
   includeIntervalAnchor?: boolean;
   metricalStrength?: number;
+  phraseEndStrength?: number;
 }
 export interface MusicToken {
   pitch: number;
@@ -32,6 +33,12 @@ export function train(corpus: Melody[], options: ModelOptions) {
     (options.metricalStrength ?? 0) > 3
   )
     throw new Error("Metrical strength must be between 0 and 3");
+  if (
+    !Number.isFinite(options.phraseEndStrength ?? 0) ||
+    (options.phraseEndStrength ?? 0) < 0 ||
+    (options.phraseEndStrength ?? 0) > 3
+  )
+    throw new Error("Phrase-ending strength must be between 0 and 3");
   const rhythmic = options.rhythm === "corpus";
   const tokenTable: MusicToken[] = [];
   const tokenIds = new Map<string, number>();
@@ -137,6 +144,8 @@ export function logSourceWeight(
 export function rhythmicDuration(m: Melody, index: number): number {
   const n = m.notes[index];
   const spacing = m.notes[index + 1]?.onset - n.onset;
-  const duration = Number.isFinite(spacing) ? spacing : n.duration;
+  const duration = Number.isFinite(spacing)
+    ? spacing
+    : (m.metadata.finalRhythm?.duration ?? n.duration);
   return Math.max(0.25, Math.round(duration * 4) / 4);
 }

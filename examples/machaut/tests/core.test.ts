@@ -44,14 +44,14 @@ const options = (rep: Representation): GenerationOptions => ({
   mode: "constrained",
   seed: 123,
 });
-test("actual source corpus has six parsed voices with preserved positive timing", () => {
+test("expanded source corpus has 23 parsed voices with preserved positive timing", () => {
   const data = JSON.parse(
     readFileSync(
       new URL("../public/corpus/melodies.json", import.meta.url),
       "utf8",
     ),
   ) as Melody[];
-  assert.equal(data.length, 6);
+  assert.equal(data.length, 23);
   for (const m of data) {
     const bytes = new Uint8Array(
       readFileSync(
@@ -238,7 +238,7 @@ test("compact acceptor preserves pre-optimization partitions and exact seeded co
   );
   const real = JSON.parse(
     readFileSync(
-      new URL("../public/corpus/melodies.json", import.meta.url),
+      new URL("../public/corpus/pilot-melodies.json", import.meta.url),
       "utf8",
     ),
   ) as Melody[];
@@ -325,7 +325,7 @@ for (const rep of ["absolute", "relative", "intervals"] as const) {
   test(`${rep}: learned joint rhythm preserves constraints, timing, probabilities and exports`, () => {
     const source = JSON.parse(
       readFileSync(
-        new URL("../public/corpus/melodies.json", import.meta.url),
+        new URL("../public/corpus/pilot-melodies.json", import.meta.url),
         "utf8",
       ),
     ) as Melody[];

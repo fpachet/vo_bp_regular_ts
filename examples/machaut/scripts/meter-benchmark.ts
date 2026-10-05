@@ -5,7 +5,7 @@ import { rhythmicDuration } from "../src/markov/train";
 import type { Melody } from "../src/music";
 const corpus = JSON.parse(
   readFileSync(
-    new URL("../public/corpus/melodies.json", import.meta.url),
+    new URL("../public/corpus/pilot-melodies.json", import.meta.url),
     "utf8",
   ),
 ) as Melody[];

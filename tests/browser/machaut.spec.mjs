@@ -27,7 +27,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   await page.goto("/machaut/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#generate")).toBeDisabled();
   await expect(page.locator("#rhythm")).toBeDisabled();
-  await expect(page.locator("#stats")).toContainText("427");
+  await expect(page.locator("#stats")).toContainText("1697");
   await expect(page.locator("#rhythm")).toBeEnabled();
   await ready(page);
   const first = await jsonDownload(page);
@@ -44,13 +44,15 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   );
   expect(first.model.rhythm).toBe("corpus");
   expect(first.model.metricalStrength).toBe(1);
+  expect(first.model.phraseEndStrength).toBe(1);
+  expect(first.phraseEndingPrior.terminal.observations).toBe(16);
   expect(first.metricalPrior.phases).toHaveLength(16);
   expect(
     first.explanations[0].continuations.every((c) => c.metricalWeight > 0),
   ).toBe(true);
   expect(first.violations).toEqual([]);
   expect(first.notes).toEqual(first.sampledNotes);
-  expect(first.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
+  expect(first.notes.at(-1).duration).toBeGreaterThanOrEqual(0.25);
   expect((first.notes.at(-1).onset + first.notes.at(-1).duration) % 4).toBe(0);
   await page.locator("#score .vf-stavenote").nth(5).click();
   await expect(page.locator("#explanation")).toContainText("Conditioned");
@@ -108,6 +110,7 @@ test("Machaut: representations, phrase conditions, ordinary comparison, infeasib
 test("Machaut: exact opening repeat works in the browser", async ({ page }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#status")).toContainText("ready");
+  await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#representation").selectOption("intervals");
   await page.locator("#order").fill("1");
   await page.locator("#length").fill("8");
@@ -126,7 +129,7 @@ test("Machaut corpus page: local voices, score preview, MIDI/MusicXML imports an
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/machaut/corpus/");
-  await expect(page.locator("#corpus-table tbody tr")).toHaveCount(6);
+  await expect(page.locator("#corpus-table tbody tr")).toHaveCount(23);
   await page
     .getByRole("button", { name: "Dous viaire gracieus", exact: true })
     .click();
@@ -139,18 +142,20 @@ test("Machaut corpus page: local voices, score preview, MIDI/MusicXML imports an
     await page.locator("#import-add").click();
     await expect(page.locator("#status")).toContainText("Added");
   }
-  await expect(page.locator("#corpus-table tbody tr")).toHaveCount(8);
+  await expect(page.locator("#corpus-table tbody tr")).toHaveCount(25);
   const promise = page.waitForEvent("download");
   await page.locator("#snapshot").click();
   const path = await (await promise).path();
   const snapshot = JSON.parse(await readFile(path, "utf8"));
-  expect(snapshot.melodies).toHaveLength(8);
+  expect(snapshot.melodies).toHaveLength(25);
   await page.getByRole("link", { name: "Generate", exact: true }).click();
   await expect(page.locator("#status")).toContainText("ready");
   await page.locator("#snapshot-file").setInputFiles(path);
   await expect(page.locator("#status")).toHaveText("Imported corpus snapshot.");
+  await page.locator("#repertoire").selectOption("all");
+  await page.locator("#order").fill("1");
   await ready(page);
-  expect((await jsonDownload(page)).corpus).toHaveLength(8);
+  expect((await jsonDownload(page)).corpus).toHaveLength(25);
   expect(errors).toEqual([]);
 });
 
@@ -161,6 +166,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
+  await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#rhythm").selectOption("corpus");
   await page.locator("#order").fill("1");
   for (const representation of ["intervals", "absolute", "relative"]) {
@@ -170,7 +176,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     expect(r.model.rhythm).toBe("corpus");
     expect(r.endingSemantics).toContain("conditioning");
     expect(r.endingAdjustment).toBeNull();
-    expect(r.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
+    expect(r.notes.at(-1).duration).toBeGreaterThanOrEqual(0.25);
     expect((r.notes.at(-1).onset + r.notes.at(-1).duration) % 4).toBe(0);
     expect(r.notes).toEqual(r.sampledNotes);
     expect(r.violations).toEqual([]);
@@ -215,23 +221,20 @@ test("Machaut: quarter-note mode disables incompatible long-ending condition", a
   expect(r.notes.every((n) => n.duration === 1)).toBe(true);
 });
 
-test("Machaut: final duration varies across seeds without changing sampled notes", async ({
+test("Machaut: generated ending duration stays sampled and reproducible", async ({
   page,
 }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
-  await page.locator("#representation").selectOption("intervals");
+  await page.locator("#repertoire").selectOption("pilot");
   await page.locator("#order").fill("1");
   await ready(page);
   const first = await jsonDownload(page);
-  await page.locator("#seed").fill("12346");
   await ready(page);
   const second = await jsonDownload(page);
-  expect(first.notes.at(-1).duration).not.toBe(second.notes.at(-1).duration);
-  for (const r of [first, second]) {
-    expect(r.notes).toEqual(r.sampledNotes);
-    expect((r.notes.at(-1).onset + r.notes.at(-1).duration) % 4).toBe(0);
-  }
+  expect(second.notes).toEqual(first.notes);
+  expect(first.notes).toEqual(first.sampledNotes);
+  expect((first.notes.at(-1).onset + first.notes.at(-1).duration) % 4).toBe(0);
 });
 
 test("Machaut: learned meter can be disabled and remains reproducible", async ({
@@ -240,6 +243,7 @@ test("Machaut: learned meter can be disabled and remains reproducible", async ({
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
   await page.locator("#metrical-strength").fill("0");
+  await page.locator("#phrase-strength").fill("0");
   await ready(page);
   const first = await jsonDownload(page);
   expect(first.metricalPrior).toBeNull();
@@ -277,4 +281,27 @@ test("Machaut: Generate changes the seed by default; fixed seed replays the melo
   const replay = await jsonDownload(page);
   expect(replay.seed).toBe(first.seed);
   expect(replay.notes).toEqual(first.notes);
+});
+
+test("Machaut: internal phrase durations and repertoire groups are recorded", async ({
+  page,
+}) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await page.locator("#repertoire").selectOption("pilot");
+  await page.locator("#order").fill("1");
+  await page.locator("#length").fill("8");
+  await page.locator("#phrase-ends").fill("4");
+  await ready(page);
+  const r = await jsonDownload(page);
+  expect(r.phraseEndPositions).toEqual([4]);
+  expect(r.phraseEndingPrior.terminal.observations).toBe(6);
+  expect(
+    r.explanations[3].continuations.some((c) => c.phraseEndingWeight !== 1),
+  ).toBe(true);
+  expect(r.notes).toEqual(r.sampledNotes);
+  await page.locator("#repertoire").selectOption("ballade");
+  await expect(page.locator("#stats")).toContainText("801");
+  await page.locator("#repertoire").selectOption("motet");
+  await expect(page.locator("#stats")).toContainText("285");
 });

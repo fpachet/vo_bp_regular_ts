@@ -6,6 +6,7 @@ import {
   type NoteEvent,
   type Representation,
 } from "../music";
+import { learnPhraseDurations } from "../markov/phrases";
 import { train, type ModelOptions } from "../markov/train";
 import type {
   GenerationOptions,
@@ -26,14 +27,14 @@ const isCorpus = /\/corpus\/(?:index.html)?$/.test(location.pathname);
 const root = new URL(isCorpus ? "../" : "./", location.href);
 const e = escapeXML;
 const app = document.querySelector<HTMLDivElement>("#app")!;
-app.innerHTML = `<header><div class="topline"><div class="brand">Ars nova · A study in melodic possibility</div><nav class="nav"><a href="${root.href}">Generate</a><a href="${new URL("corpus/", root)}">Corpus</a><a href="https://github.com/fpachet/vo_bp_regular_ts/tree/main/examples/machaut">Source &amp; method</a></nav></div><h1>Guillaume de Machaut <span class="tag">Melody laboratory</span></h1><p>Learn from six attributed melodic voices. Shape a new melody with an exact Markov model, then listen, inspect and reproduce it.</p></header>
+app.innerHTML = `<header><div class="topline"><div class="brand">Ars nova · A study in melodic possibility</div><nav class="nav"><a href="${root.href}">Generate</a><a href="${new URL("corpus/", root)}">Corpus</a><a href="https://github.com/fpachet/vo_bp_regular_ts/tree/main/examples/machaut">Source &amp; method</a></nav></div><h1>Guillaume de Machaut <span class="tag">Melody laboratory</span></h1><p>Learn from 23 attributed melodic voices. Shape a new melody with an exact Markov model, then listen, inspect and reproduce it.</p></header>
 <main class="workspace">${
   isCorpus
-    ? `<section class="panel full"><h2><span class="section-number">I.</span>The source melodies</h2><p class="source-note">A small pilot corpus of six MIDI transcriptions from APEMUTAM. One voice is selected from each piece by highest mean pitch. This is a reproducible extraction heuristic, not a critical edition or a verified cantus attribution. Finals are the last sounding pitches, not inferred historical modes.</p><div id="corpus-table" class="corpus-table"></div></section><section class="panel full"><h2>Import your repertoire</h2><div class="import-panel"><div><label for="import-file">MIDI or uncompressed MusicXML</label><input id="import-file" type="file" accept=".mid,.midi,.MID,.xml,.musicxml"></div><div><label for="import-voice">Melodic voice</label><select id="import-voice" disabled><option>Choose a file first</option></select></div><button id="import-add" class="primary" disabled>Add selected voice</button></div><p class="hint">Imports stay in this browser tab. Download the corpus snapshot to reuse them on the generator page. Chords are reduced to the upper note; overlapping sustains are clipped; source durations are retained.</p><button class="secondary" id="snapshot">Download corpus snapshot</button><p class="status" id="status" role="status"></p></section>`
-    : `<aside class="controls"><section class="panel"><h2><span class="section-number">I.</span>Corpus &amp; model</h2><label for="repertoire">Repertoire</label><select id="repertoire"><option value="all">All six pieces</option><option value="rondeau">Rondeaux</option><option value="virelai">Virelai</option></select><label for="representation">Viewpoint</label><select id="representation"><option value="intervals">Interval × duration</option><option value="absolute" selected>Pitch × duration</option><option value="relative">Relative pitch × duration</option></select><label for="rhythm">Rhythm</label><select id="rhythm" disabled><option value="quarter">Equal quarter notes</option><option value="corpus" selected>Learned rhythm · joint pitch/duration</option></select><p class="hint">Switching rhythm sets the order preset: 3 for learned rhythm, 5 for quarter notes. You can then adjust it. Learned rhythm uses source note spacing on a sixteenth-note grid. Length and fixed positions count notes; repeats constrain pitches. No rests are generated.</p><div class="pair"><div><label for="order">Maximum order</label><input id="order" type="number" value="3" min="1" max="10"></div><div><label for="backoff">Backoff weight</label><input id="backoff" type="number" value="0.25" min="0" max="1" step="0.05"></div></div><p class="hint">Fixed suffix mixture, including order zero. Larger backoff weights increase lower-order support.</p><label for="metrical-strength">Learned meter strength</label><input id="metrical-strength" type="number" value="1" min="0" max="3" step="0.25"><p class="hint">0 disables beat-position preferences; 1 uses the smoothed corpus prior. Uses an assumed 4/4 grid; source files have no meter annotations. Applies in both generation modes.</p><label for="snapshot-file">Use a saved corpus snapshot</label><input id="snapshot-file" type="file" accept=".json"><p class="hint"><a href="${new URL("corpus/", root)}">Inspect or import MIDI / MusicXML →</a></p></section>
-<section class="panel"><h2><span class="section-number">II.</span>Musical conditions</h2><label for="mode">Generation mode</label><select id="mode"><option value="constrained">Globally constrained</option><option value="ordinary">Ordinary Markov sampling</option></select><div class="pair"><div><label for="length">Number of notes</label><input id="length" type="number" value="32" min="8" max="128"></div><div><label for="seed">Random seed</label><input id="seed" type="number" value="12345" min="0" max="4294967295"></div></div><label class="check"><input id="lock-seed" type="checkbox">Keep seed fixed</label><p class="hint">Generate chooses a fresh seed. Keep it fixed to replay a melody with the same settings.</p><div class="pair"><div><label for="start">Starting pitch</label><select id="start"><option value="">Unconstrained / anchor</option></select></div><div><label for="final">Final / reference pitch</label><select id="final"></select></div></div><label class="check"><input id="force-final" type="checkbox" checked>Force final pitch</label><div class="pair"><div><label for="low">Lowest pitch</label><select id="low"></select></div><div><label for="high">Highest pitch</label><select id="high"></select></div></div><div class="pair"><div><label for="leap">Maximum leap (semitones)</label><input id="leap" type="number" value="7" min="0" max="24"></div><div><label for="span">Maximum span (optional)</label><input id="span" type="number" placeholder="Unbounded" min="0" max="48"></div></div><label class="check"><input id="cadence" type="checkbox" checked>End by a step into the final</label><label class="check"><input id="hold-ending" type="checkbox" checked>Long final note at bar end (at least 2 beats)</label><p class="hint">Conditions learned rhythm on a final duration of at least 2 beats and an exact 4/4 bar ending. Earlier durations and the interval opening duration participate. Ordinary mode ignores this rule.</p><label class="check"><input id="repeat" type="checkbox">Repeat opening 3 notes at the end</label><details><summary>Phrase, pitch-set &amp; cadence controls</summary><label for="classes">Allowed pitch classes (C=0)</label><input id="classes" value="0,2,4,5,7,9,11"><label for="fixed">Fixed / phrase-end notes</label><textarea id="fixed" placeholder="8:69; 16:74; 24:69; 32:74"></textarea><p class="hint">One-based positions, MIDI pitches. Use 16:72|74 for alternatives.</p><button id="phrase-example" class="secondary" type="button">Apply 32-note phrase example</button><label for="forbidden">Forbidden signed intervals</label><input id="forbidden" placeholder="6,-6"><label for="cadence-patterns">Alternative cadence interval endings</label><input id="cadence-patterns" placeholder="-2,2; -1,1"><p class="hint">Optional exact interval tails, separated by semicolons.</p></details><p class="hint">Interval models require a starting anchor: when Start is unset, the reference pitch is used. Ordinary mode ignores musical constraints and reports violations.</p></section></aside>`
+    ? `<section class="panel full"><h2><span class="section-number">I.</span>The source melodies</h2><p class="source-note">23 MIDI transcriptions from APEMUTAM, including the original six-piece pilot. One voice is selected from each piece by highest mean pitch. This is a reproducible extraction heuristic, not a critical edition or a verified cantus attribution. Finals are the last sounding pitches, not inferred historical modes.</p><div id="corpus-table" class="corpus-table"></div></section><section class="panel full"><h2>Import your repertoire</h2><div class="import-panel"><div><label for="import-file">MIDI or uncompressed MusicXML</label><input id="import-file" type="file" accept=".mid,.midi,.MID,.xml,.musicxml"></div><div><label for="import-voice">Melodic voice</label><select id="import-voice" disabled><option>Choose a file first</option></select></div><button id="import-add" class="primary" disabled>Add selected voice</button></div><p class="hint">Imports stay in this browser tab. Download the corpus snapshot to reuse them on the generator page. Chords are reduced to the upper note; overlapping sustains are clipped; source durations are retained.</p><button class="secondary" id="snapshot">Download corpus snapshot</button><p class="status" id="status" role="status"></p></section>`
+    : `<aside class="controls"><section class="panel"><h2><span class="section-number">I.</span>Corpus &amp; model</h2><label for="repertoire">Repertoire</label><select id="repertoire"><option value="songs">Rondeaux &amp; virelais (16 pieces)</option><option value="secular">All secular songs (20 pieces)</option><option value="all">All 23 pieces</option><option value="pilot">Original six-piece pilot</option><option value="rondeau">Rondeaux</option><option value="virelai">Virelais</option><option value="ballade">Ballades</option><option value="motet">Motets</option><option value="other">Complaint</option></select><label for="representation">Viewpoint</label><select id="representation"><option value="intervals">Interval × duration</option><option value="absolute" selected>Pitch × duration</option><option value="relative">Relative pitch × duration</option></select><label for="rhythm">Rhythm</label><select id="rhythm" disabled><option value="quarter">Equal quarter notes</option><option value="corpus" selected>Learned rhythm · joint pitch/duration</option></select><p class="hint">Switching rhythm sets the order preset: 3 for learned rhythm, 5 for quarter notes. You can then adjust it. Learned rhythm uses source note spacing on a sixteenth-note grid. Length and fixed positions count notes; repeats constrain pitches. No rests are generated.</p><div class="pair"><div><label for="order">Maximum order</label><input id="order" type="number" value="3" min="1" max="10"></div><div><label for="backoff">Backoff weight</label><input id="backoff" type="number" value="0.25" min="0" max="1" step="0.05"></div></div><p class="hint">Fixed suffix mixture, including order zero. Larger backoff weights increase lower-order support.</p><label for="metrical-strength">Learned meter strength</label><input id="metrical-strength" type="number" value="1" min="0" max="3" step="0.25"><p class="hint">0 disables beat-position preferences; 1 uses the smoothed corpus prior. Missing meters use a 4/4 grid; explicit incompatible meters are excluded from beat-position counts. Applies in both generation modes.</p><label for="phrase-strength">Phrase-ending duration strength</label><input id="phrase-strength" type="number" value="1" min="0" max="3" step="0.25"><p class="hint">Learns final durations and silence-based internal ending candidates. Repeated literal cadences count once per piece. 0 disables this prior.</p><label for="snapshot-file">Use a saved corpus snapshot</label><input id="snapshot-file" type="file" accept=".json"><p class="hint"><a href="${new URL("corpus/", root)}">Inspect or import MIDI / MusicXML →</a></p></section>
+<section class="panel"><h2><span class="section-number">II.</span>Musical conditions</h2><label for="mode">Generation mode</label><select id="mode"><option value="constrained">Globally constrained</option><option value="ordinary">Ordinary Markov sampling</option></select><div class="pair"><div><label for="length">Number of notes</label><input id="length" type="number" value="32" min="8" max="128"></div><div><label for="seed">Random seed</label><input id="seed" type="number" value="12345" min="0" max="4294967295"></div></div><label class="check"><input id="lock-seed" type="checkbox">Keep seed fixed</label><p class="hint">Generate chooses a fresh seed. Keep it fixed to replay a melody with the same settings.</p><div class="pair"><div><label for="start">Starting pitch</label><select id="start"><option value="">Unconstrained / anchor</option></select></div><div><label for="final">Final / reference pitch</label><select id="final"></select></div></div><label class="check"><input id="force-final" type="checkbox" checked>Force final pitch</label><div class="pair"><div><label for="low">Lowest pitch</label><select id="low"></select></div><div><label for="high">Highest pitch</label><select id="high"></select></div></div><div class="pair"><div><label for="leap">Maximum leap (semitones)</label><input id="leap" type="number" value="7" min="0" max="24"></div><div><label for="span">Maximum span (optional)</label><input id="span" type="number" placeholder="Unbounded" min="0" max="48"></div></div><label class="check"><input id="cadence" type="checkbox" checked>End by a step into the final</label><label class="check"><input id="hold-ending" type="checkbox" checked>End at an exact bar boundary</label><p class="hint">Conditions learned rhythm on an exact 4/4 bar ending. Final duration is sampled jointly from the learned prior and source model. Ordinary mode ignores the bar-ending rule.</p><label for="minimum-ending">Minimum final duration (beats)</label><input id="minimum-ending" type="number" min="0.25" step="0.25" value="0.25"><label for="phrase-ends">Internal phrase ends (note positions)</label><input id="phrase-ends" placeholder="8,16,24"><p class="hint">Optional one-based note positions; applies the learned internal ending-duration prior. The last note always uses the separate final-duration prior. These preferences also apply in ordinary mode.</p><label class="check"><input id="repeat" type="checkbox">Repeat opening 3 notes at the end</label><details><summary>Phrase, pitch-set &amp; cadence controls</summary><label for="classes">Allowed pitch classes (C=0)</label><input id="classes" value="0,2,4,5,7,9,11"><label for="fixed">Fixed / phrase-end notes</label><textarea id="fixed" placeholder="8:69; 16:74; 24:69; 32:74"></textarea><p class="hint">One-based positions, MIDI pitches. Use 16:72|74 for alternatives.</p><button id="phrase-example" class="secondary" type="button">Apply 32-note phrase example</button><label for="forbidden">Forbidden signed intervals</label><input id="forbidden" placeholder="6,-6"><label for="cadence-patterns">Alternative cadence interval endings</label><input id="cadence-patterns" placeholder="-2,2; -1,1"><p class="hint">Optional exact interval tails, separated by semicolons.</p></details><p class="hint">Interval models require a starting anchor: when Start is unset, the reference pitch is used. Ordinary mode ignores musical constraints and reports violations.</p></section></aside>`
 }
-<div class="output ${isCorpus ? "full" : ""}"><section class="panel">${isCorpus ? "" : '<div class="toolbar"><button id="generate" class="primary" disabled>Generate melody →</button><button id="cancel" class="secondary" disabled>Cancel</button></div><p class="status" id="status" role="status">Loading the local corpus…</p>'}<div class="score-head"><div><h2><span class="section-number">${isCorpus ? "II." : "III."}</span>${isCorpus ? "Selected source voice" : "A new melodic possibility"}</h2><div id="score-subtitle" class="subtitle">${isCorpus ? "Choose a piece above to inspect its extracted voice." : "Equal quarter notes · modern notation · no historical rhythm claim"}</div></div><div class="toolbar"><button id="play" class="secondary" disabled>Play</button><button id="stop" class="secondary">Stop</button><label class="visually-hidden" for="tempo">Playback tempo</label><input id="tempo" type="number" value="96" min="30" max="240" aria-label="Playback tempo" style="width:75px"></div></div><div id="score" class="score-wrap"><div class="empty">${isCorpus ? "Explore the repertoire" : "A voice from the corpus, a path through constraints."}</div></div><div id="metrics" class="metrics"></div><div class="toolbar"><button id="download-midi" class="secondary" disabled>Download MIDI</button><button id="download-xml" class="secondary" disabled>MusicXML</button><button id="download-json" class="secondary" disabled>Experiment JSON</button>${isCorpus ? "" : '<button id="regenerate" class="secondary" disabled>New seed →</button>'}</div><p class="hint">The 4/4 engraving grid is a modern display convention. It is not a mensural transcription.</p></section>${isCorpus ? "" : `<section class="panel"><h2><span class="section-number">IV.</span>Why this note?</h2><p class="hint">Select a note below. Compare source probabilities with probabilities conditioned on every future requirement.</p><div id="note-list" class="note-list"></div><div id="explanation" class="explanation">Note explanations appear after generation.</div></section><section class="panel"><h2>Model &amp; generation diagnostics</h2><div id="stats" class="stats-grid"></div><p id="diagnostic-detail" class="source-note"></p><details><summary>Method &amp; limits</summary><p class="source-note">The model is a fixed variable-order suffix mixture, conditioned by a deterministic finite acceptor using sparse log-space belief propagation. Exactness is relative to this supplied source and constraints, within floating-point precision. This six-piece pilot does not establish historical style. More elaborate repeats and long interval horizons may exceed explicit product budgets; simplify constraints or lower order when that happens.</p></details></section>`}</div></main><footer>Built with <a href="https://www.npmjs.com/package/markov-constraints">markov-constraints 0.4.0-rc.1</a> · Local corpus from <a href="https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/Machaut.html">APEMUTAM</a> · Generation runs in a cancellable browser Worker.<br>Source transcription reuse terms were not specified by the collection. Source URLs, checksums and extraction choices are retained with each piece; the application’s MIT license does not license those transcriptions.</footer>`;
+<div class="output ${isCorpus ? "full" : ""}"><section class="panel">${isCorpus ? "" : '<div class="toolbar"><button id="generate" class="primary" disabled>Generate melody →</button><button id="cancel" class="secondary" disabled>Cancel</button></div><p class="status" id="status" role="status">Loading the local corpus…</p>'}<div class="score-head"><div><h2><span class="section-number">${isCorpus ? "II." : "III."}</span>${isCorpus ? "Selected source voice" : "A new melodic possibility"}</h2><div id="score-subtitle" class="subtitle">${isCorpus ? "Choose a piece above to inspect its extracted voice." : "Equal quarter notes · modern notation · no historical rhythm claim"}</div></div><div class="toolbar"><button id="play" class="secondary" disabled>Play</button><button id="stop" class="secondary">Stop</button><label class="visually-hidden" for="tempo">Playback tempo</label><input id="tempo" type="number" value="96" min="30" max="240" aria-label="Playback tempo" style="width:75px"></div></div><div id="score" class="score-wrap"><div class="empty">${isCorpus ? "Explore the repertoire" : "A voice from the corpus, a path through constraints."}</div></div><div id="metrics" class="metrics"></div><div class="toolbar"><button id="download-midi" class="secondary" disabled>Download MIDI</button><button id="download-xml" class="secondary" disabled>MusicXML</button><button id="download-json" class="secondary" disabled>Experiment JSON</button>${isCorpus ? "" : '<button id="regenerate" class="secondary" disabled>New seed →</button>'}</div><p class="hint">The 4/4 engraving grid is a modern display convention. It is not a mensural transcription.</p></section>${isCorpus ? "" : `<section class="panel"><h2><span class="section-number">IV.</span>Why this note?</h2><p class="hint">Select a note below. Compare source probabilities with probabilities conditioned on every future requirement.</p><div id="note-list" class="note-list"></div><div id="explanation" class="explanation">Note explanations appear after generation.</div></section><section class="panel"><h2>Model &amp; generation diagnostics</h2><div id="stats" class="stats-grid"></div><p id="diagnostic-detail" class="source-note"></p><details><summary>Method &amp; limits</summary><p class="source-note">The model is a fixed variable-order suffix mixture, conditioned by a deterministic finite acceptor using sparse log-space belief propagation. Exactness is relative to this supplied source and constraints, within floating-point precision. This corpus does not establish historical style. More elaborate repeats and long interval horizons may exceed explicit product budgets; simplify constraints or lower order when that happens.</p></details></section>`}</div></main><footer>Built with <a href="https://www.npmjs.com/package/markov-constraints">markov-constraints 0.4.0-rc.1</a> · Local corpus from <a href="https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/Machaut.html">APEMUTAM</a> · Generation runs in a cancellable browser Worker.<br>Source transcription reuse terms were not specified by the collection. Source URLs, checksums and extraction choices are retained with each piece; the application’s MIT license does not license those transcriptions.</footer>`;
 const el = <T extends HTMLElement>(id: string) =>
   document.getElementById(id)! as T;
 const value = (id: string) => el<HTMLInputElement>(id).value;
@@ -169,6 +170,15 @@ el("download-json").onclick = () =>
   );
 function selectedCorpus() {
   const genre = value("repertoire");
+  if (genre === "songs")
+    return corpus.filter((m) =>
+      ["rondeau", "virelai"].includes(m.metadata.genre ?? ""),
+    );
+  if (genre === "secular")
+    return corpus.filter((m) =>
+      ["rondeau", "virelai", "ballade"].includes(m.metadata.genre ?? ""),
+    );
+  if (genre === "pilot") return corpus.filter((m) => m.metadata.pilot);
   return genre === "all"
     ? corpus
     : corpus.filter((m) => m.metadata.genre === genre);
@@ -193,9 +203,12 @@ function modelOptions(): ModelOptions {
       value("representation") === "intervals" &&
       value("rhythm") === "corpus" &&
       (num("metrical-strength") > 0 ||
+        num("phrase-strength") > 0 ||
         (checked("hold-ending") && value("mode") === "constrained")),
     maxOrder: num("order"),
     backoffWeight: num("backoff"),
+    phraseEndStrength:
+      value("rhythm") === "corpus" ? num("phrase-strength") : 0,
     metricalStrength:
       value("rhythm") === "corpus" ? num("metrical-strength") : 0,
   };
@@ -203,9 +216,13 @@ function modelOptions(): ModelOptions {
 function updateStats() {
   try {
     const t = train(selectedCorpus(), modelOptions());
+    const phrasePrior = learnPhraseDurations(selectedCorpus());
     el("stats").innerHTML = Object.entries({
       Pieces: t.stats.pieces,
       "Source notes": t.stats.notes,
+      "Final duration observations": phrasePrior.terminal.observations,
+      "Internal ending candidates": phrasePrior.internal.observations,
+      "Repeated endings removed": phrasePrior.duplicatesRemoved,
       "Token vocabulary": t.stats.vocabulary,
       "Durations (quarter-note units)": t.stats.durations.join(", "),
       "Context states": t.stats.contexts,
@@ -276,8 +293,9 @@ function readOptions(): GenerationOptions {
     model: modelOptions(),
     ending:
       value("rhythm") === "corpus" && checked("hold-ending")
-        ? { minDuration: 2, barBeats: 4 }
+        ? { minDuration: num("minimum-ending"), barBeats: 4 }
         : null,
+    phraseEndPositions: parseNumbers(value("phrase-ends")),
     constraints,
     seed: num("seed"),
     mode: value("mode") as GenerationOptions["mode"],
@@ -296,7 +314,7 @@ function explain(explanation: NoteExplanation | undefined) {
   }
   const rep = result!.model.representation;
   el("explanation").innerHTML =
-    `<strong>Note ${explanation.position}: ${pitchName(explanation.pitch)} · ${explanation.duration} beats</strong><br>Source context (${e(rep)}): ${explanation.context.length ? explanation.contextLabels.join(" · ") : "empty"}<table><thead><tr><th>Continuation</th><th>Model duration</th><th>Source</th><th>Meter weight</th><th>Conditioned</th><th>Constraint effect</th></tr></thead><tbody>${explanation.continuations.map((c) => `<tr><td>${pitchName(c.pitch)}</td><td>${c.duration} beats</td><td>${(c.sourceProbability * 100).toFixed(1)}%</td><td>${c.metricalWeight.toFixed(2)}×</td><td>${(c.conditionedProbability * 100).toFixed(1)}%</td><td>${e(c.reason)}</td></tr>`).join("")}</tbody></table>`;
+    `<strong>Note ${explanation.position}: ${pitchName(explanation.pitch)} · ${explanation.duration} beats</strong><br>Source context (${e(rep)}): ${explanation.context.length ? explanation.contextLabels.join(" · ") : "empty"}<table><thead><tr><th>Continuation</th><th>Model duration</th><th>Source</th><th>Meter weight</th><th>Ending weight</th><th>Conditioned</th><th>Constraint effect</th></tr></thead><tbody>${explanation.continuations.map((c) => `<tr><td>${pitchName(c.pitch)}</td><td>${c.duration} beats</td><td>${(c.sourceProbability * 100).toFixed(1)}%</td><td>${c.metricalWeight.toFixed(2)}×</td><td>${c.phraseEndingWeight.toFixed(2)}×</td><td>${(c.conditionedProbability * 100).toFixed(1)}%</td><td>${e(c.reason)}</td></tr>`).join("")}</tbody></table>`;
 }
 function metric(label: string, value: string) {
   return `<div class="metric"><strong>${e(value)}</strong><span>${e(label)}</span></div>`;
@@ -324,7 +342,7 @@ async function showResult(r: GenerationResult) {
   el("score-subtitle").textContent =
     `${r.mode === "constrained" ? "Conditioned melody" : "Ordinary Markov sample"} · ${r.notes.length} notes · ${r.model.rhythm === "corpus" ? "learned rhythm" : "quarter notes"} · ${r.notes.reduce((sum, n) => sum + n.duration, 0)} beats · order ${r.model.maxOrder} · seed ${r.seed}${r.ending ? ` · final ${r.notes.at(-1)!.duration} beats` : ""}`;
   el("diagnostic-detail").textContent =
-    `${r.productStates.toLocaleString()} product states · ${r.productEdges.toLocaleString()} time-indexed edges · ${(r.bufferBytes / 1048576).toFixed(2)} MiB inference buffers · ${r.elapsedMs.toFixed(0)} ms generation. Mean absolute interval ${r.diagnostics.averageAbsoluteInterval.toFixed(2)}, largest leap ${r.diagnostics.maximumInterval}, repeated notes ${r.diagnostics.repeatedPercent.toFixed(1)}%. Copied ${r.diagnostics.ngramOrder}-grams: ${r.diagnostics.copiedNgrams}. Log source weight ${r.logSourceWeight.toFixed(3)}${r.logPartitionFunction === null ? "" : `, log constraint mass ${r.logPartitionFunction.toFixed(3)}`}. Constraint violations: ${r.violations.length ? r.violations.join(", ") : "none"}. Copy counts compare literal absolute pitches against each source separately; transposed copying is not counted.`;
+    `${r.productStates.toLocaleString()} product states · ${r.productEdges.toLocaleString()} time-indexed edges · ${(r.bufferBytes / 1048576).toFixed(2)} MiB inference buffers · ${r.elapsedMs.toFixed(0)} ms generation. Mean absolute interval ${r.diagnostics.averageAbsoluteInterval.toFixed(2)}, largest leap ${r.diagnostics.maximumInterval}, repeated notes ${r.diagnostics.repeatedPercent.toFixed(1)}%. Copied ${r.diagnostics.ngramOrder}-grams: ${r.diagnostics.copiedNgrams}. Log source weight ${r.logSourceWeight.toFixed(3)}${r.logPartitionFunction === null ? "" : `, log weighted partition ${r.logPartitionFunction.toFixed(3)}`}. Constraint violations: ${r.violations.length ? r.violations.join(", ") : "none"}. Copy counts compare literal absolute pitches against each source separately; transposed copying is not counted.`;
   el("note-list").innerHTML = r.notes
     .map(
       (n, i) =>
@@ -391,7 +409,13 @@ function generate(freshSeed = false) {
           .finally(() => busy(false));
       } else {
         busy(false);
-        status(data.error, true);
+        status(
+          data.error +
+            (/limit exceeded/.test(data.error)
+              ? ". Try a lower order, a narrower repertoire, or fewer phrase-end positions."
+              : ""),
+          true,
+        );
       }
     };
     worker.onerror = (event) => {
@@ -415,7 +439,7 @@ function generate(freshSeed = false) {
 }
 function showCorpusTable() {
   el("corpus-table").innerHTML =
-    `<table><thead><tr><th>Piece / genre</th><th>Notes</th><th>Range</th><th>Final</th><th>Voice</th><th>Source</th></tr></thead><tbody>${corpus.map((m, i) => `<tr><td><button class="secondary" data-piece="${i}">${e(m.metadata.title)}</button><p class="hint">${e(m.metadata.genre ?? "imported")}</p></td><td>${m.notes.length}</td><td>${pitchName(Math.min(...m.notes.map((n) => n.midi)))}–${pitchName(Math.max(...m.notes.map((n) => n.midi)))}</td><td>${pitchName(m.metadata.final ?? m.notes.at(-1)!.midi)}</td><td>${e(String(m.metadata.selectedVoice ?? "unknown"))}</td><td>${m.metadata.source?.startsWith("https://") ? `<a href="${e(m.metadata.source)}">MIDI source</a>` : "local import"}</td></tr>`).join("")}</tbody></table>`;
+    `<table><thead><tr><th>Piece / genre</th><th>Notes</th><th>Range</th><th>Final</th><th>Voice</th><th>Meter / endings</th><th>Source</th></tr></thead><tbody>${corpus.map((m, i) => `<tr><td><button class="secondary" data-piece="${i}">${e(m.metadata.title)}</button><p class="hint">${e(m.metadata.genre ?? "imported")}</p></td><td>${m.notes.length}</td><td>${pitchName(Math.min(...m.notes.map((n) => n.midi)))}–${pitchName(Math.max(...m.notes.map((n) => n.midi)))}</td><td>${pitchName(m.metadata.final ?? m.notes.at(-1)!.midi)}</td><td>${e(String(m.metadata.selectedVoice ?? "unknown"))}</td><td>${e(m.metadata.meter?.events.map((t) => `${t.numerator}/${t.denominator}`).join(", ") || "4/4 assumed")}<br>${m.metadata.phraseEnds?.filter((p) => p.kind === "internal").length ?? 0} internal candidates + final</td><td>${m.metadata.source?.startsWith("https://") ? `<a href="${e(m.metadata.source)}">MIDI source</a>` : "local import"}</td></tr>`).join("")}</tbody></table>`;
   el("corpus-table").onclick = (event) => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>(
       "button[data-piece]",
@@ -430,7 +454,15 @@ function showCorpusTable() {
       m.metadata.title + " · " + m.metadata.extraction;
     el("metrics").innerHTML =
       metric("Notes", String(m.notes.length)) +
-      metric("Last pitch", pitchName(m.notes.at(-1)!.midi));
+      metric("Last pitch", pitchName(m.notes.at(-1)!.midi)) +
+      metric(
+        "Raw final duration",
+        `${m.notes.at(-1)!.duration.toFixed(2)} beats`,
+      ) +
+      metric(
+        "Model final duration",
+        `${m.metadata.finalRhythm?.duration ?? m.notes.at(-1)!.duration} beats`,
+      );
     void renderScore(m.notes, m.metadata.title).catch((error) =>
       status(String(error), true),
     );
@@ -528,7 +560,7 @@ async function init() {
   if (isCorpus) {
     showCorpusTable();
     setImport();
-    status("Six local source voices loaded.");
+    status(`${corpus.length} local source voices loaded.`);
     return;
   }
   for (const id of ["start", "final", "low", "high"]) {
@@ -554,6 +586,7 @@ async function init() {
     "order",
     "backoff",
     "metrical-strength",
+    "phrase-strength",
     "mode",
   ])
     el(id).onchange = updateStats;
@@ -563,6 +596,11 @@ async function init() {
     el<HTMLInputElement>("hold-ending").disabled = value("rhythm") !== "corpus";
     el<HTMLInputElement>("metrical-strength").disabled =
       value("rhythm") !== "corpus";
+    el<HTMLInputElement>("phrase-strength").disabled =
+      value("rhythm") !== "corpus";
+    el<HTMLInputElement>("minimum-ending").disabled =
+      value("rhythm") !== "corpus";
+    el<HTMLInputElement>("phrase-ends").disabled = value("rhythm") !== "corpus";
     updateViewpointLabels();
     updateStats();
   };
@@ -606,7 +644,7 @@ async function init() {
   };
   updateStats();
   el<HTMLButtonElement>("generate").disabled = false;
-  status("Six source voices ready. Generate a melody to begin.");
+  status(`${corpus.length} source voices ready. Generate a melody to begin.`);
 }
 void init().catch((error) => status(String(error), true));
 window.addEventListener("pagehide", () => {

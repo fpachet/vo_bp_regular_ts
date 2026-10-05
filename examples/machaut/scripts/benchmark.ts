@@ -3,7 +3,7 @@ import { generate } from "../src/generation/generate";
 import type { Melody, Representation } from "../src/music";
 const corpus = JSON.parse(
   readFileSync(
-    new URL("../public/corpus/melodies.json", import.meta.url),
+    new URL("../public/corpus/pilot-melodies.json", import.meta.url),
     "utf8",
   ),
 ) as Melody[];

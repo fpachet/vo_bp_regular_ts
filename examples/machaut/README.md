@@ -30,7 +30,7 @@ visible seed field. Select **Keep seed fixed** to reuse a seed or replay a saved
 melody with the same settings and corpus. **New seed** always chooses a fresh
 seed, including when the seed is fixed. Experiment JSON records the seed used.
 
-- Six attributed source MIDI transcriptions, 427 extracted melodic notes.
+- 23 attributed source MIDI transcriptions and 2,879 extracted notes. Default: 16 rondeaux/virelais and 1,697 notes. Ballades, motets, the complaint, all secular songs and the original six-piece pilot are selectable.
 - Absolute pitches, signed intervals, and pitches relative to each source final.
 - Orders 1–10 and an explicit geometric backoff mixture, including order zero.
 - Exact note count, first/last pitches, allowed pitch classes, pitch bounds,
@@ -38,7 +38,7 @@ seed, including when the seed is fixed. Experiment JSON records the seed used.
   one-based positions and phrase endings, stepwise or explicit interval cadences.
 - Exact recurrence of a selected opening span (UI: first three notes at the end;
   core: disjoint spans of up to four notes). Complex repeats can exceed budgets.
-- Globally conditioned generation and a genuinely sequential ordinary sampler.
+- Globally conditioned generation; ordinary mode ignores hard musical conditions while retaining enabled soft model priors. With both priors disabled it uses sequential Markov sampling.
 - Seeded reproducibility, note explanations showing source and future-conditioned
   probabilities, copying statistics, model/n-gram statistics and buffer diagnostics.
 - Conventional MusicXML notation using OpenSheetMusicDisplay, neutral WebAudio
@@ -56,17 +56,17 @@ are larger and high orders can exceed the existing exact solver budgets. Duratio
 
 Training rounds inter-onset spacing to the nearest 0.25 quarter-note units,
 with a minimum of 0.25. This avoids treating MIDI note-off articulation as
-notated rhythm. The final source note uses its sounding duration instead.
+notated rhythm. The final source note uses a documented within-voice MIDI release-pattern estimate when supported; otherwise it uses rounded sounding duration. Raw MIDI timings remain unchanged.
 Original corpus timings are preserved. Gaps are folded into the preceding
-note; this mode generates contiguous notes, not rests. In interval mode with meter enabled, the opening duration is an explicit
-source token conditioned jointly with the entire melody. Without meter it is
+note; this mode generates contiguous notes, not rests. In interval mode with meter or phrase priors enabled, the opening duration is an explicit
+source token conditioned jointly with the entire melody. Without meter or phrase priors it is
 sampled independently from empirical source opening durations after sampling
 the conditioned interval sequence.
 Later durations belong to the arriving note's interval token. This choice is
 recorded in experiment JSON alongside the token dictionary and anchor-duration
 probability. Source and conditional log scores describe the emitted model tokens;
-in interval mode without meter the independent anchor-duration probability is
-reported separately; with meter it belongs to the full token sequence score.
+in interval mode without either prior or meter the independent anchor-duration probability is
+reported separately; with meter or phrase priors it belongs to the full token sequence score.
 
 Length, fixed positions, cadences and repeats still count **notes**, and repeated
 spans constrain pitches only; they do not require equal durations. Total beat
@@ -130,7 +130,7 @@ not repair its output. An ordinary interval walk leaving the MIDI domain fails
 export validation rather than being silently resampled.
 
 Product limits: 150,000 unique states, 750,000 time-indexed states, 3,000,000
-edges and DFA evaluations (metered generation permits 10,000,000 time-indexed
+edges and DFA evaluations (metered/phrase-prior generation permits 40,000,000 time-indexed
 edges; the other budgets stay unchanged). Worker jobs stop after 30 seconds and can be cancelled.
 Long interval melodies, high orders and repeated phrases can exceed these limits.
 Errors invite simplifying conditions; the solver does not approximate or truncate.
@@ -172,31 +172,23 @@ transposition-invariant copying, and design stronger held-out stylistic baseline
 
 ## Meter and final-position constraint
 
-**Long final note at bar end (at least 2 beats)** is enabled by default with
-learned rhythm. The acceptor tracks cumulative duration modulo 4 beats in
-sixteenth-note ticks, and tests the terminal note's duration at the fixed note
-horizon. BP conditions the entire sequence on both requirements. No note is
-extended or repaired after sampling. The melody ends at the end of beat four
-without trailing rests. The total number of bars is not specified.
+**End at an exact bar boundary** is enabled by default with learned rhythm.
+The acceptor tracks duration modulo four beats. The minimum final duration is
+adjustable and defaults to **0.25 beats**, allowing the learned final-duration
+prior to favour source-supported endings. Setting it to 2 restores the earlier
+long-ending constraint. No note is extended or repaired after sampling.
+`notes` and `sampledNotes` remain identical, and `endingAdjustment` is null.
+Ordinary mode ignores this hard ending rule but retains enabled soft priors.
+Quarter-note mode disables rhythm-prior and bar-ending controls.
 
-For intervals, an explicit opening-duration token is included in the source
-sequences and can appear only at position one. Its duration is therefore
-conditioned on all future requirements. The supplied pitch anchor remains fixed.
-The source/backoff model configuration and complete token dictionary are saved
-in experiment JSON. `notes` and `sampledNotes` are identical; `endingAdjustment`
-is null. Continuation probabilities describe the actual performed durations.
-
-Ordinary mode ignores the meter/ending rules and reports their violations.
-Quarter-note mode disables the long-final rule: it has no supported duration of
-at least two beats. Selecting it never invents a longer note. Unsupported choices
-are reported as infeasible.
-
-Meter adds state dimensions, so its default maximum order is 1. The order remains
-adjustable. Metered jobs allow up to 10,000,000 time-indexed edges, 150,000 unique
-product states, 750,000 time-indexed states and 3,000,000 DFA evaluations. Higher
-orders and positional repeats can exceed these explicit exact-inference budgets.
-The step-cadence acceptor stores only a Boolean when exact interval tails are not
-requested, reducing memory without changing the accepted language.
+Order **3** remains the default. The expanded default repertoire uses a larger
+40,000,000 time-indexed edge budget, while unique-state, time-indexed-state and
+DFA-evaluation caps remain unchanged. This limit counts repeated appearances of
+shared rows across layers, not 40 million separately stored edges. The default
+benchmark occupies about 20 MiB of packed buffers. Other source/acceptor objects
+and sampling caches require additional memory. All 23 pieces, complex repeats,
+internal phrase positions or high orders can exceed limits; select a narrower
+repertoire or lower the order rather than expecting an approximate result.
 
 ### Learned metrical preferences
 
@@ -224,8 +216,12 @@ model. Experiment JSON includes the full prior, crossing/onset diagnostics,
 separate base-source and metrical log weights, and the combined partition and
 conditional probability. Note explanations show each continuation's meter weight.
 
-The six source MIDI files contain no time-signature events. These are preferences
-under an assumed 4/4 grid, not reconstructed mensural meter. A future annotated
+The original six MIDI files contain no time-signature events. Two added files
+explicitly encode 3/2 or 6/8. Original meter events are retained in metadata;
+incompatible meters are excluded from 4/4 phase counts while global duration
+support is retained. Missing meter uses an assumed 4/4 grid. Pickups are recorded
+as unknown, with original first-onset offsets preserved. These are not reconstructed
+mensural meters. A future annotated
 corpus should specify meter changes and pickup offsets before interpreting the
 statistics historically.
 
@@ -239,3 +235,60 @@ on this local run, with **1,553 states** in both cases and approximately
 the corpus rate was **7.0%**: matching local duration preferences does not
 guarantee matching aggregate crossings after other constraints. These measurements
 use the training corpus and do not establish held-out stylistic improvement.
+
+### Expanded corpus and phrase-duration priors
+
+All 17 additional MIDI files from the same source collection are stored with
+SHA-256 hashes, retrieval dates, selected tracks, timing-based phrase candidates
+and MIDI meter evidence. Genres follow the source table, pending independent
+catalogue review. Track ranges, onsets and release patterns were inspected;
+selecting the highest mean-pitch voice does not establish historical cantus identity.
+The original raw six-piece snapshot is retained as `pilot-melodies.json` for
+regression tests and historical benchmarks; the Pilot menu uses the six original
+works with the new rhythm annotations.
+
+Internal boundary candidates require an actual silence of at least half a beat
+and 35% of inter-onset spacing. These are conservative timing estimates, not
+verified editorial phrases. Every piece also supplies one EOF ending. Repeated
+literal eight-event pitch/duration cadence signatures count once per work and
+boundary kind; duplicate source works count once. The default 16-piece repertoire
+has **78 internal candidates and 16 final endings**, with 13 repeated observations
+removed. User snapshots may supply reviewed `metadata.phraseEnds` annotations.
+
+For EOF timing, preparation finds the modal small release gap (at most 0.25 beat)
+for matching sounding durations in the same voice. If none exist, it considers
+long-note release gaps with at least two observations. A mode must account for
+at least 75% of the evidence. The estimated EOF spacing, support count, basis
+and untouched sounding duration are recorded in `metadata.finalRhythm`.
+Unsupported estimates fall back to rounded sounding duration. This prevents
+MIDI articulation such as 2.75-beat releases from becoming an unintended
+three-quarter-beat preference when the same voice consistently uses 3-beat spacing.
+
+**Phrase-ending duration strength** defaults to 1. Separate internal and EOF
+distributions are smoothed towards global durations with eight pseudo-observations.
+The factor is `[P(duration | ending kind) / P(duration)] ** strength`. EOF gets
+the final prior; optional **Internal phrase ends** such as `8,16,24` get the
+internal prior. These are duration preferences, not hard pitch cadences or
+bar-boundary rules. Set strength to 0 to disable them; both soft priors must be
+0 to obtain the original unweighted source model.
+
+A forced bookkeeping end symbol applies the EOF weight without a duration/position
+counter in the acceptor. Empty-context source fallbacks are refined by their last
+token with identical note probabilities. Rejected padding keeps the graph rows
+normalized; its path-independent scale is removed from the reported partition.
+The symbol never appears in notes or musical exports. Specified internal positions
+need a bounded position counter and may cost additional memory. Exhaustive tiny
+enumeration checks the distribution including those positions and fallback states.
+Experiment JSON includes separate source, meter and phrase log weights; their sum
+minus the corrected log partition equals the conditional log probability.
+
+Run `npm run benchmark:endings` to reproduce
+[endings-benchmark-results.json](endings-benchmark-results.json). For 1,000
+conditioned samples per strength with the default expanded repertoire, mean final
+duration increases from **1.82 to 2.64 beats**. Four-beat endings increase from
+**4.1% to 34.5%**, while half-beat endings decrease from **16.9% to 3.5%**.
+The source EOF mean is 3.64 beats; the generated distribution also depends on
+source pitch/duration associations, fixed final pitch, cadence and exact meter.
+Compilation took roughly 2.4 seconds with 18,042 states and about 20 MiB of packed
+buffers on this local run. These are training-data checks, not held-out historical
+style validation.

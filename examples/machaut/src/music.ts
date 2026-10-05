@@ -12,6 +12,28 @@ export interface PieceMetadata {
   transcriptionLicense?: string;
   extraction?: string;
   retrieved?: string;
+  pilot?: boolean;
+  genreBasis?: string;
+  meter?: {
+    events: { onset: number; numerator: number; denominator: number }[];
+    basis: string;
+    firstOnset: number;
+    pickupBeats: number | null;
+  };
+  phraseEnds?: {
+    note: number;
+    kind: "terminal" | "internal";
+    basis: string;
+    gapBeats: number;
+  }[];
+  voiceReview?: string;
+  finalRhythm?: {
+    duration: number;
+    soundingDuration: number;
+    releaseGap: number;
+    observations: number;
+    basis: string;
+  };
 }
 export interface NoteEvent {
   midi: number;
@@ -55,6 +77,8 @@ export function validateMelody(melody: Melody): Melody {
   if (melody.notes.length > 5000)
     throw new Error("A melodic voice is limited to 5,000 notes");
   if (melody.metadata.final !== undefined) note(melody.metadata.final);
+  if (melody.metadata.finalRhythm)
+    note(60, melody.metadata.finalRhythm.duration);
   let end = -Infinity;
   for (const n of melody.notes) {
     note(n.midi, n.duration, n.onset);

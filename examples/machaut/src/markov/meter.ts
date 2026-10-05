@@ -10,13 +10,19 @@ export function learnMeter(corpus: Melody[]) {
     { length: barTicks },
     () => new Map<number, number>(),
   );
-  for (const m of corpus)
+  const excludedPieces: string[] = [];
+  for (const m of corpus) {
+    const compatible = !(m.metadata.meter?.events ?? []).some(
+      (e) => (e.numerator * 4) / e.denominator !== 4,
+    );
+    if (!compatible) excludedPieces.push(m.id);
     m.notes.forEach((n, i) => {
       const d = rhythmicDuration(m, i);
       const phase = Math.round(n.onset * 4) % barTicks;
       global.set(d, (global.get(d) ?? 0) + 1);
-      counts[phase].set(d, (counts[phase].get(d) ?? 0) + 1);
+      if (compatible) counts[phase].set(d, (counts[phase].get(d) ?? 0) + 1);
     });
+  }
   const durations = [...global.keys()].sort((a, b) => a - b);
   const total = [...global.values()].reduce((a, b) => a + b, 0);
   const marginal = durations.map((d) => global.get(d)! / total);
@@ -39,12 +45,13 @@ export function learnMeter(corpus: Melody[]) {
   });
   return {
     barBeats: 4,
+    excludedPieces,
     smoothing,
     durations,
     marginal,
     phases,
     assumption:
-      "Modern 4/4 grid, original source onsets; no inferred historical meter or pickups",
+      "Original source onsets; missing meter assumed modern 4/4; explicit incompatible meters excluded from phase counts; pickups not inferred",
   };
 }
 export type MeterPrior = ReturnType<typeof learnMeter>;

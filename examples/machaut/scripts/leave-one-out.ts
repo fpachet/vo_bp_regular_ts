@@ -4,7 +4,7 @@ import { tokens, type Melody, type Representation } from "../src/music";
 import { train, logSourceWeight } from "../src/markov/train";
 const corpus = JSON.parse(
   readFileSync(
-    new URL("../public/corpus/melodies.json", import.meta.url),
+    new URL("../public/corpus/pilot-melodies.json", import.meta.url),
     "utf8",
   ),
 ) as Melody[];

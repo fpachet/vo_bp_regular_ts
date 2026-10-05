@@ -19,9 +19,15 @@ import {
   type EndingOptions,
 } from "./ending";
 import { learnMeter, meterWeight, meterSummary } from "../markov/meter";
+import {
+  learnPhraseDurations,
+  phraseWeight,
+  withPhraseEnding,
+} from "../markov/phrases";
 export interface GenerationOptions {
   model: ModelOptions;
   ending?: EndingOptions | null;
+  phraseEndPositions?: number[];
   constraints: MusicalConstraints;
   seed: number;
   mode: "constrained" | "ordinary";
@@ -39,6 +45,7 @@ export interface NoteExplanation {
     duration: number;
     sourceProbability: number;
     metricalWeight: number;
+    phraseEndingWeight: number;
     conditionedProbability: number;
     reason: string;
   }[];
@@ -71,9 +78,27 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     options.model.rhythm === "corpus"
       ? (options.model.metricalStrength ?? 0)
       : 0;
+  const phraseStrength =
+    options.model.rhythm === "corpus"
+      ? (options.model.phraseEndStrength ?? 0)
+      : 0;
+  const phrasePrior = phraseStrength ? learnPhraseDurations(corpus) : undefined;
+  const phrasePositions = [...new Set(options.phraseEndPositions ?? [])].sort(
+    (a, b) => a - b,
+  );
+  if (
+    phrasePositions.some(
+      (p) => !Number.isInteger(p) || p < 1 || p >= options.constraints.length,
+    )
+  )
+    throw new Error(
+      "Phrase-end positions must be one-based internal note positions",
+    );
   const prior = strength ? learnMeter(corpus) : undefined;
   const includeAnchor =
-    (strength > 0 || (!!options.ending && options.mode === "constrained")) &&
+    (strength > 0 ||
+      phraseStrength > 0 ||
+      (!!options.ending && options.mode === "constrained")) &&
     options.model.rhythm === "corpus" &&
     options.model.representation === "intervals";
   const effectiveModel = {
@@ -97,7 +122,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       : musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
   const hardEnding = options.mode === "constrained" ? options.ending : null;
   const dfa =
-    hardEnding || prior
+    hardEnding || prior || phrasePrior
       ? meteredAcceptor(
           pitchDfa,
           trained.decode,
@@ -107,21 +132,34 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
           strength,
         )
       : pitchDfa;
+  const wrapped = phrasePrior
+    ? withPhraseEnding(
+        trained.graph,
+        dfa,
+        trained.decode,
+        phrasePrior,
+        phraseStrength,
+        phrasePositions,
+      )
+    : null;
+  let inferenceSequence: number[] = [];
   let bp: ProductBPResult<number> | undefined,
     sequence: number[] = [];
-  if (options.mode === "constrained" || prior) {
-    bp = runBP(trained.graph, dfa, {
-      length: horizon,
+  if (options.mode === "constrained" || prior || phrasePrior) {
+    bp = runBP(wrapped?.graph ?? trained.graph, wrapped?.dfa ?? dfa, {
+      length: horizon + (wrapped ? 1 : 0),
       maxProductStates: 150000,
       maxTimeIndexedStates: 750000,
-      maxProductEdges: options.ending || prior ? 10000000 : 3000000,
+      maxProductEdges:
+        options.ending || prior || phrasePrior ? 40000000 : 3000000,
       maxDfaTransitions: 3000000,
     });
     if (!bp.feasible)
       throw new Error(
         "No melody satisfies these constraints under the model. Widen the range, simplify fixed notes/cadence, relax the final duration/meter, or increase backoff.",
       );
-    sequence = bp.sample(rng);
+    inferenceSequence = bp.sample(rng);
+    sequence = wrapped ? inferenceSequence.slice(0, -1) : inferenceSequence;
   } else {
     let state = trained.graph.startState;
     for (let i = 0; i < horizon; i++) {
@@ -211,6 +249,17 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
               strength,
             )
           : 1,
+        phraseEndingWeight:
+          phrasePrior &&
+          (t + offset + 1 === c.length ||
+            phrasePositions.includes(t + offset + 1))
+            ? phraseWeight(
+                phrasePrior,
+                decoded.duration,
+                t + offset + 1 === c.length ? "terminal" : "internal",
+                phraseStrength,
+              )
+            : 1,
         conditionedProbability: probability,
         reason: bp
           ? !edge
@@ -255,13 +304,16 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       notes: m.notes.map((n) => [n.midi, n.duration, n.onset]),
       selectedVoice: m.metadata.selectedVoice,
       final: m.metadata.final,
+      meter: m.metadata.meter,
+      phraseEnds: m.metadata.phraseEnds,
+      finalRhythm: m.metadata.finalRhythm,
     })),
     constraints: c,
     seed: options.seed,
     mode: options.mode,
     rhythm:
       options.model.rhythm === "corpus"
-        ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses sounding duration; no rests generated"
+        ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses documented release-pattern estimate when available, otherwise sounding duration; no rests generated"
         : "Equal quarter notes",
     tokenTable: trained.tokenTable,
     anchorDuration: rep === "intervals" ? notes[0].duration : null,
@@ -285,6 +337,11 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       ? options.mode === "constrained"
         ? "Joint meter and terminal-duration conditioning; no post-generation modification"
         : "Requested meter and final duration ignored in ordinary mode; violations reported"
+      : null,
+    phraseEndingPrior: phrasePrior ?? null,
+    phraseEndPositions: phrasePositions,
+    phraseEndingSemantics: phrasePrior
+      ? "Joint weighted source model; smoothed EOF prior at last note and internal candidate prior at specified positions; no duration replacement"
       : null,
     metricalPrior: prior ?? null,
     metricalSummary: meterSummary(notes),
@@ -311,8 +368,29 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
           0,
         )
       : 0,
-    logPartitionFunction: bp?.logPartitionFunction ?? null,
-    logConditionalProbability: bp?.logConditionalProbability(sequence) ?? null,
+    logPhraseEndingWeight: phrasePrior
+      ? notes.reduce(
+          (sum, n, i) =>
+            sum +
+            (i === notes.length - 1 || phrasePositions.includes(i + 1)
+              ? Math.log(
+                  phraseWeight(
+                    phrasePrior,
+                    n.duration,
+                    i === notes.length - 1 ? "terminal" : "internal",
+                    phraseStrength,
+                  ),
+                )
+              : 0),
+          0,
+        )
+      : 0,
+    logPartitionFunction: bp
+      ? bp.logPartitionFunction +
+        (wrapped ? (horizon + 1) * Math.log(2) + wrapped.logScale : 0)
+      : null,
+    logConditionalProbability:
+      bp?.logConditionalProbability(inferenceSequence) ?? null,
     productStates: bp?.productStateCount ?? 0,
     productEdges: bp?.productEdgeCount ?? 0,
     bufferBytes: bp?.memoryDiagnostics().totalBufferBytes ?? 0,

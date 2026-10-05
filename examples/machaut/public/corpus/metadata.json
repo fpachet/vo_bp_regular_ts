@@ -11,7 +11,42 @@
     "voices": 3,
     "selectedVoice": 1,
     "final": 77,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 28,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 33,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 41,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 1,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   },
   {
     "id": "machrond5",
@@ -25,7 +60,72 @@
     "voices": 2,
     "selectedVoice": 1,
     "final": 74,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 1,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 4,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 35,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 41,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 61,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 74,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 94,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 121,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 4,
+      "soundingDuration": 3.75,
+      "releaseGap": 0.25,
+      "observations": 1,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   },
   {
     "id": "machrond6",
@@ -39,7 +139,54 @@
     "voices": 2,
     "selectedVoice": 1,
     "final": 74,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 2,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 44,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 60,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 62,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 99,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 6,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   },
   {
     "id": "machrond12",
@@ -53,7 +200,42 @@
     "voices": 2,
     "selectedVoice": 1,
     "final": 67,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 8,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 35,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 72,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 6,
+      "soundingDuration": 5.75,
+      "releaseGap": 0.25,
+      "observations": 2,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   },
   {
     "id": "machrond18",
@@ -67,7 +249,30 @@
     "voices": 3,
     "selectedVoice": 1,
     "final": 67,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 37,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 6,
+      "soundingDuration": 5.75,
+      "releaseGap": 0.25,
+      "observations": 1,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   },
   {
     "id": "mach2",
@@ -81,6 +286,1600 @@
     "voices": 2,
     "selectedVoice": 1,
     "final": 69,
-    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped"
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "pilot": true,
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 15,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 33,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 57,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 2,
+      "soundingDuration": 1.75,
+      "releaseGap": 0.25,
+      "observations": 7,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machrond7",
+    "title": "Se vous n'estes pour mon guerre",
+    "genre": "rondeau",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machrond7.MID",
+    "file": "midi/machrond7.MID",
+    "sha256": "779bc01b584488c19489f33d416510ea349a8c9d9011b93b9dde4336380bfefa",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 74,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 14,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 23,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 29,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 40,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 49,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 60,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 73,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 84,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 96,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 105,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 112,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 6,
+      "soundingDuration": 5.75,
+      "releaseGap": 0.25,
+      "observations": 7,
+      "basis": "Long-note release pattern within this voice; inferred EOF spacing"
+    }
+  },
+  {
+    "id": "machrond15",
+    "title": "Ma fin est mon commencement",
+    "genre": "rondeau",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machrond15.MID",
+    "file": "midi/machrond15.MID",
+    "sha256": "2def3710d9e7f418d816be960877192a0bfb2581b54de7d2a47abc2ed33c5181",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 72,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 4,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 10,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 137,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 4,
+      "soundingDuration": 3.75,
+      "releaseGap": 0.25,
+      "observations": 8,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machrond19",
+    "title": "Quant ma dame les maux d'amer m'aprent",
+    "genre": "rondeau",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machrond19.MID",
+    "file": "midi/machrond19.MID",
+    "sha256": "1dd7aea6993e4dd32908ac2b138d5b0187135a4744a123c69c058899eb61f9a6",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 72,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 23,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 29,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 62,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 68,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 78,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 2,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machrond8",
+    "title": "Tant doucement me sens emprisonnes",
+    "genre": "rondeau",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machrond8.MID",
+    "file": "midi/machrond8.MID",
+    "sha256": "dc8847acfecff941b4a791e7e743486d0d9aa2ca1c8ba54cca3f8ab353cf31a2",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 4,
+    "selectedVoice": 1,
+    "final": 79,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 11,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 12,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 32,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 36,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 45,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 50,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 76,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.6666666666666665
+      },
+      {
+        "note": 85,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 91,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 4,
+      "soundingDuration": 3.75,
+      "releaseGap": 0.25,
+      "observations": 3,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machrond9",
+    "title": "Rose liz printemps verdure",
+    "genre": "rondeau",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machrond9.MID",
+    "file": "midi/machrond9.MID",
+    "sha256": "87b1d0dea4772b77c5c2cf68168b4719957fb464bd3f15f4fa635cb9cff298a5",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 4,
+    "selectedVoice": 3,
+    "final": 72,
+    "extraction": "Track 4; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 7,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 26,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 28,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 33,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 35,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 42,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 45,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 67,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 69,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 97,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 6,
+      "soundingDuration": 5.75,
+      "releaseGap": 0.25,
+      "observations": 2,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machbal1",
+    "title": "sans cuer",
+    "genre": "ballade",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machbal1.MID",
+    "file": "midi/machbal1.MID",
+    "sha256": "3d0e57f27d01a8d992abd2165f4d09b1292d4be2806773ccaf4f872826aa97b0",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 5,
+    "final": 67,
+    "extraction": "Track 6; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 24,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 19,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 44,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 63,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 88,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 89,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 105,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 111,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 118,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 125,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 131,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 148,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 10,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machbal2",
+    "title": "Mes esperis",
+    "genre": "ballade",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machbal2.MID",
+    "file": "midi/machbal2.MID",
+    "sha256": "996e32d3db083f037f43e8bd2e7065b3865fc308a2fe6a26dd1e0d48b4568979",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 3,
+    "final": 69,
+    "extraction": "Track 4; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 39,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 92,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 122,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 125,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 156,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 173,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 18,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machbal3",
+    "title": "Je puis trop bien",
+    "genre": "ballade",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machbal3.MID",
+    "file": "midi/machbal3.MID",
+    "sha256": "f1bca349d5db23dff229eba384c136b7784e3368cfc0526b35c5b565911cd87c",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 72,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 44,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 94,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 111,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.6666666666666667
+      },
+      {
+        "note": 121,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 152,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 158,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 7,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "virel5",
+    "title": "Dous amis",
+    "genre": "ballade",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/virel5.MID",
+    "file": "midi/virel5.MID",
+    "sha256": "07bffe25c8d84a224f111e0216286308c0e6564eabeaf8f6191d21273cbe8a30",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 2,
+    "selectedVoice": 1,
+    "final": 72,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [
+        {
+          "onset": 0,
+          "numerator": 3,
+          "denominator": 2
+        }
+      ],
+      "basis": "Explicit MIDI time-signature events; not a mensural interpretation",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 24,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 55,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 79,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 110,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 111,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 137,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 145,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 151,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 175,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 176,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 202,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 210,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 216,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 240,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 2,
+      "soundingDuration": 1.75,
+      "releaseGap": 0.25,
+      "observations": 8,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machremfor",
+    "title": "Tels rit au main",
+    "genre": "other",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/MACHREMFOR.MID",
+    "file": "midi/MACHREMFOR.MID",
+    "sha256": "ad56e3da58400e76dd70808a0ac13f8d07cd232aa0072ece43120eace99a65a0",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 1,
+    "selectedVoice": 1,
+    "final": 67,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 16,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 28,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 45,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 61,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 73,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 90,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 103,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 115,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 134,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 147,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 159,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 178,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 1,
+      "soundingDuration": 0.8333333333333334,
+      "releaseGap": 0.16666666666666666,
+      "observations": 74,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "machremfor2",
+    "title": "Comment qu'a moy",
+    "genre": "virelai",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/machremfor2.mid",
+    "file": "midi/machremfor2.mid",
+    "sha256": "4f31d59cbbb56ceb24ae754325e94b28b433410485541dc70d0307733e9eecbe",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 2,
+    "selectedVoice": 1,
+    "final": 67,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 17,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 50,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 85,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 121,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 154,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 187,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 220,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666667
+      },
+      {
+        "note": 236,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 1,
+      "soundingDuration": 0.8333333333333334,
+      "releaseGap": 0.16666666666666666,
+      "observations": 47,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "virel1",
+    "title": "Se je soupir",
+    "genre": "virelai",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/virel1.MID",
+    "file": "midi/virel1.MID",
+    "sha256": "c399e4e9549c9f5e5d3f5e6bc89e1ab6021bce5d2ccc7a3fc55c1387f8585d0e",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 2,
+    "selectedVoice": 1,
+    "final": 65,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 1.5,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 11,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.1666666666666665
+      },
+      {
+        "note": 22,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 26,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 34,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 40,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.75
+      },
+      {
+        "note": 49,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 55,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 61,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.75
+      },
+      {
+        "note": 70,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 76,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 82,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 1.75,
+      "soundingDuration": 1.75,
+      "releaseGap": 0,
+      "observations": 0,
+      "basis": "No reliable release pattern; sounding duration rounded to quarter-beat grid"
+    }
+  },
+  {
+    "id": "virel4",
+    "title": "De bonté, de valour",
+    "genre": "virelai",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/virel4.MID",
+    "file": "midi/virel4.MID",
+    "sha256": "534b2db96b7d34327bdb07ade3a2cb930d610e7d9e1029bccb8363c5c3157cda",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 2,
+    "selectedVoice": 1,
+    "final": 67,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [
+        {
+          "onset": 0,
+          "numerator": 6,
+          "denominator": 8
+        }
+      ],
+      "basis": "Explicit MIDI time-signature events; not a mensural interpretation",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 53,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.6666666666666667
+      },
+      {
+        "note": 69,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.6666666666666667
+      },
+      {
+        "note": 106,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 1.5,
+      "soundingDuration": 1.3333333333333333,
+      "releaseGap": 0.16666666666666666,
+      "observations": 19,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "virel2",
+    "title": "Plus dure qu'un dyamant",
+    "genre": "virelai",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/virel2.MID",
+    "file": "midi/virel2.MID",
+    "sha256": "89010af78cbf3cbcec534201e5be048f35c6eb240ceb600ff8d5fa3713a5efb9",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 2,
+    "selectedVoice": 1,
+    "final": 74,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 12,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 32,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 51,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 63,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 83,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 95,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 115,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.1666666666666665
+      },
+      {
+        "note": 127,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.5104166666666667
+      },
+      {
+        "note": 135,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 2,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "virel3",
+    "title": "Je sui aussi",
+    "genre": "virelai",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/virel3.MID",
+    "file": "midi/virel3.MID",
+    "sha256": "4d046ac999f0936b429744b035263bda340006ecb875ec12aa228d0a61bb7cf3",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 67,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 31,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 32,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 43,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 45,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 86,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 87,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 98,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 100,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 110,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 120,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 139,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 165,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 177,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 0.6666666666666666
+      },
+      {
+        "note": 187,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.25
+      },
+      {
+        "note": 196,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 4,
+      "soundingDuration": 3.75,
+      "releaseGap": 0.25,
+      "observations": 4,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "macmot1",
+    "title": "Qui es promesses",
+    "genre": "motet",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/macmot1.MID",
+    "file": "midi/macmot1.MID",
+    "sha256": "5bd595a91d0f0837552151479afadeecfe2ec658d81f199c1deed9ad396b9841",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 5,
+    "final": 70,
+    "extraction": "Track 6; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 2,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 6,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 10,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 14,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 18,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 22,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 26,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 30,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 34,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 38,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 43,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 47,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 2.25
+      },
+      {
+        "note": 50,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 4,
+      "soundingDuration": 3.75,
+      "releaseGap": 0.25,
+      "observations": 10,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
+  },
+  {
+    "id": "macmot2",
+    "title": "S'il estoit nulz",
+    "genre": "motet",
+    "source": "https://www.apemutam.org/instrumentsmedievaux/PartMed/Machaut/macmot2.MID",
+    "file": "midi/macmot2.MID",
+    "sha256": "f5cbdadc6db8654b98da8adee78bd4d2916b28600bfab771b1def573f40215d8",
+    "retrieved": "2026-10-05",
+    "transcriptionLicense": "Not specified by the source collection",
+    "genreBasis": "APEMUTAM table grouping; not independently catalogued",
+    "voices": 3,
+    "selectedVoice": 1,
+    "final": 79,
+    "extraction": "Track 2; highest mean-pitch track by default, highest simultaneous note, overlap clipped",
+    "meter": {
+      "events": [],
+      "basis": "No source meter events; modern 4/4 grid assumed for modelling",
+      "firstOnset": 0,
+      "pickupBeats": null
+    },
+    "phraseEnds": [
+      {
+        "note": 29,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 34,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 37,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 42,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.166666666666667
+      },
+      {
+        "note": 63,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 68,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 71,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 76,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.166666666666667
+      },
+      {
+        "note": 98,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 103,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 106,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 111,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.166666666666667
+      },
+      {
+        "note": 140,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 145,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 148,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 156,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 178,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 183,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 186,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 194,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 216,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 3.25
+      },
+      {
+        "note": 221,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 224,
+        "kind": "internal",
+        "basis": "Timing candidate: silence at least 0.5 beats and 35% of inter-onset spacing",
+        "gapBeats": 1.0104166666666667
+      },
+      {
+        "note": 235,
+        "kind": "terminal",
+        "basis": "Last pitched event of extracted source voice",
+        "gapBeats": 0
+      }
+    ],
+    "voiceReview": "Non-percussion track chosen by highest mean pitch; timing/range and track statistics inspected, cantus identity not musicologically verified",
+    "finalRhythm": {
+      "duration": 3,
+      "soundingDuration": 2.75,
+      "releaseGap": 0.25,
+      "observations": 12,
+      "basis": "Same sounding-duration release pattern within this voice"
+    }
   }
 ]

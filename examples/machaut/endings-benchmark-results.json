@@ -1,0 +1,795 @@
+{
+  "method": "1000 exact conditioned samples per strength from one compiled BP each; identical seeded stream, absolute pitch × duration, order 3, meter strength 1, minimum 0.25 beat, exact 4/4 ending, fixed pitch and cadence. Training-data comparison, not held-out stylistic validation.",
+  "corpus": {
+    "allPieces": 23,
+    "allNotes": 2879,
+    "defaultPieces": 16,
+    "defaultNotes": 1697,
+    "originalPilotPieces": 6,
+    "originalPilotNotes": 427
+  },
+  "prior": {
+    "durations": [
+      0.5,
+      1,
+      1.5,
+      1.75,
+      2,
+      2.5,
+      3,
+      3.5,
+      4,
+      6
+    ],
+    "marginal": [
+      0.567472009428403,
+      0.2575132586918091,
+      0.06305244549204478,
+      0.0005892751915144372,
+      0.05480259281084266,
+      0.004714201532115498,
+      0.02769593400117855,
+      0.0017678255745433118,
+      0.01473187978786093,
+      0.0076605774896876845
+    ],
+    "smoothing": 8,
+    "internal": {
+      "observations": 78,
+      "counts": [
+        0,
+        15,
+        21,
+        0,
+        16,
+        3,
+        18,
+        2,
+        1,
+        2
+      ],
+      "probabilities": [
+        0.05278809390031656,
+        0.19837332638993574,
+        0.25005139027832973,
+        0.00005481629688506393,
+        0.19114442723821792,
+        0.03532225130531307,
+        0.21187869153499336,
+        0.02342026284414356,
+        0.012998314398870782,
+        0.0239684258129942
+      ]
+    },
+    "terminal": {
+      "observations": 16,
+      "counts": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        4,
+        0,
+        4,
+        4
+      ],
+      "probabilities": [
+        0.18915733647613434,
+        0.12750441956393635,
+        0.06268414849734825,
+        0.041863091730504814,
+        0.059934197603614216,
+        0.001571400510705166,
+        0.1758986446670595,
+        0.0005892751915144372,
+        0.1715772932626203,
+        0.1692201924965626
+      ]
+    },
+    "observations": [
+      {
+        "piece": "machrond1",
+        "note": 28,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[71,1],[69,1],[79,1],[78,0.5],[76,0.5],[78,1],[79,0.5],[74,1]]"
+      },
+      {
+        "piece": "machrond1",
+        "note": 33,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[78,1],[79,0.5],[74,1],[74,0.5],[76,0.5],[78,0.5],[79,0.5],[79,1]]"
+      },
+      {
+        "piece": "machrond1",
+        "note": 41,
+        "kind": "terminal",
+        "duration": 3,
+        "fingerprint": "[[76,0.5],[81,0.5],[79,0.5],[81,1],[79,0.5],[77,1],[76,0.5],[77,3]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 1,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[76,3]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 4,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[76,3],[74,0.5],[76,0.5],[77,1]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 35,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[72,0.5],[74,0.5],[77,0.5],[76,0.5],[74,0.5],[72,0.5],[70,1],[69,2]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 41,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[70,1],[69,2],[76,1],[77,0.5],[76,0.5],[76,0.5],[74,0.5],[74,1]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 61,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[74,1],[72,0.5],[74,0.5],[76,1],[72,0.5],[74,0.5],[76,2],[73,3]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 74,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[76,1],[76,0.5],[74,0.5],[77,0.5],[76,0.5],[76,0.5],[74,0.5],[74,3]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 94,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[79,0.5],[77,0.5],[76,0.5],[76,0.5],[74,0.5],[74,0.5],[72,0.5],[72,1]]"
+      },
+      {
+        "piece": "machrond5",
+        "note": 121,
+        "kind": "terminal",
+        "duration": 4,
+        "fingerprint": "[[74,1],[72,0.5],[74,0.5],[77,0.5],[76,0.5],[76,0.5],[74,0.5],[74,4]]"
+      },
+      {
+        "piece": "machrond6",
+        "note": 2,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[74,3],[73,1]]"
+      },
+      {
+        "piece": "machrond6",
+        "note": 44,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[80,0.5],[81,0.5],[80,0.5],[81,0.5],[77,1],[79,0.5],[77,1],[76,1.5]]"
+      },
+      {
+        "piece": "machrond6",
+        "note": 60,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[77,1],[76,0.5],[74,1],[72,1.5],[74,1.5],[76,3],[77,3],[76,1.5]]"
+      },
+      {
+        "piece": "machrond6",
+        "note": 62,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[74,1],[72,1.5],[74,1.5],[76,3],[77,3],[76,1.5],[77,1.5],[76,1.5]]"
+      },
+      {
+        "piece": "machrond6",
+        "note": 99,
+        "kind": "terminal",
+        "duration": 3,
+        "fingerprint": "[[76,1],[74,0.5],[74,0.5],[73,0.5],[74,0.5],[73,1],[71,0.5],[74,3]]"
+      },
+      {
+        "piece": "machrond12",
+        "note": 8,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[76,1],[74,1],[76,1],[74,1.5],[74,0.5],[73,1],[74,3],[74,1.5]]"
+      },
+      {
+        "piece": "machrond12",
+        "note": 35,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[76,0.5],[74,1],[72,2],[70,1],[69,6],[71,1],[72,2],[67,1.5]]"
+      },
+      {
+        "piece": "machrond12",
+        "note": 72,
+        "kind": "terminal",
+        "duration": 6,
+        "fingerprint": "[[70,1],[69,1.5],[69,0.5],[67,1],[66,1.5],[64,0.5],[66,1],[67,6]]"
+      },
+      {
+        "piece": "machrond18",
+        "note": 37,
+        "kind": "terminal",
+        "duration": 6,
+        "fingerprint": "[[74,0.5],[70,1],[69,0.5],[67,0.5],[69,1],[67,1],[66,0.5],[67,6]]"
+      },
+      {
+        "piece": "mach2",
+        "note": 15,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[76,2],[72,1],[76,1],[76,0.5],[74,1],[72,0.5],[74,2],[74,2]]"
+      },
+      {
+        "piece": "mach2",
+        "note": 33,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[72,1],[71,1],[69,1],[67,2],[69,0.5],[67,1],[65,0.5],[69,2]]"
+      },
+      {
+        "piece": "mach2",
+        "note": 57,
+        "kind": "terminal",
+        "duration": 2,
+        "fingerprint": "[[69,1],[67,1],[69,0.5],[71,0.5],[72,0.5],[71,1],[69,0.5],[69,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 14,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[76,0.5],[77,0.5],[76,0.5],[74,0.5],[72,0.5],[74,0.5],[71,1],[73,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 23,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[74,0.5],[76,0.5],[74,0.5],[72,0.5],[71,0.5],[69,0.5],[71,0.5],[67,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 29,
+        "kind": "internal",
+        "duration": 6,
+        "fingerprint": "[[71,0.5],[67,2],[64,1],[66,1],[67,0.5],[66,1],[64,0.5],[67,6]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 40,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[76,1],[79,0.5],[77,0.5],[76,0.5],[77,0.5],[74,1],[73,2],[74,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 49,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[74,0.5],[76,0.5],[74,0.5],[72,0.5],[71,0.5],[69,0.5],[67,0.5],[69,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 60,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[74,0.5],[72,0.5],[71,0.5],[69,0.5],[71,0.5],[67,1],[66,2],[67,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 73,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[72,0.5],[70,0.5],[69,3],[79,1.5],[77,0.5],[76,0.5],[77,0.5],[74,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 84,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[77,0.5],[76,0.5],[74,0.5],[72,0.5],[70,0.5],[69,1],[73,2],[74,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 96,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[72,0.5],[76,0.5],[74,0.5],[72,0.5],[70,0.5],[69,0.5],[70,0.5],[67,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 105,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[78,0.5],[79,1.5],[77,0.5],[76,0.5],[77,0.5],[74,1],[73,2],[74,2]]"
+      },
+      {
+        "piece": "machrond7",
+        "note": 112,
+        "kind": "terminal",
+        "duration": 6,
+        "fingerprint": "[[74,2],[70,0.5],[73,0.5],[74,1],[76,0.5],[74,1],[73,0.5],[74,6]]"
+      },
+      {
+        "piece": "machrond15",
+        "note": 4,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,4],[74,1],[76,2],[74,1.5]]"
+      },
+      {
+        "piece": "machrond15",
+        "note": 10,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[76,2],[74,1.5],[72,0.5],[71,0.5],[69,0.5],[74,0.5],[72,1],[71,1]]"
+      },
+      {
+        "piece": "machrond15",
+        "note": 137,
+        "kind": "terminal",
+        "duration": 4,
+        "fingerprint": "[[76,0.5],[72,0.5],[71,0.5],[69,1],[67,1],[69,1],[71,0.5],[72,4]]"
+      },
+      {
+        "piece": "machrond19",
+        "note": 23,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,0.5],[71,1],[69,0.5],[67,2],[69,0.5],[71,0.5],[72,0.5],[67,1.5]]"
+      },
+      {
+        "piece": "machrond19",
+        "note": 29,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,0.5],[67,1.5],[69,1],[65,2],[69,0.5],[71,0.5],[72,0.5],[69,1.5]]"
+      },
+      {
+        "piece": "machrond19",
+        "note": 62,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,0.5],[71,1],[69,0.5],[67,2],[69,0.5],[71,0.5],[72,0.5],[71,1.5]]"
+      },
+      {
+        "piece": "machrond19",
+        "note": 68,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,0.5],[71,1.5],[76,1],[74,2],[76,0.5],[78,0.5],[79,0.5],[72,1.5]]"
+      },
+      {
+        "piece": "machrond19",
+        "note": 78,
+        "kind": "terminal",
+        "duration": 3,
+        "fingerprint": "[[79,0.5],[76,0.5],[77,0.5],[76,0.5],[74,0.5],[72,1],[71,0.5],[72,3]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 11,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[79,0.5],[81,0.5],[79,0.5],[77,0.5],[76,0.5],[74,1],[76,1],[74,1.5]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 12,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[81,0.5],[79,0.5],[77,0.5],[76,0.5],[74,1],[76,1],[74,1.5],[74,1.5]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 32,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[76,1.5],[81,0.5],[76,0.5],[78,0.5],[79,0.5],[78,0.5],[79,2],[77,2]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 36,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[79,0.5],[78,0.5],[79,2],[77,2],[76,0.5],[74,1],[72,0.5],[74,1.5]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 45,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[79,1],[77,1],[76,4],[77,2],[79,1],[77,0.5],[79,0.5],[81,2]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 50,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[77,0.5],[79,0.5],[81,2],[77,0.5],[76,0.5],[77,0.5],[74,0.5],[81,2]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 76,
+        "kind": "internal",
+        "duration": 2.5,
+        "fingerprint": "[[79,1.5],[77,0.5],[79,1.5],[72,1],[81,1],[79,0.5],[77,2],[77,2.5]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 85,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[76,0.5],[72,2],[76,0.5],[77,1],[79,1],[77,1],[79,0.5],[81,1.5]]"
+      },
+      {
+        "piece": "machrond8",
+        "note": 91,
+        "kind": "terminal",
+        "duration": 4,
+        "fingerprint": "[[79,0.5],[81,1.5],[74,0.5],[76,0.5],[78,0.5],[79,0.5],[78,0.5],[79,4]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 7,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[72,1],[74,2],[76,6],[77,1.5],[79,0.5],[77,1],[76,1]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 26,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[74,1],[76,0.5],[72,1],[74,2],[69,1],[71,2],[72,3],[72,3]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 28,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,1],[74,2],[69,1],[71,2],[72,3],[72,3],[79,3],[79,1.5]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 33,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[72,3],[79,3],[79,1.5],[79,1],[77,0.5],[75,1],[74,0.5],[75,1]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 35,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[79,1.5],[79,1],[77,0.5],[75,1],[74,0.5],[75,1],[72,0.5],[70,1]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 42,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[70,1],[72,0.5],[70,1],[72,0.5],[74,2],[70,0.5],[72,0.5],[74,1.5]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 45,
+        "kind": "internal",
+        "duration": 6,
+        "fingerprint": "[[72,0.5],[74,2],[70,0.5],[72,0.5],[74,1.5],[74,1],[67,0.5],[67,6]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 67,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[74,0.5],[72,1],[74,0.5],[70,1],[72,2],[74,3],[71,3],[71,1.5]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 69,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[74,0.5],[70,1],[72,2],[74,3],[71,3],[71,1.5],[72,1.5],[71,1]]"
+      },
+      {
+        "piece": "machrond9",
+        "note": 97,
+        "kind": "terminal",
+        "duration": 6,
+        "fingerprint": "[[77,0.5],[75,0.5],[74,0.5],[72,1],[74,0.5],[72,1],[71,2],[72,6]]"
+      },
+      {
+        "piece": "machremfor2",
+        "note": 17,
+        "kind": "internal",
+        "duration": 2.5,
+        "fingerprint": "[[70,0.5],[72,0.5],[74,0.5],[72,0.5],[74,0.5],[70,0.5],[72,1],[74,2.5]]"
+      },
+      {
+        "piece": "machremfor2",
+        "note": 85,
+        "kind": "internal",
+        "duration": 2.5,
+        "fingerprint": "[[71,0.5],[73,0.5],[74,0.5],[74,0.5],[72,0.5],[71,0.5],[73,1],[74,2.5]]"
+      },
+      {
+        "piece": "machremfor2",
+        "note": 236,
+        "kind": "terminal",
+        "duration": 1,
+        "fingerprint": "[[74,0.5],[74,1],[67,0.5],[69,1],[70,0.5],[69,1],[67,1.5],[67,1]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 11,
+        "kind": "internal",
+        "duration": 2,
+        "fingerprint": "[[69,1],[71,0.5],[72,0.5],[74,0.5],[72,0.5],[71,0.5],[69,0.5],[67,2]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 22,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,0.5],[71,1],[72,1],[65,0.5],[70,0.5],[69,0.5],[70,0.5],[67,1.5]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 26,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[70,0.5],[69,0.5],[70,0.5],[67,1.5],[62,0.5],[64,1],[62,1],[60,3]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 34,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[72,1],[70,0.5],[69,0.5],[67,0.5],[69,0.5],[65,1],[67,1],[69,1.5]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 40,
+        "kind": "internal",
+        "duration": 3.5,
+        "fingerprint": "[[67,1],[69,1.5],[60,0.5],[62,0.5],[65,0.5],[64,0.5],[62,0.5],[65,3.5]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 49,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[77,1],[77,1],[77,1.5],[76,0.5],[76,0.5],[74,1],[73,0.5],[74,1]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 55,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[73,0.5],[74,1],[71,1],[72,0.5],[76,0.5],[74,0.5],[76,0.5],[72,1]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 61,
+        "kind": "internal",
+        "duration": 3.5,
+        "fingerprint": "[[76,0.5],[72,1],[64,1],[65,0.5],[70,0.5],[69,0.5],[70,0.5],[67,3.5]]"
+      },
+      {
+        "piece": "virel1",
+        "note": 82,
+        "kind": "terminal",
+        "duration": 1.75,
+        "fingerprint": "[[76,0.5],[72,1],[64,1],[65,0.5],[69,0.5],[67,0.5],[69,0.5],[65,1.75]]"
+      },
+      {
+        "piece": "virel4",
+        "note": 53,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[74,1],[72,0.5],[70,1],[69,0.5],[67,1],[65,0.5],[67,1],[69,3]]"
+      },
+      {
+        "piece": "virel4",
+        "note": 69,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[74,1],[72,0.5],[70,1],[69,0.5],[67,1],[69,0.5],[65,1],[67,3]]"
+      },
+      {
+        "piece": "virel4",
+        "note": 106,
+        "kind": "terminal",
+        "duration": 1.5,
+        "fingerprint": "[[65,0.5],[64,1],[65,0.5],[62,1],[66,0.5],[67,1],[69,1.5],[67,1.5]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 12,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[72,0.5],[71,1],[72,0.5],[69,1],[73,1],[73,1],[71,1],[74,3]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 32,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[79,0.5],[77,0.5],[76,0.5],[74,1],[76,0.5],[73,1],[74,2],[69,3]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 51,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[79,0.5],[77,0.5],[76,0.5],[74,1],[76,0.5],[73,1],[74,2],[76,3]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 63,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[79,0.5],[76,1],[76,1],[69,1],[69,1.5],[71,0.5],[73,1],[74,1]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 83,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[81,0.5],[79,0.5],[81,1],[77,0.5],[76,1],[77,0.5],[74,1],[76,3]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 95,
+        "kind": "internal",
+        "duration": 1,
+        "fingerprint": "[[72,0.5],[74,1],[71,0.5],[72,0.5],[74,1.5],[72,0.5],[74,1],[76,1]]"
+      },
+      {
+        "piece": "virel2",
+        "note": 135,
+        "kind": "terminal",
+        "duration": 3,
+        "fingerprint": "[[77,0.5],[76,1],[77,0.5],[74,1],[73,0.5],[71,0.5],[73,1],[74,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 31,
+        "kind": "internal",
+        "duration": 4,
+        "fingerprint": "[[74,0.5],[72,0.5],[74,0.5],[71,0.5],[73,3],[71,0.5],[73,0.5],[74,4]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 32,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[72,0.5],[74,0.5],[71,0.5],[73,3],[71,0.5],[73,0.5],[74,4],[69,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 43,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[69,0.5],[70,0.5],[69,0.5],[67,0.5],[66,0.5],[67,0.5],[63,0.5],[66,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 45,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[69,0.5],[67,0.5],[66,0.5],[67,0.5],[63,0.5],[66,3],[66,1],[67,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 110,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[77,0.5],[76,1],[74,0.5],[76,0.5],[74,0.5],[72,0.5],[70,0.5],[69,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 120,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[67,0.5],[69,0.5],[70,0.5],[69,1],[67,1],[65,0.5],[67,4],[73,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 139,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[74,2],[79,0.5],[77,0.5],[76,0.5],[74,0.5],[72,1],[70,1],[69,1.5]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 165,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[76,1],[74,0.5],[76,0.5],[74,0.5],[72,0.5],[70,0.5],[69,2],[78,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 177,
+        "kind": "internal",
+        "duration": 1.5,
+        "fingerprint": "[[79,0.5],[81,1],[77,0.5],[76,0.5],[76,0.5],[74,1],[72,0.5],[74,1.5]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 187,
+        "kind": "internal",
+        "duration": 3,
+        "fingerprint": "[[74,0.5],[74,0.5],[72,0.5],[76,0.5],[74,0.5],[72,0.5],[70,0.5],[69,3]]"
+      },
+      {
+        "piece": "virel3",
+        "note": 196,
+        "kind": "terminal",
+        "duration": 4,
+        "fingerprint": "[[69,0.5],[67,0.5],[69,0.5],[70,0.5],[69,1],[67,1],[66,0.5],[67,4]]"
+      }
+    ],
+    "duplicatesRemoved": 13,
+    "semantics": "Source EOF endings and conservative silence-based internal candidates; repeated literal eight-event cadences deduplicated per work and kind; source event spacing includes silence"
+  },
+  "rows": [
+    {
+      "strength": 0,
+      "samples": 1000,
+      "finalDurationHistogram": {
+        "1": 17,
+        "2": 753,
+        "3": 1,
+        "4": 41,
+        "0.5": 169,
+        "2.5": 15,
+        "1.5": 4
+      },
+      "meanFinalDuration": 1.818,
+      "meanLogEndingPreference": -0.04421245479422671,
+      "compileMs": 2408.625959,
+      "productStates": 18042,
+      "timeIndexedEdges": 27521681,
+      "bufferBytes": 21347452
+    },
+    {
+      "strength": 1,
+      "samples": 1000,
+      "finalDurationHistogram": {
+        "1": 10,
+        "2": 597,
+        "3": 4,
+        "4": 345,
+        "6": 1,
+        "0.5": 35,
+        "1.5": 3,
+        "2.5": 5
+      },
+      "meanFinalDuration": 2.6365,
+      "meanLogEndingPreference": 0.8599175590563173,
+      "compileMs": 2339.682417,
+      "productStates": 18042,
+      "timeIndexedEdges": 27521681,
+      "bufferBytes": 21258332
+    }
+  ]
+}
