@@ -37,6 +37,8 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   expect(first.notes).toHaveLength(32);
   expect(first.notes.at(-1).midi).toBe(74);
   expect(first.violations).toEqual([]);
+  expect(first.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
+  expect((first.notes.at(-1).onset + first.notes.at(-1).duration) % 4).toBe(0);
   await page.locator("#score .vf-stavenote").nth(5).click();
   await expect(page.locator("#explanation")).toContainText("Conditioned");
   await ready(page);
@@ -150,6 +152,11 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     await ready(page);
     const r = await jsonDownload(page);
     expect(r.model.rhythm).toBe("corpus");
+    expect(r.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
+    expect((r.notes.at(-1).onset + r.notes.at(-1).duration) % 4).toBe(0);
+    expect(r.sampledNotes.at(-1).duration).toBeLessThanOrEqual(
+      r.notes.at(-1).duration,
+    );
     expect(r.violations).toEqual([]);
     expect(new Set(r.notes.map((n) => n.duration)).size).toBeGreaterThan(1);
     await expect(page.locator("#score-subtitle")).toContainText(
@@ -166,8 +173,27 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     await page.locator("#download-xml").click();
     const xml = await readFile(await (await download).path(), "utf8");
     expect(xml).toContain('<tie type="start"/>');
+    expect(xml).not.toContain("<rest/>");
+    const finalGlyph = page
+      .locator('#score [aria-label^="Explain score note 32 "]')
+      .last();
+    await finalGlyph.click();
+    await expect(page.locator("#explanation")).toContainText(`Note 32:`);
     await page.locator("#play").click();
     await page.locator("#stop").click();
   }
   expect(errors).toEqual([]);
+});
+
+test("Machaut: disabling held ending restores the sampled durations", async ({
+  page,
+}) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await page.locator("#hold-ending").uncheck();
+  await ready(page);
+  const r = await jsonDownload(page);
+  expect(r.endingAdjustment).toBeNull();
+  expect(r.notes).toEqual(r.sampledNotes);
+  expect(r.notes.every((n) => n.duration === 1)).toBe(true);
 });

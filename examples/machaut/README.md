@@ -60,7 +60,7 @@ in interval mode the independent anchor-duration probability is reported separat
 
 Length, fixed positions, cadences and repeats still count **notes**, and repeated
 spans constrain pitches only; they do not require equal durations. Total beat
-count is reported but is not constrained. Dotted values and ties across bar
+count is reported but is not constrained during inference. Dotted values and ties across bar
 lines retain their event duration in notation, playback, exports and score-click
 explanations. The modern 4/4 engraving grid is a display convention; neither modal classification nor mensural rhythm is inferred.
 An interval model emits N−1 intervals and requires an anchor pitch. If Start is
@@ -157,3 +157,19 @@ same inputs and library version.
 Future research: review voice/final annotations, establish a licensed broader
 corpus, add rests, beat-count constraints and rhythmic repeats, evaluate
 transposition-invariant copying, and design stronger held-out stylistic baselines.
+
+
+## Held final note
+
+**Hold final note to bar end (at least 2 beats)** is enabled by default. After
+sampling, the final event is sustained to the earliest 4/4 bar boundary that
+gives it at least two quarter-note beats and never shortens its sampled duration.
+This can carry the note into the next bar. It finishes at the end of beat four,
+without a trailing rest, and applies in both generation modes and rhythm modes.
+Uncheck it to retain the model's original durations.
+
+This is an explicit performance ending, not an additional BP condition: pitches,
+model tokens and their probabilities are unchanged. Experiment JSON preserves
+`sampledNotes` as well as the performed `notes`, ending settings and adjustment.
+The final note explanation distinguishes its sampled and held durations.
+Playback, MIDI and MusicXML all use the held ending, including ties as needed.

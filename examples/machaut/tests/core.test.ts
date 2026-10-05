@@ -443,3 +443,76 @@ for (const rep of ["absolute", "relative", "intervals"] as const) {
     assert.ok(ordinary.notes.every((n) => [0.5, 1, 1.5].includes(n.duration)));
   });
 }
+
+test("ending holds to the next eligible bar boundary without shortening or mutation", async () => {
+  const { holdEnding } = await import("../src/generation/ending");
+  for (const [onset, duration, expected] of [
+    [2, 2, 2],
+    [3, 1, 5],
+    [7.5, 0.5, 4.5],
+    [2, 6, 6],
+  ]) {
+    const input = [note(60, duration, onset)];
+    const ended = holdEnding(input, { minDuration: 2, barBeats: 4 });
+    assert.equal(ended.notes[0].duration, expected);
+    assert.equal((ended.notes[0].onset + ended.notes[0].duration) % 4, 0);
+    assert.equal(input[0].duration, duration);
+    assert.equal(ended.adjustment?.sampledDuration, duration);
+  }
+  const input = [note(60)];
+  assert.equal(holdEnding(input).notes, input);
+  assert.throws(() => holdEnding(input, { minDuration: NaN, barBeats: 4 }));
+  assert.throws(() => holdEnding(input, { minDuration: 2, barBeats: 0 }));
+});
+for (const rep of ["absolute", "relative", "intervals"] as const) {
+  for (const rhythm of ["quarter", "corpus"] as const) {
+    test(`${rep}/${rhythm}: held ending preserves model sample and exports without trailing rests`, () => {
+      const opts = options(rep);
+      opts.model.rhythm = rhythm;
+      const source = corpus.map((m) => {
+        let onset = 0;
+        return {
+          ...m,
+          notes: m.notes.map((n, i) => {
+            const duration = [0.5, 1, 1.5][i % 3];
+            const result = note(n.midi, duration, onset);
+            onset += duration;
+            return result;
+          }),
+        };
+      });
+      for (const mode of ["constrained", "ordinary"] as const) {
+        const original = generate(source, { ...opts, mode });
+        const held = generate(source, {
+          ...opts,
+          mode,
+          ending: { minDuration: 2, barBeats: 4 },
+        });
+        assert.deepEqual(held.sampledNotes, original.notes);
+        assert.equal(held.logSourceWeight, original.logSourceWeight);
+        assert.equal(
+          held.logConditionalProbability,
+          original.logConditionalProbability,
+        );
+        assert.deepEqual(held.notes.slice(0, -1), original.notes.slice(0, -1));
+        assert.equal(held.notes.at(-1)!.midi, original.notes.at(-1)!.midi);
+        const last = held.notes.at(-1)!;
+        assert.ok(
+          last.duration >= 2 &&
+            last.duration >= original.notes.at(-1)!.duration,
+        );
+        assert.equal((last.onset + last.duration) % 4, 0);
+        const xml = exportMusicXML(held.notes);
+        assert.ok(!xml.includes("<rest/>"));
+        assert.deepEqual(
+          loadMusicXML(xml, { id: "held", title: "Held" }).notes,
+          held.notes,
+        );
+        assert.deepEqual(
+          loadMidi(exportMidi(held.notes), { id: "held", title: "Held" }).notes,
+          held.notes,
+        );
+      }
+    });
+  }
+}

@@ -131,3 +131,13 @@ Duration extension verification (commit `00e8735`):
 The final public-page check exposed a loading race when selecting learned rhythm
 before corpus initialization; the rhythm selector now stays disabled until its
 preset handler is registered. The delayed-load browser regression covers this.
+
+
+## Held final note
+
+The default finishing option sustains the final sampled event for at least two
+beats, ending at a 4/4 bar boundary with no trailing rest. It never shortens a
+longer sampled value. This deterministic performance transformation leaves the
+model sample and BP probabilities unchanged; JSON and explanations distinguish
+sampled from held durations. The option can be disabled and works in both rhythm
+and generation modes. Round-trip and integration tests cover both outcomes.

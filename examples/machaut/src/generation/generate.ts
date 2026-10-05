@@ -8,8 +8,10 @@ import {
   type MusicalConstraints,
 } from "../constraints/musical";
 import { diagnostics } from "./diagnostics";
+import { holdEnding, type EndingOptions } from "./ending";
 export interface GenerationOptions {
   model: ModelOptions;
+  ending?: EndingOptions | null;
   constraints: MusicalConstraints;
   seed: number;
   mode: "constrained" | "ordinary";
@@ -20,6 +22,7 @@ export interface NoteExplanation {
   context: number[];
   contextLabels: string[];
   duration: number;
+  sampledDuration: number;
   continuations: {
     token: number;
     pitch: number;
@@ -110,11 +113,15 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
   const durations = sequence.map((s) => trained.decode(s).duration);
   if (rep === "intervals") durations.unshift(anchorDuration);
   let onset = 0;
-  const notes = pitches.map((p, i) => {
+  const sampledNotes = pitches.map((p, i) => {
     const n = note(p, durations[i], onset);
     onset += n.duration;
     return n;
   });
+  const { notes, adjustment: endingAdjustment } = holdEnding(
+    sampledNotes,
+    options.ending,
+  );
   const violations = constraintViolations(pitches, c);
   if (bp && violations.length)
     throw new Error(
@@ -163,6 +170,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       pitch: pitches[t + (rep === "intervals" ? 1 : 0)],
       context,
       duration: notes[t + (rep === "intervals" ? 1 : 0)].duration,
+      sampledDuration: sampledNotes[t + (rep === "intervals" ? 1 : 0)].duration,
       contextLabels: context.map((s) => {
         const d = trained.decode(s);
         return `${rep === "absolute" ? pitchName(d.pitch) : `${d.pitch > 0 ? "+" : ""}${d.pitch}`}${options.model.rhythm === "corpus" ? ` / ${d.duration} beats` : ""}`;
@@ -212,6 +220,9 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
         : null,
     anchor: rep === "intervals" ? initialPitch(c) : null,
     notes,
+    sampledNotes,
+    ending: options.ending ?? null,
+    endingAdjustment,
     stats: trained.stats,
     diagnostics: diagnostics(pitches, corpus, options.model.maxOrder),
     violations,
