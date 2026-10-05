@@ -81,6 +81,12 @@ export function learnPhraseDurations(corpus: Melody[]) {
   const voices = new Set<string>();
   let duplicates = 0;
   for (const m of corpus) {
+    // Cover every duration emitted by training, including imported copies whose
+    // final release annotation differs. Only endpoint observations are deduplicated.
+    m.notes.forEach((_, i) => {
+      const d = rhythmicDuration(m, i);
+      global.set(d, (global.get(d) ?? 0) + 1);
+    });
     const work = m.metadata.sha256 ?? JSON.stringify(m.notes);
     const voiceSignature = JSON.stringify(
       m.notes.map((n) => [
@@ -95,10 +101,6 @@ export function learnPhraseDurations(corpus: Melody[]) {
     }
     works.add(work);
     voices.add(voiceSignature);
-    m.notes.forEach((_, i) => {
-      const d = rhythmicDuration(m, i);
-      global.set(d, (global.get(d) ?? 0) + 1);
-    });
     const seen = new Set<string>();
     for (const end of m.metadata.phraseEnds ?? annotatePhraseEnds(m)) {
       if (

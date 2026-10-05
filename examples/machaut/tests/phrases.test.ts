@@ -201,3 +201,47 @@ test("generation applies EOF and internal weights jointly and reports a reproduc
   assert.equal(ordinary.notes.length, 8);
   assert.equal(ordinary.model.includeIntervalAnchor, true);
 });
+
+test("imported duplicate without release annotation retains source duration support", () => {
+  const raw: Melody = {
+    id: "imported",
+    metadata: { id: "imported", title: "Imported" },
+    notes: [note(60, 1.75, 0), note(62, 1.75, 2), note(60, 1.75, 4)],
+  };
+  const annotated: Melody = {
+    ...raw,
+    id: "bundled",
+    metadata: {
+      ...raw.metadata,
+      id: "bundled",
+      finalRhythm: estimateFinalRhythm(raw),
+    },
+  };
+  const ms = [annotated, raw];
+  const prior = learnPhraseDurations(ms);
+  assert.equal(prior.terminal.observations, 1);
+  assert.equal(prior.duplicatesRemoved, 1);
+  assert.deepEqual(prior.durations, [1.75, 2]);
+  const t = train(ms, {
+    representation: "absolute",
+    rhythm: "corpus",
+    maxOrder: 1,
+    backoffWeight: 0.25,
+  });
+  const wrapped = withPhraseEnding(
+    t.graph,
+    new DFA<number>({ startState: 0, transition: () => 0, accept: () => true }),
+    t.decode,
+    prior,
+    1,
+    [],
+  );
+  const bp = runBP(wrapped.graph, wrapped.dfa, { length: 4 });
+  assert.ok(Number.isFinite(bp.logPartitionFunction));
+  assert.ok(phraseWeight(prior, 1.75, "terminal", 1) > 0);
+  for (const kind of ["terminal", "internal"] as const)
+    assert.ok(
+      Math.abs(prior[kind].probabilities.reduce((a, b) => a + b, 0) - 1) <
+        1e-12,
+    );
+});

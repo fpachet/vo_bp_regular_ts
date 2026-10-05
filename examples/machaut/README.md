@@ -251,7 +251,9 @@ Internal boundary candidates require an actual silence of at least half a beat
 and 35% of inter-onset spacing. These are conservative timing estimates, not
 verified editorial phrases. Every piece also supplies one EOF ending. Repeated
 literal eight-event pitch/duration cadence signatures count once per work and
-boundary kind; duplicate source works count once. The default 16-piece repertoire
+boundary kind; duplicate source works count once for ending observations.
+The smoothing distribution covers every duration in the full training corpus,
+including imported copies with different final-release annotations. The default 16-piece repertoire
 has **78 internal candidates and 16 final endings**, with 13 repeated observations
 removed. User snapshots may supply reviewed `metadata.phraseEnds` annotations.
 
