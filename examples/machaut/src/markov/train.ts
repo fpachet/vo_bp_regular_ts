@@ -6,6 +6,7 @@ export interface ModelOptions {
   backoffWeight: number;
   rhythm?: "quarter" | "corpus";
   includeIntervalAnchor?: boolean;
+  metricalStrength?: number;
 }
 export interface MusicToken {
   pitch: number;
@@ -25,6 +26,12 @@ export function train(corpus: Melody[], options: ModelOptions) {
     throw new Error("Invalid model parameters");
   if (options.rhythm && !["quarter", "corpus"].includes(options.rhythm))
     throw new Error("Unknown rhythm mode");
+  if (
+    !Number.isFinite(options.metricalStrength ?? 0) ||
+    (options.metricalStrength ?? 0) < 0 ||
+    (options.metricalStrength ?? 0) > 3
+  )
+    throw new Error("Metrical strength must be between 0 and 3");
   const rhythmic = options.rhythm === "corpus";
   const tokenTable: MusicToken[] = [];
   const tokenIds = new Map<string, number>();

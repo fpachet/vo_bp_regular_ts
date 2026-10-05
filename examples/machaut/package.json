@@ -9,7 +9,8 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "corpus:prepare": "node --import tsx scripts/prepare-corpus.ts",
     "experiment": "node --import tsx scripts/leave-one-out.ts",
-    "benchmark": "node --import tsx scripts/benchmark.ts"
+    "benchmark": "node --import tsx scripts/benchmark.ts",
+    "benchmark:meter": "node --import tsx scripts/meter-benchmark.ts"
   },
   "dependencies": {
     "@tonejs/midi": "^2.0.28",

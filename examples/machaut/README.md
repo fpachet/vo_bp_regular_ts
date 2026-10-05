@@ -166,7 +166,6 @@ Future research: review voice/final annotations, establish a licensed broader
 corpus, add rests, beat-count constraints and rhythmic repeats, evaluate
 transposition-invariant copying, and design stronger held-out stylistic baselines.
 
-
 ## Meter and final-position constraint
 
 **Long final note at bar end (at least 2 beats)** is enabled by default with
@@ -194,3 +193,45 @@ product states, 750,000 time-indexed states and 3,000,000 DFA evaluations. Highe
 orders and positional repeats can exceed these explicit exact-inference budgets.
 The step-cadence acceptor stores only a Boolean when exact interval tails are not
 requested, reducing memory without changing the accepted language.
+
+### Learned metrical preferences
+
+The generator defaults to meter strength **1** for learned pitch × duration.
+Set **Learned meter strength** to **0** to recover the previous model; values up
+to 3 increase the preference. Quarter-note mode disables it. Both generation
+modes retain the soft metrical model; ordinary mode ignores hard musical rules.
+
+For each sixteenth-note phase on the assumed modern 4/4 grid, training counts
+source inter-onset durations at their original MIDI onsets. The conditional
+duration distribution is smoothed towards the corpus-wide duration distribution
+with eight pseudo-observations. Missing phases therefore have neutral weights.
+The transition potential is
+`[P(duration | phase) / P(duration)] ** strength`, avoiding a second marginal
+duration prior. The sequence distribution is the original Markov probability
+times these potentials, normalized globally over the requested note horizon
+and applicable exact constraints. This is a weighted sequence model, not a
+locally normalized Markov transition rule. Interval opening durations participate
+jointly whenever these weights are enabled, including in ordinary mode.
+
+The existing phase state applies the weights and enforces the optional exact
+bar ending. No state dimension is added when meter was already enabled. With
+free rhythm, tracking phase does add product states compared with a source-only
+model. Experiment JSON includes the full prior, crossing/onset diagnostics,
+separate base-source and metrical log weights, and the combined partition and
+conditional probability. Note explanations show each continuation's meter weight.
+
+The six source MIDI files contain no time-signature events. These are preferences
+under an assumed 4/4 grid, not reconstructed mensural meter. A future annotated
+corpus should specify meter changes and pickup offsets before interpreting the
+statistics historically.
+
+Run `npm run benchmark:meter` from this directory to reproduce
+[meter-benchmark-results.json](meter-benchmark-results.json). For 40 identical
+seeds and the default pitch/cadence/bar-ending conditions, enabling strength 1
+reduced onset-distribution total-variation distance from the source from
+**0.117 to 0.053** (55% reduction). Median generation time was **148 vs 153 ms**
+on this local run, with **1,553 states** in both cases and approximately
+**1.22 MiB** of packed buffers. Crossing rates were **6.7% vs 4.6%**, while
+the corpus rate was **7.0%**: matching local duration preferences does not
+guarantee matching aggregate crossings after other constraints. These measurements
+use the training corpus and do not establish held-out stylistic improvement.

@@ -1,4 +1,9 @@
-import { runBP, seededRng, type ProductBPResult } from "markov-constraints";
+import {
+  DFA,
+  runBP,
+  seededRng,
+  type ProductBPResult,
+} from "markov-constraints";
 import { note, pitchName, type Melody } from "../music";
 import { train, type ModelOptions, logSourceWeight } from "../markov/train";
 import {
@@ -13,6 +18,7 @@ import {
   endingViolations,
   type EndingOptions,
 } from "./ending";
+import { learnMeter, meterWeight, meterSummary } from "../markov/meter";
 export interface GenerationOptions {
   model: ModelOptions;
   ending?: EndingOptions | null;
@@ -32,6 +38,7 @@ export interface NoteExplanation {
     pitch: number;
     duration: number;
     sourceProbability: number;
+    metricalWeight: number;
     conditionedProbability: number;
     reason: string;
   }[];
@@ -60,9 +67,13 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     options.seed > 0xffffffff
   )
     throw new Error("Seed must be an unsigned 32-bit integer");
+  const strength =
+    options.model.rhythm === "corpus"
+      ? (options.model.metricalStrength ?? 0)
+      : 0;
+  const prior = strength ? learnMeter(corpus) : undefined;
   const includeAnchor =
-    !!options.ending &&
-    options.mode === "constrained" &&
+    (strength > 0 || (!!options.ending && options.mode === "constrained")) &&
     options.model.rhythm === "corpus" &&
     options.model.representation === "intervals";
   const effectiveModel = {
@@ -76,18 +87,34 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     rep = options.model.representation;
   const horizon =
     rep === "intervals" && !includeAnchor ? c.length - 1 : c.length;
-  const pitchDfa = musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
-  const dfa = options.ending
-    ? meteredAcceptor(pitchDfa, trained.decode, options.ending, includeAnchor)
-    : pitchDfa;
+  const pitchDfa =
+    options.mode === "ordinary"
+      ? new DFA<number>({
+          startState: 0,
+          transition: () => 0,
+          accept: () => true,
+        })
+      : musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
+  const hardEnding = options.mode === "constrained" ? options.ending : null;
+  const dfa =
+    hardEnding || prior
+      ? meteredAcceptor(
+          pitchDfa,
+          trained.decode,
+          hardEnding ?? null,
+          includeAnchor,
+          prior,
+          strength,
+        )
+      : pitchDfa;
   let bp: ProductBPResult<number> | undefined,
     sequence: number[] = [];
-  if (options.mode === "constrained") {
+  if (options.mode === "constrained" || prior) {
     bp = runBP(trained.graph, dfa, {
       length: horizon,
       maxProductStates: 150000,
       maxTimeIndexedStates: 750000,
-      maxProductEdges: options.ending ? 10000000 : 3000000,
+      maxProductEdges: options.ending || prior ? 10000000 : 3000000,
       maxDfaTransitions: 3000000,
     });
     if (!bp.feasible)
@@ -143,7 +170,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     ...constraintViolations(pitches, c),
     ...endingViolations(notes, options.ending),
   ];
-  if (bp && violations.length)
+  if (options.mode === "constrained" && violations.length)
     throw new Error(
       "Internal constraint verification failed: " + violations.join(", "),
     );
@@ -176,6 +203,14 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
         pitch: p,
         duration: decoded.duration,
         sourceProbability: e.probability,
+        metricalWeight: prior
+          ? meterWeight(
+              prior,
+              Math.round(notes[t + offset].onset * 4) % 16,
+              decoded.duration,
+              strength,
+            )
+          : 1,
         conditionedProbability: probability,
         reason: bp
           ? !edge
@@ -238,7 +273,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     anchorDurationSemantics:
       rep === "intervals" && options.model.rhythm === "corpus"
         ? includeAnchor
-          ? "Opening duration token is conditioned jointly with the full melody and meter"
+          ? "Opening duration token participates jointly in the full melody distribution and meter"
           : "Independent empirical sample of source opening durations, after conditioned interval sampling"
         : null,
     anchor: rep === "intervals" ? initialPitch(c) : null,
@@ -251,11 +286,31 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
         ? "Joint meter and terminal-duration conditioning; no post-generation modification"
         : "Requested meter and final duration ignored in ordinary mode; violations reported"
       : null,
+    metricalPrior: prior ?? null,
+    metricalSummary: meterSummary(notes),
+    metricalSemantics: prior
+      ? "Fixed-horizon globally normalized source probability times phase/duration likelihood-ratio potentials; ordinary mode retains these soft model weights but ignores hard musical constraints"
+      : null,
     stats: trained.stats,
     diagnostics: diagnostics(pitches, corpus, options.model.maxOrder),
     violations,
     explanations,
     logSourceWeight: logSourceWeight(trained.graph, sequence),
+    logMetricalWeight: prior
+      ? sequence.reduce(
+          (sum, symbol, t) =>
+            sum +
+            Math.log(
+              meterWeight(
+                prior,
+                Math.round(notes[t + offset].onset * 4) % 16,
+                trained.decode(symbol).duration,
+                strength,
+              ),
+            ),
+          0,
+        )
+      : 0,
     logPartitionFunction: bp?.logPartitionFunction ?? null,
     logConditionalProbability: bp?.logConditionalProbability(sequence) ?? null,
     productStates: bp?.productStateCount ?? 0,

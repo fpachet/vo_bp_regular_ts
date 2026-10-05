@@ -2,6 +2,7 @@ import { DFA, type State } from "markov-constraints";
 import type { NoteEvent } from "../music";
 import type { MusicToken } from "../markov/train";
 
+import { meterWeight, type MeterPrior } from "../markov/meter";
 export interface EndingOptions {
   minDuration: number;
   barBeats: number;
@@ -22,11 +23,15 @@ export function validateEnding(ending: EndingOptions) {
 export function meteredAcceptor(
   pitch: DFA<number>,
   decode: (s: number) => MusicToken,
-  ending: EndingOptions,
+  ending: EndingOptions | null,
   includeAnchor: boolean,
+  prior?: MeterPrior,
+  strength = 0,
 ) {
-  validateEnding(ending);
-  const bar = ending.barBeats * 4;
+  if (ending) validateEnding(ending);
+  const bar = (ending?.barBeats ?? 4) * 4;
+  if (prior && prior.barBeats * 4 !== bar)
+    throw new Error("Meter prior and ending grid must agree");
   type Q = [State, number, boolean, boolean];
   const encode = (q: Q) => JSON.stringify(q);
   return new DFA<number>({
@@ -43,13 +48,26 @@ export function meteredAcceptor(
       return encode([
         next,
         (phase + ticks) % bar,
-        token.duration >= ending.minDuration,
+        token.duration >= (ending?.minDuration ?? 0),
         true,
       ]);
     },
+    weight: (state, symbol) =>
+      prior
+        ? meterWeight(
+            prior,
+            (JSON.parse(String(state)) as Q)[1],
+            decode(symbol).duration,
+            strength,
+          )
+        : 1,
     accept: (state) => {
       const [q, phase, longFinal, started] = JSON.parse(String(state)) as Q;
-      return started && phase === 0 && longFinal && pitch.isAccepting(q);
+      return (
+        started &&
+        (!ending || (phase === 0 && longFinal)) &&
+        pitch.isAccepting(q)
+      );
     },
   });
 }
