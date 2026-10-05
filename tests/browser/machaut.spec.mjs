@@ -1,7 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-async function ready(page) {
+async function ready(page, fixedSeed = true) {
+  await page.locator("#lock-seed").setChecked(fixedSeed);
   await page.locator("#generate").click();
   await expect(page.locator("#status")).toContainText("Ready ·", {
     timeout: 20000,
@@ -255,4 +256,25 @@ test("Machaut: learned meter can be disabled and remains reproducible", async ({
     "Pitch × duration",
   );
   await expect(page.locator("#order")).toHaveValue("3");
+});
+
+test("Machaut: Generate changes the seed by default; fixed seed replays the melody", async ({
+  page,
+}) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await expect(page.locator("#lock-seed")).not.toBeChecked();
+  const initial = await page.locator("#seed").inputValue();
+  await ready(page, false);
+  const first = await jsonDownload(page);
+  expect(String(first.seed)).not.toBe(initial);
+  await expect(page.locator("#seed")).toHaveValue(String(first.seed));
+  await ready(page, false);
+  const second = await jsonDownload(page);
+  expect(second.seed).not.toBe(first.seed);
+  await page.locator("#seed").fill(String(first.seed));
+  await ready(page);
+  const replay = await jsonDownload(page);
+  expect(replay.seed).toBe(first.seed);
+  expect(replay.notes).toEqual(first.notes);
 });

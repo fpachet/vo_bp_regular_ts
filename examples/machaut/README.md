@@ -25,6 +25,11 @@ The default viewpoint is **absolute pitch × duration**, with order **3**, learn
 the metered final-note constraint enabled. Interval and relative-final viewpoints
 remain available in the Viewpoint control.
 
+**Generate melody** chooses a fresh random seed on every click and updates the
+visible seed field. Select **Keep seed fixed** to reuse a seed or replay a saved
+melody with the same settings and corpus. **New seed** always chooses a fresh
+seed, including when the seed is fixed. Experiment JSON records the seed used.
+
 - Six attributed source MIDI transcriptions, 427 extracted melodic notes.
 - Absolute pitches, signed intervals, and pitches relative to each source final.
 - Orders 1–10 and an explicit geometric backoff mixture, including order zero.
