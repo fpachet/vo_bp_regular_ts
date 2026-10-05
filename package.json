@@ -25,7 +25,8 @@
     "examples": "node examples/domains.mjs",
     "benchmark": "node benchmarks/run.mjs",
     "playground": "python3 -m http.server 8080 --bind 127.0.0.1",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "build:site": "npm run build && node scripts/build_site.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"

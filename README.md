@@ -174,6 +174,8 @@ constraint or a different probabilistic model.
 
 ## Examples and browser playground
 
+[**Open the live playground**](https://fpachet.github.io/vo_bp_regular_ts/).
+
 `npm run examples` runs toy strings, a public-domain Alice excerpt, melody,
 DNA and user journeys. The engine knows nothing about these domains.
 
@@ -190,6 +192,9 @@ source/product diagnostics. Serve the repository root so emitted ESM imports
 are reachable. Melody uses comma-separated MIDI pitches; journeys use
 comma-separated tokens. WebAudio playback and graph visualization are future
 extensions.
+
+GitHub Pages deploys automatically after tests pass on `main`. `npm run build:site`
+creates the standalone `_site/` artifact with relative ESM and Worker imports.
 
 ## Validation and benchmarks
 
