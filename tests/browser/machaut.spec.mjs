@@ -19,7 +19,12 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
 }) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/machaut/");
+  await page.route("**/machaut/corpus/melodies.json", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await route.continue();
+  });
+  await page.goto("/machaut/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("#generate")).toBeDisabled();
   await expect(page.locator("#stats")).toContainText("427");
   await ready(page);
   const first = await jsonDownload(page);

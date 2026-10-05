@@ -2,8 +2,8 @@
 
 The standalone application uses the public npm package
 `markov-constraints@0.4.0-rc.1`; it does not import the repository’s emitted engine.
-The plan’s implementation stages are complete. Remote browser/deployment results
-are recorded below as validation finishes.
+The plan’s implementation stages are complete. The application is live on
+[GitHub Pages](https://fpachet.github.io/vo_bp_regular_ts/machaut/).
 
 ## Delivered
 
@@ -65,10 +65,17 @@ copy control and transposition-invariant diagnostics in subsequent research.
 - Strict TypeScript application build and bundled module Worker passed locally.
 - Local browser verification: interval generation, conventional SVG notation,
   playback/stop and corpus inspection.
-- Remote Node 20/22/24, Chromium/Firefox and Pages deployment: pending CI.
+- [Remote CI](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37322775403)
+  passed Node 20/22/24 library/application checks, fresh Python parity and all
+  26 Chromium/Firefox browser cases (8 Machaut cases plus 18 library playground cases).
+- [Pages deployment](https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37322775465)
+  passed. Firefox exposed an SVG group hit-area issue during the first run;
+  transparent note hit boxes fixed it and the rerun passed in both engines.
+- Desktop and narrow-layout manual checks passed. Generator controls appear
+  beside the score; notation reflows on resize and exports preserve the results.
 
 The bundled engine Worker is approximately 26.6 kB. The main JS bundle is
-approximately 129 kB (43 kB gzip); notation is a separate on-demand ~1.37 MB
+approximately 130 kB (44 kB gzip); notation is a separate on-demand ~1.37 MB
 (~354 kB gzip) chunk. All corpus and rendering assets are served locally.
 
 ## Limits and next research steps

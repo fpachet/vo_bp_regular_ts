@@ -13,4 +13,5 @@
 6. Integrate into Pages and repository CI, publish the working demo, and report
    measured results and remaining research limitations.
 
-Implementation status and validation results are recorded in RESULTS.md.
+All six stages are complete. Implementation, browser/deployment validation and
+measured improvements are recorded in [RESULTS.md](RESULTS.md).
