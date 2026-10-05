@@ -8,7 +8,11 @@ import {
   type MusicalConstraints,
 } from "../constraints/musical";
 import { diagnostics } from "./diagnostics";
-import { holdEnding, type EndingOptions } from "./ending";
+import {
+  meteredAcceptor,
+  endingViolations,
+  type EndingOptions,
+} from "./ending";
 export interface GenerationOptions {
   model: ModelOptions;
   ending?: EndingOptions | null;
@@ -56,13 +60,26 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     options.seed > 0xffffffff
   )
     throw new Error("Seed must be an unsigned 32-bit integer");
+  const includeAnchor =
+    !!options.ending &&
+    options.mode === "constrained" &&
+    options.model.rhythm === "corpus" &&
+    options.model.representation === "intervals";
+  const effectiveModel = {
+    ...options.model,
+    includeIntervalAnchor: includeAnchor,
+  };
   const began = performance.now(),
-    trained = train(corpus, options.model),
+    trained = train(corpus, effectiveModel),
     rng = seededRng(options.seed),
     c = options.constraints,
     rep = options.model.representation;
-  const horizon = rep === "intervals" ? c.length - 1 : c.length;
-  const dfa = musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
+  const horizon =
+    rep === "intervals" && !includeAnchor ? c.length - 1 : c.length;
+  const pitchDfa = musicalAcceptor(rep, c, (s) => trained.decode(s).pitch);
+  const dfa = options.ending
+    ? meteredAcceptor(pitchDfa, trained.decode, options.ending, includeAnchor)
+    : pitchDfa;
   let bp: ProductBPResult<number> | undefined,
     sequence: number[] = [];
   if (options.mode === "constrained") {
@@ -70,12 +87,12 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       length: horizon,
       maxProductStates: 150000,
       maxTimeIndexedStates: 750000,
-      maxProductEdges: 3000000,
+      maxProductEdges: options.ending ? 10000000 : 3000000,
       maxDfaTransitions: 3000000,
     });
     if (!bp.feasible)
       throw new Error(
-        "No melody satisfies these constraints under the model. Widen the range, simplify fixed notes/cadence, or increase backoff.",
+        "No melody satisfies these constraints under the model. Widen the range, simplify fixed notes/cadence, relax the final duration/meter, or increase backoff.",
       );
     sequence = bp.sample(rng);
   } else {
@@ -92,11 +109,14 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     }
   }
   let previous = initialPitch(c);
-  const pitches = rep === "intervals" ? [previous] : [];
+  const offset = rep === "intervals" && !includeAnchor ? 1 : 0;
+  const pitches = offset ? [previous] : [];
   for (const symbol of sequence) {
-    const s = trained.decode(symbol).pitch;
-    const p =
-      rep === "intervals"
+    const decoded = trained.decode(symbol);
+    const s = decoded.pitch;
+    const p = decoded.anchor
+      ? initialPitch(c)
+      : rep === "intervals"
         ? previous + s
         : rep === "relative"
           ? c.referenceFinal + s
@@ -105,24 +125,24 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     previous = p;
   }
   const anchorDuration =
-    options.model.rhythm === "corpus" && rep === "intervals"
+    options.model.rhythm === "corpus" && offset === 1
       ? trained.anchorDurations[
           Math.floor(rng() * trained.anchorDurations.length)
         ]
       : 1;
   const durations = sequence.map((s) => trained.decode(s).duration);
-  if (rep === "intervals") durations.unshift(anchorDuration);
+  if (offset) durations.unshift(anchorDuration);
   let onset = 0;
   const sampledNotes = pitches.map((p, i) => {
     const n = note(p, durations[i], onset);
     onset += n.duration;
     return n;
   });
-  const { notes, adjustment: endingAdjustment } = holdEnding(
-    sampledNotes,
-    options.ending,
-  );
-  const violations = constraintViolations(pitches, c);
+  const notes = sampledNotes;
+  const violations = [
+    ...constraintViolations(pitches, c),
+    ...endingViolations(notes, options.ending),
+  ];
   if (bp && violations.length)
     throw new Error(
       "Internal constraint verification failed: " + violations.join(", "),
@@ -137,8 +157,9 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     const context = trained.graph.contexts[contextId];
     const continuations = trained.graph.outgoing(contextId).map((e) => {
       const decoded = trained.decode(e.symbol);
-      const p =
-        rep === "intervals"
+      const p = decoded.anchor
+        ? initialPitch(c)
+        : rep === "intervals"
           ? previous + decoded.pitch
           : rep === "relative"
             ? c.referenceFinal + decoded.pitch
@@ -166,14 +187,14 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       };
     });
     explanations.push({
-      position: t + (rep === "intervals" ? 2 : 1),
-      pitch: pitches[t + (rep === "intervals" ? 1 : 0)],
+      position: t + offset + 1,
+      pitch: pitches[t + offset],
       context,
-      duration: notes[t + (rep === "intervals" ? 1 : 0)].duration,
-      sampledDuration: sampledNotes[t + (rep === "intervals" ? 1 : 0)].duration,
+      duration: notes[t + offset].duration,
+      sampledDuration: sampledNotes[t + offset].duration,
       contextLabels: context.map((s) => {
         const d = trained.decode(s);
-        return `${rep === "absolute" ? pitchName(d.pitch) : `${d.pitch > 0 ? "+" : ""}${d.pitch}`}${options.model.rhythm === "corpus" ? ` / ${d.duration} beats` : ""}`;
+        return `${d.anchor ? "anchor" : rep === "absolute" ? pitchName(d.pitch) : `${d.pitch > 0 ? "+" : ""}${d.pitch}`}${options.model.rhythm === "corpus" ? ` / ${d.duration} beats` : ""}`;
       }),
       continuations,
     });
@@ -182,14 +203,14 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       .find((e) => e.symbol === sequence[t])!;
     contextId = chosen.nextState;
     if (bp) productId = productRow!.find((e) => e.symbol === sequence[t])!.next;
-    previous = pitches[t + (rep === "intervals" ? 1 : 0)];
+    previous = pitches[t + offset];
   }
   return {
     schemaVersion: 1,
     library: { name: "markov-constraints", version: "0.4.0-rc.1" },
     model: {
       type: "variable-order-markov",
-      ...options.model,
+      ...effectiveModel,
       backoffSemantics:
         "Fixed geometric mixture of observed suffix distributions, including order zero",
     },
@@ -208,21 +229,28 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
         ? "Joint pitch/duration tokens; inter-onset spacing rounded to 0.25 quarter-note units; final source note uses sounding duration; no rests generated"
         : "Equal quarter notes",
     tokenTable: trained.tokenTable,
-    anchorDuration: rep === "intervals" ? anchorDuration : null,
+    anchorDuration: rep === "intervals" ? notes[0].duration : null,
     anchorDurationProbability:
-      rep === "intervals"
+      rep === "intervals" && !includeAnchor
         ? trained.anchorDurations.filter((d) => d === anchorDuration).length /
           trained.anchorDurations.length
         : null,
     anchorDurationSemantics:
       rep === "intervals" && options.model.rhythm === "corpus"
-        ? "Independent empirical sample of source opening durations, after conditioned interval sampling"
+        ? includeAnchor
+          ? "Opening duration token is conditioned jointly with the full melody and meter"
+          : "Independent empirical sample of source opening durations, after conditioned interval sampling"
         : null,
     anchor: rep === "intervals" ? initialPitch(c) : null,
     notes,
     sampledNotes,
     ending: options.ending ?? null,
-    endingAdjustment,
+    endingAdjustment: null,
+    endingSemantics: options.ending
+      ? options.mode === "constrained"
+        ? "Joint meter and terminal-duration conditioning; no post-generation modification"
+        : "Requested meter and final duration ignored in ordinary mode; violations reported"
+      : null,
     stats: trained.stats,
     diagnostics: diagnostics(pitches, corpus, options.model.maxOrder),
     violations,

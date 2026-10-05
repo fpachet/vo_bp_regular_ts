@@ -444,75 +444,134 @@ for (const rep of ["absolute", "relative", "intervals"] as const) {
   });
 }
 
-test("ending holds to the next eligible bar boundary without shortening or mutation", async () => {
-  const { holdEnding } = await import("../src/generation/ending");
-  for (const [onset, duration, expected] of [
-    [2, 2, 2],
-    [3, 1, 5],
-    [7.5, 0.5, 4.5],
-    [2, 6, 6],
-  ]) {
-    const input = [note(60, duration, onset)];
-    const ended = holdEnding(input, { minDuration: 2, barBeats: 4 });
-    assert.equal(ended.notes[0].duration, expected);
-    assert.equal((ended.notes[0].onset + ended.notes[0].duration) % 4, 0);
-    assert.equal(input[0].duration, duration);
-    assert.equal(ended.adjustment?.sampledDuration, duration);
-  }
-  const input = [note(60)];
-  assert.equal(holdEnding(input).notes, input);
-  assert.throws(() => holdEnding(input, { minDuration: NaN, barBeats: 4 }));
-  assert.throws(() => holdEnding(input, { minDuration: 2, barBeats: 0 }));
-});
 for (const rep of ["absolute", "relative", "intervals"] as const) {
-  for (const rhythm of ["quarter", "corpus"] as const) {
-    test(`${rep}/${rhythm}: held ending preserves model sample and exports without trailing rests`, () => {
-      const opts = options(rep);
-      opts.model.rhythm = rhythm;
-      const source = corpus.map((m) => {
-        let onset = 0;
-        return {
-          ...m,
-          notes: m.notes.map((n, i) => {
-            const duration = [0.5, 1, 1.5][i % 3];
-            const result = note(n.midi, duration, onset);
-            onset += duration;
-            return result;
-          }),
-        };
-      });
-      for (const mode of ["constrained", "ordinary"] as const) {
-        const original = generate(source, { ...opts, mode });
-        const held = generate(source, {
-          ...opts,
-          mode,
-          ending: { minDuration: 2, barBeats: 4 },
-        });
-        assert.deepEqual(held.sampledNotes, original.notes);
-        assert.equal(held.logSourceWeight, original.logSourceWeight);
-        assert.equal(
-          held.logConditionalProbability,
-          original.logConditionalProbability,
-        );
-        assert.deepEqual(held.notes.slice(0, -1), original.notes.slice(0, -1));
-        assert.equal(held.notes.at(-1)!.midi, original.notes.at(-1)!.midi);
-        const last = held.notes.at(-1)!;
-        assert.ok(
-          last.duration >= 2 &&
-            last.duration >= original.notes.at(-1)!.duration,
-        );
-        assert.equal((last.onset + last.duration) % 4, 0);
-        const xml = exportMusicXML(held.notes);
-        assert.ok(!xml.includes("<rest/>"));
-        assert.deepEqual(
-          loadMusicXML(xml, { id: "held", title: "Held" }).notes,
-          held.notes,
-        );
-        assert.deepEqual(
-          loadMidi(exportMidi(held.notes), { id: "held", title: "Held" }).notes,
-          held.notes,
-        );
-      }
+  test(`${rep}: exact metered final duration is sampled, reproducible and exported unchanged`, () => {
+    const source = corpus.map((m) => {
+      let onset = 0;
+      return {
+        ...m,
+        notes: m.notes.map((n, i) => {
+          const duration = [0.5, 1, 2, 3][i % 4];
+          const result = note(n.midi, duration, onset);
+          onset += duration;
+          return result;
+        }),
+      };
     });
-  }
+    const opts = options(rep);
+    opts.model = { ...opts.model, rhythm: "corpus", maxOrder: 1 };
+    opts.ending = { minDuration: 2, barBeats: 4 };
+    const r = generate(source, opts);
+    assert.deepEqual(r.notes, r.sampledNotes);
+    assert.equal(r.endingAdjustment, null);
+    assert.deepEqual(r.violations, []);
+    assert.deepEqual(generate(source, opts).notes, r.notes);
+    const last = r.notes.at(-1)!;
+    assert.ok(last.duration >= 2);
+    assert.equal((last.onset + last.duration) % 4, 0);
+    assert.ok(r.notes.every((n) => [0.5, 1, 2, 3].includes(n.duration)));
+    for (const ex of r.explanations)
+      assert.ok(
+        Math.abs(
+          ex.continuations.reduce((s, t) => s + t.conditionedProbability, 0) -
+            1,
+        ) < 1e-10,
+      );
+    if (rep === "intervals") {
+      assert.equal(r.explanations[0].position, 1);
+      assert.equal(r.anchorDurationProbability, null);
+      assert.match(r.anchorDurationSemantics!, /jointly/);
+    }
+    const xml = exportMusicXML(r.notes);
+    assert.ok(!xml.includes("<rest/>"));
+    assert.deepEqual(
+      loadMusicXML(xml, { id: "round", title: "Round" }).notes,
+      r.notes,
+    );
+    assert.deepEqual(
+      loadMidi(exportMidi(r.notes), { id: "round", title: "Round" }).notes,
+      r.notes,
+    );
+  });
 }
+test("meter/final-position conditioning matches exhaustive weighted enumeration", () => {
+  const source = [1, 2].map((duration) => ({
+    ...melody(Array(8).fill(60)),
+    notes: Array.from({ length: 8 }, (_, i) =>
+      note(60, duration, i * duration),
+    ),
+  }));
+  const opts = options("absolute");
+  opts.model = {
+    representation: "absolute",
+    rhythm: "corpus",
+    maxOrder: 1,
+    backoffWeight: 0.25,
+  };
+  opts.constraints = {
+    ...c,
+    minPitch: 60,
+    maxPitch: 60,
+    maxSpan: null,
+    fixed: {},
+    cadence: null,
+  };
+  opts.ending = { minDuration: 2, barBeats: 4 };
+  const t = train(source, opts.model);
+  let mass = 0;
+  for (let mask = 0; mask < 256; mask++) {
+    const sequence = Array.from({ length: 8 }, (_, i) => (mask >> i) & 1);
+    const ds = sequence.map((s) => t.decode(s).duration);
+    if (ds.at(-1)! >= 2 && ds.reduce((a, b) => a + b, 0) % 4 === 0)
+      mass += t.graph.probability(sequence);
+  }
+  const r = generate(source, opts);
+  assert.ok(Math.abs(Math.exp(r.logPartitionFunction!) - mass) < 1e-12);
+});
+test("unsupported long quarter-note ending is infeasible; ordinary output is never extended", () => {
+  const opts = options("absolute");
+  opts.ending = { minDuration: 2, barBeats: 4 };
+  assert.throws(() => generate(corpus, opts), /No melody/);
+  const r = generate(corpus, { ...opts, mode: "ordinary" });
+  assert.ok(r.notes.every((n) => n.duration === 1));
+  assert.ok(r.violations.includes("final duration"));
+});
+
+test("interval opening duration participates in meter conditioning", () => {
+  const source = [1, 2].map((first) => {
+    let onset = 0;
+    return {
+      ...melody(Array(8).fill(60)),
+      notes: Array.from({ length: 8 }, (_, i) => {
+        const n = note(60, i === 0 ? first : 2, onset);
+        onset += n.duration;
+        return n;
+      }),
+    };
+  });
+  const opts = options("intervals");
+  opts.model = {
+    representation: "intervals",
+    rhythm: "corpus",
+    maxOrder: 1,
+    backoffWeight: 0.25,
+  };
+  opts.constraints = {
+    ...c,
+    minPitch: 60,
+    maxPitch: 60,
+    maxSpan: null,
+    fixed: {},
+    cadence: null,
+  };
+  opts.ending = { minDuration: 2, barBeats: 4 };
+  for (const seed of [0, 1, 2, 3]) {
+    const r = generate(source, { ...opts, seed });
+    assert.equal(r.notes[0].duration, 2);
+    const rejected = r.explanations[0].continuations.find(
+      (t) => t.duration === 1,
+    );
+    assert.equal(rejected?.conditionedProbability, 0);
+    assert.equal(r.notes.at(-1)!.onset + r.notes.at(-1)!.duration, 16);
+  }
+});

@@ -133,11 +133,28 @@ before corpus initialization; the rhythm selector now stays disabled until its
 preset handler is registered. The delayed-load browser regression covers this.
 
 
-## Held final note
+## Exact meter and terminal-duration conditioning
 
-The default finishing option sustains the final sampled event for at least two
-beats, ending at a 4/4 bar boundary with no trailing rest. It never shortens a
-longer sampled value. This deterministic performance transformation leaves the
-model sample and BP probabilities unchanged; JSON and explanations distinguish
-sampled from held durations. The option can be disabled and works in both rhythm
-and generation modes. Round-trip and integration tests cover both outcomes.
+Replaces the former post-sampling hold. A phase acceptor tracks duration modulo
+four beats and checks that the note at the fixed final position has duration at
+least two beats. BP conditions the full melody. Interval source sequences include
+an explicit opening-duration token, so the first duration also participates in
+conditioning. Exported and sampled events are identical; there is no adjustment.
+
+Fifteen real-corpus samples (seeds 12345–12349, three representations, order 1)
+all satisfied pitch and meter requirements. Final durations included 2, 2.75, 3
+and 4 beats; the absolute-pitch samples all ended with 2 beats, reflecting their
+source support/weights rather than a forced output duration. Default interval
+seeds 12345 and 12346 ended with 3 and 2 beats, respectively.
+
+Local generation measured about 134–574 ms across those samples. The interval
+case used ~5.20 MiB inference buffers, 7,156 unique product states and 6,287,658
+time-indexed edges. This excludes source/acceptor objects. The metered edge budget
+is 10 million; the other budgets remain unchanged. Default order is 1, adjustable.
+
+The simple step-cadence DFA now retains a Boolean rather than the exact previous
+interval when no explicit cadence tail is requested. Original seeded quarter-note
+samples and partition functions still match the saved pre-optimization baseline.
+Tests cover exact mass via exhaustive weighted enumeration, opening-duration
+conditioning, supported final durations, reproducibility, unchanged exports,
+infeasibility and ordinary-mode violations.

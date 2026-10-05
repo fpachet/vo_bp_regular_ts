@@ -37,6 +37,7 @@ test("Machaut: published npm engine, reproducibility, notation, explanations and
   expect(first.notes).toHaveLength(32);
   expect(first.notes.at(-1).midi).toBe(74);
   expect(first.violations).toEqual([]);
+  expect(first.notes).toEqual(first.sampledNotes);
   expect(first.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
   expect((first.notes.at(-1).onset + first.notes.at(-1).duration) % 4).toBe(0);
   await page.locator("#score .vf-stavenote").nth(5).click();
@@ -62,6 +63,7 @@ test("Machaut: representations, phrase conditions, ordinary comparison, infeasib
 }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#status")).toContainText("ready");
+  await page.locator("#rhythm").selectOption("quarter");
   await page
     .getByText("Phrase, pitch-set & cadence controls", { exact: true })
     .click();
@@ -152,11 +154,11 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     await ready(page);
     const r = await jsonDownload(page);
     expect(r.model.rhythm).toBe("corpus");
+    expect(r.endingSemantics).toContain("conditioning");
+    expect(r.endingAdjustment).toBeNull();
     expect(r.notes.at(-1).duration).toBeGreaterThanOrEqual(2);
     expect((r.notes.at(-1).onset + r.notes.at(-1).duration) % 4).toBe(0);
-    expect(r.sampledNotes.at(-1).duration).toBeLessThanOrEqual(
-      r.notes.at(-1).duration,
-    );
+    expect(r.notes).toEqual(r.sampledNotes);
     expect(r.violations).toEqual([]);
     expect(new Set(r.notes.map((n) => n.duration)).size).toBeGreaterThan(1);
     await expect(page.locator("#score-subtitle")).toContainText(
@@ -172,7 +174,7 @@ test("Machaut: learned durations, tied score explanations, playback and export",
     const download = page.waitForEvent("download");
     await page.locator("#download-xml").click();
     const xml = await readFile(await (await download).path(), "utf8");
-    expect(xml).toContain('<tie type="start"/>');
+    expect(xml).toContain("<duration>");
     expect(xml).not.toContain("<rest/>");
     const finalGlyph = page
       .locator('#score [aria-label^="Explain score note 32 "]')
@@ -185,15 +187,33 @@ test("Machaut: learned durations, tied score explanations, playback and export",
   expect(errors).toEqual([]);
 });
 
-test("Machaut: disabling held ending restores the sampled durations", async ({
+test("Machaut: quarter-note mode disables incompatible long-ending condition", async ({
   page,
 }) => {
   await page.goto("/machaut/");
   await expect(page.locator("#generate")).toBeEnabled();
-  await page.locator("#hold-ending").uncheck();
+  await page.locator("#rhythm").selectOption("quarter");
+  await expect(page.locator("#hold-ending")).toBeDisabled();
   await ready(page);
   const r = await jsonDownload(page);
   expect(r.endingAdjustment).toBeNull();
   expect(r.notes).toEqual(r.sampledNotes);
   expect(r.notes.every((n) => n.duration === 1)).toBe(true);
+});
+
+test("Machaut: final duration varies across seeds without changing sampled notes", async ({
+  page,
+}) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await ready(page);
+  const first = await jsonDownload(page);
+  await page.locator("#seed").fill("12346");
+  await ready(page);
+  const second = await jsonDownload(page);
+  expect(first.notes.at(-1).duration).not.toBe(second.notes.at(-1).duration);
+  for (const r of [first, second]) {
+    expect(r.notes).toEqual(r.sampledNotes);
+    expect((r.notes.at(-1).onset + r.notes.at(-1).duration) % 4).toBe(0);
+  }
 });

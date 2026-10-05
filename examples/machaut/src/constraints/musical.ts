@@ -121,6 +121,8 @@ export function musicalAcceptor(
   const interval = rep === "intervals",
     anchor = initialPitch(c),
     span = c.maxSpan !== null && c.maxSpan < c.maxPitch - c.minPitch;
+  const cadenceBoolean =
+    !!c.cadence?.allowedPenultimateIntervals && !c.cadence?.lastNIntervals;
   const tailSize = Math.max(
     1,
     ...(c.cadence?.lastNIntervals ?? []).map((p) => p.length),
@@ -173,7 +175,11 @@ export function musicalAcceptor(
           return null;
       }
       const nextTail =
-        c.cadence && delta !== null ? [...tail, delta].slice(-tailSize) : [];
+        c.cadence && delta !== null
+          ? cadenceBoolean
+            ? [Number(c.cadence.allowedPenultimateIntervals!.includes(-delta))]
+            : [...tail, delta].slice(-tailSize)
+          : [];
       return encode([
         positional ? i + 1 : 0,
         p,
@@ -193,9 +199,11 @@ export function musicalAcceptor(
           (previous === c.cadence.finalPitch &&
             (!c.cadence.allowedPenultimateIntervals ||
               (tail.length > 0 &&
-                c.cadence.allowedPenultimateIntervals.includes(
-                  -tail.at(-1)!,
-                ))))) &&
+                (cadenceBoolean
+                  ? tail.at(-1) === 1
+                  : c.cadence.allowedPenultimateIntervals.includes(
+                      -tail.at(-1)!,
+                    )))))) &&
         (!c.cadence?.lastNIntervals ||
           c.cadence.lastNIntervals.some(
             (p) =>

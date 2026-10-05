@@ -41,8 +41,8 @@ runtime: corpus files, notation renderer and Markov engine are bundled locally.
 Choose **Equal quarter notes** (the original reproducible pitch-only model) or
 **Learned rhythm**. Learned rhythm trains compound `(pitch token, duration)`
 tokens in all three representations and conditions their joint distribution on
-all pitch constraints. Switching rhythm selects order 3 for learned rhythm or
-order 5 for quarter notes; the order remains adjustable. Compound vocabularies
+all pitch constraints. Switching rhythm selects order 1 for metered learned rhythm, order 3 for free
+learned rhythm, or order 5 for quarter notes; the order remains adjustable. Compound vocabularies
 are larger and high orders can exceed the existing exact solver budgets. Durations are quarter-note units: 0.25 is a sixteenth,
 0.5 an eighth, 1 a quarter, 1.5 a dotted quarter, and 2 a half.
 
@@ -50,17 +50,20 @@ Training rounds inter-onset spacing to the nearest 0.25 quarter-note units,
 with a minimum of 0.25. This avoids treating MIDI note-off articulation as
 notated rhythm. The final source note uses its sounding duration instead.
 Original corpus timings are preserved. Gaps are folded into the preceding
-note; this mode generates contiguous notes, not rests. In interval mode the
-opening duration is sampled independently from the empirical distribution of
-source opening durations, after sampling the conditioned interval sequence.
+note; this mode generates contiguous notes, not rests. In interval mode with meter enabled, the opening duration is an explicit
+source token conditioned jointly with the entire melody. Without meter it is
+sampled independently from empirical source opening durations after sampling
+the conditioned interval sequence.
 Later durations belong to the arriving note's interval token. This choice is
 recorded in experiment JSON alongside the token dictionary and anchor-duration
 probability. Source and conditional log scores describe the emitted model tokens;
-in interval mode the independent anchor-duration probability is reported separately.
+in interval mode without meter the independent anchor-duration probability is
+reported separately; with meter it belongs to the full token sequence score.
 
 Length, fixed positions, cadences and repeats still count **notes**, and repeated
 spans constrain pitches only; they do not require equal durations. Total beat
-count is reported but is not constrained during inference. Dotted values and ties across bar
+count is reported. Meter conditioning requires a complete number of bars;
+the number of bars itself is not fixed. Dotted values and ties across bar
 lines retain their event duration in notation, playback, exports and score-click
 explanations. The modern 4/4 engraving grid is a display convention; neither modal classification nor mensural rhythm is inferred.
 An interval model emits N−1 intervals and requires an anchor pitch. If Start is
@@ -119,7 +122,8 @@ not repair its output. An ordinary interval walk leaving the MIDI domain fails
 export validation rather than being silently resampled.
 
 Product limits: 150,000 unique states, 750,000 time-indexed states, 3,000,000
-edges and DFA evaluations. Worker jobs stop after 30 seconds and can be cancelled.
+edges and DFA evaluations (metered generation permits 10,000,000 time-indexed
+edges; the other budgets stay unchanged). Worker jobs stop after 30 seconds and can be cancelled.
 Long interval melodies, high orders and repeated phrases can exceed these limits.
 Errors invite simplifying conditions; the solver does not approximate or truncate.
 The notation renderer is loaded on demand (~354 kB gzip in the initial build).
@@ -159,17 +163,30 @@ corpus, add rests, beat-count constraints and rhythmic repeats, evaluate
 transposition-invariant copying, and design stronger held-out stylistic baselines.
 
 
-## Held final note
+## Meter and final-position constraint
 
-**Hold final note to bar end (at least 2 beats)** is enabled by default. After
-sampling, the final event is sustained to the earliest 4/4 bar boundary that
-gives it at least two quarter-note beats and never shortens its sampled duration.
-This can carry the note into the next bar. It finishes at the end of beat four,
-without a trailing rest, and applies in both generation modes and rhythm modes.
-Uncheck it to retain the model's original durations.
+**Long final note at bar end (at least 2 beats)** is enabled by default with
+learned rhythm. The acceptor tracks cumulative duration modulo 4 beats in
+sixteenth-note ticks, and tests the terminal note's duration at the fixed note
+horizon. BP conditions the entire sequence on both requirements. No note is
+extended or repaired after sampling. The melody ends at the end of beat four
+without trailing rests. The total number of bars is not specified.
 
-This is an explicit performance ending, not an additional BP condition: pitches,
-model tokens and their probabilities are unchanged. Experiment JSON preserves
-`sampledNotes` as well as the performed `notes`, ending settings and adjustment.
-The final note explanation distinguishes its sampled and held durations.
-Playback, MIDI and MusicXML all use the held ending, including ties as needed.
+For intervals, an explicit opening-duration token is included in the source
+sequences and can appear only at position one. Its duration is therefore
+conditioned on all future requirements. The supplied pitch anchor remains fixed.
+The source/backoff model configuration and complete token dictionary are saved
+in experiment JSON. `notes` and `sampledNotes` are identical; `endingAdjustment`
+is null. Continuation probabilities describe the actual performed durations.
+
+Ordinary mode ignores the meter/ending rules and reports their violations.
+Quarter-note mode disables the long-final rule: it has no supported duration of
+at least two beats. Selecting it never invents a longer note. Unsupported choices
+are reported as infeasible.
+
+Meter adds state dimensions, so its default maximum order is 1. The order remains
+adjustable. Metered jobs allow up to 10,000,000 time-indexed edges, 150,000 unique
+product states, 750,000 time-indexed states and 3,000,000 DFA evaluations. Higher
+orders and positional repeats can exceed these explicit exact-inference budgets.
+The step-cadence acceptor stores only a Boolean when exact interval tails are not
+requested, reducing memory without changing the accepted language.

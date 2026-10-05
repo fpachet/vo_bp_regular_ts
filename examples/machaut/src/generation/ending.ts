@@ -1,39 +1,73 @@
+import { DFA, type State } from "markov-constraints";
 import type { NoteEvent } from "../music";
+import type { MusicToken } from "../markov/train";
 
 export interface EndingOptions {
-  /** Quarter-note units. */
   minDuration: number;
   barBeats: number;
 }
-
-/** Sustain the last event to a bar boundary, never shortening its sampled value. */
-export function holdEnding(notes: NoteEvent[], ending?: EndingOptions | null) {
-  if (!ending) return { notes, adjustment: null };
+export function validateEnding(ending: EndingOptions) {
   if (
-    !Number.isFinite(ending.minDuration) ||
-    ending.minDuration <= 0 ||
-    !Number.isFinite(ending.barBeats) ||
-    ending.barBeats <= 0
+    ![ending.minDuration, ending.barBeats].every(
+      (n) => Number.isFinite(n) && n > 0 && Number.isInteger(n * 4),
+    )
   )
     throw new Error(
-      "Ending duration and bar length must be positive finite values",
+      "Ending duration and meter must be positive multiples of 0.25 beats",
     );
-  if (!notes.length) throw new Error("An ending requires at least one note");
-  const last = notes.at(-1)!;
-  const minimumEnd = last.onset + Math.max(last.duration, ending.minDuration);
-  // Tolerance avoids an extra bar from floating-point error at a boundary.
-  const endBeat =
-    Math.ceil(minimumEnd / ending.barBeats - 1e-10) * ending.barBeats;
-  const duration = endBeat - last.onset;
-  return {
-    notes: [...notes.slice(0, -1), { ...last, duration }],
-    adjustment: {
-      position: notes.length,
-      sampledDuration: last.duration,
-      heldDuration: duration,
-      endBeat,
-      minDuration: ending.minDuration,
-      barBeats: ending.barBeats,
+}
+/** Compose pitch rules with meter phase and the duration of the terminal event.
+ * A fixed BP horizon makes the terminal-duration test a constraint on note N.
+ * Tracking phase rather than total duration shares states between whole bars. */
+export function meteredAcceptor(
+  pitch: DFA<number>,
+  decode: (s: number) => MusicToken,
+  ending: EndingOptions,
+  includeAnchor: boolean,
+) {
+  validateEnding(ending);
+  const bar = ending.barBeats * 4;
+  type Q = [State, number, boolean, boolean];
+  const encode = (q: Q) => JSON.stringify(q);
+  return new DFA<number>({
+    startState: encode([pitch.startState, 0, false, !includeAnchor]),
+    transition: (state, symbol) => {
+      const [q, phase, , started] = JSON.parse(String(state)) as Q;
+      const token = decode(symbol);
+      if (!started ? !token.anchor : token.anchor) return null;
+      const next = !started ? q : pitch.nextState(q, symbol);
+      if (next === null) return null;
+      const ticks = token.duration * 4;
+      if (!Number.isInteger(ticks) || ticks <= 0)
+        throw new Error("Meter requires sixteenth-note duration tokens");
+      return encode([
+        next,
+        (phase + ticks) % bar,
+        token.duration >= ending.minDuration,
+        true,
+      ]);
     },
-  };
+    accept: (state) => {
+      const [q, phase, longFinal, started] = JSON.parse(String(state)) as Q;
+      return started && phase === 0 && longFinal && pitch.isAccepting(q);
+    },
+  });
+}
+export function endingViolations(
+  notes: NoteEvent[],
+  ending?: EndingOptions | null,
+) {
+  if (!ending) return [];
+  validateEnding(ending);
+  const last = notes.at(-1)!;
+  const errors: string[] = [];
+  if (last.duration < ending.minDuration) errors.push("final duration");
+  if (
+    Math.abs(
+      (last.onset + last.duration) / ending.barBeats -
+        Math.round((last.onset + last.duration) / ending.barBeats),
+    ) > 1e-9
+  )
+    errors.push("final bar boundary");
+  return errors;
 }

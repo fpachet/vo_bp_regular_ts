@@ -26,3 +26,13 @@ measured improvements are recorded in [RESULTS.md](RESULTS.md).
 - [x] Retain durations in playback, MIDI, MusicXML and experiment exports.
 - [x] Test quantization, joint token support, reproducibility, probability normalization and round trips.
 - [x] Verify Chromium/Firefox integration and deploy.
+
+
+## Exact metered ending
+
+- [x] Replace post-generation extension with meter phase and final-position duration acceptance.
+- [x] Include the interval opening duration in the conditioned source sequence.
+- [x] Preserve source-supported durations and probability explanations; report ordinary violations.
+- [x] Verify weighted enumeration, anchor conditioning, seed variation, and unchanged MIDI/XML exports.
+- [x] Measure real-corpus state/time costs and set a usable bounded default.
+- [ ] Validate Chromium/Firefox and deploy.

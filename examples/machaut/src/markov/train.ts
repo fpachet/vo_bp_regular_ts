@@ -5,6 +5,12 @@ export interface ModelOptions {
   maxOrder: number;
   backoffWeight: number;
   rhythm?: "quarter" | "corpus";
+  includeIntervalAnchor?: boolean;
+}
+export interface MusicToken {
+  pitch: number;
+  duration: number;
+  anchor?: boolean;
 }
 export function train(corpus: Melody[], options: ModelOptions) {
   if (!corpus.length) throw new Error("Select at least one corpus piece");
@@ -20,25 +26,36 @@ export function train(corpus: Melody[], options: ModelOptions) {
   if (options.rhythm && !["quarter", "corpus"].includes(options.rhythm))
     throw new Error("Unknown rhythm mode");
   const rhythmic = options.rhythm === "corpus";
-  const tokenTable: { pitch: number; duration: number }[] = [];
+  const tokenTable: MusicToken[] = [];
   const tokenIds = new Map<string, number>();
   const sequences = corpus.map((m) => {
+    const includeAnchor =
+      rhythmic &&
+      options.representation === "intervals" &&
+      options.includeIntervalAnchor;
     const pitches = tokens(m, options.representation);
+    if (includeAnchor) pitches.unshift(0);
     return pitches.map((pitch, i) => {
       if (!rhythmic) return pitch;
-      const index = i + (options.representation === "intervals" ? 1 : 0);
+      const anchor = !!includeAnchor && i === 0;
+      const index =
+        i + (options.representation === "intervals" && !includeAnchor ? 1 : 0);
       const duration = rhythmicDuration(m, index);
-      const key = `${pitch}:${duration}`;
+      const key = `${anchor ? "anchor" : pitch}:${duration}`;
       let id = tokenIds.get(key);
       if (id === undefined) {
         id = tokenTable.length;
         tokenIds.set(key, id);
-        tokenTable.push({ pitch, duration });
+        tokenTable.push({
+          pitch,
+          duration,
+          ...(anchor ? { anchor: true } : {}),
+        });
       }
       return id;
     });
   });
-  const decode = (symbol: number) =>
+  const decode = (symbol: number): MusicToken =>
     rhythmic ? tokenTable[symbol] : { pitch: symbol, duration: 1 };
   const graph = ContextGraph.fromBackoffSequences<number>(sequences, {
     maxOrder: options.maxOrder,
