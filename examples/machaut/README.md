@@ -317,3 +317,14 @@ changes and melody replacement cancel pending loads' playback requests.
 The instrument table and sampler construction are the places to plug in future
 historical samples using `smplr.Sampler`; the generator and performance function
 need no changes. General MIDI names do not establish historical authenticity.
+
+### Reusing a trained model
+
+The generation Worker stays alive after a result and retains one trained model
+and its learned meter/phrase statistics. The cache compares full selected corpus
+content and effective model settings (including interval-anchor handling).
+Changing only the seed or musical constraints reuses this preparation; inference
+is still recomputed. Cancel, timeout, worker failure or closing the page discards
+the cache. Generation diagnostics report preparation, inference and sampling
+times and whether the model was reused. `generate()` remains usable without a
+cache for scripts and independent comparisons.

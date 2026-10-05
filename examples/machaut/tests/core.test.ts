@@ -596,3 +596,33 @@ test("repeat look-ahead preserves the independently enumerated language", () => 
     );
   }
 });
+
+test("cached generation preserves complete results and invalidates corpus/model changes", async () => {
+  const { GenerationCache } = await import("../src/generation/cache");
+  const cache = new GenerationCache();
+  const settings = options("absolute");
+  const stable = (r: ReturnType<typeof generate>) => {
+    const { timings, elapsedMs, ...rest } = r;
+    return rest;
+  };
+  assert.equal(generate(corpus, settings, cache).timings.modelReused, false);
+  for (const seed of [123, 456]) {
+    const changed = { ...settings, seed };
+    const cached = generate(structuredClone(corpus), changed, cache);
+    assert.equal(cached.timings.modelReused, true);
+    assert.deepEqual(stable(cached), stable(generate(corpus, changed)));
+  }
+  const relaxed = { ...settings, constraints: { ...settings.constraints, maxLeap: 4 } };
+  assert.equal(generate(corpus, relaxed, cache).timings.modelReused, true);
+  assert.deepEqual(stable(generate(corpus, relaxed, cache)), stable(generate(corpus, relaxed)));
+  const changedModel = { ...settings, model: { ...settings.model, maxOrder: 2 } };
+  assert.equal(generate(corpus, changedModel, cache).timings.modelReused, false);
+  const edited = structuredClone(corpus);
+  edited[0].notes[0].duration = 2;
+  assert.equal(generate(edited, changedModel, cache).timings.modelReused, false);
+  const anchored = cache.prepare(corpus, { ...settings.model, rhythm: "corpus", representation: "intervals", includeIntervalAnchor: false });
+  const next = cache.prepare(corpus, { ...settings.model, rhythm: "corpus", representation: "intervals", includeIntervalAnchor: true });
+  assert.equal(anchored.reused, false);
+  assert.equal(next.reused, false);
+  assert.notEqual(anchored.trained, next.trained);
+});

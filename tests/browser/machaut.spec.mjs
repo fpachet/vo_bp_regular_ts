@@ -305,3 +305,15 @@ test("Machaut: internal phrase durations and repertoire groups are recorded", as
   await page.locator("#repertoire").selectOption("motet");
   await expect(page.locator("#stats")).toContainText("285");
 });
+
+test("Machaut: persistent worker reuses model and invalidates model changes", async ({ page }) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await ready(page);
+  expect((await jsonDownload(page)).timings.modelReused).toBe(false);
+  await ready(page);
+  expect((await jsonDownload(page)).timings.modelReused).toBe(true);
+  await page.locator("#order").fill("2");
+  await ready(page);
+  expect((await jsonDownload(page)).timings.modelReused).toBe(false);
+});

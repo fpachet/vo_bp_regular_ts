@@ -364,7 +364,7 @@ async function showResult(r: GenerationResult) {
   el("score-subtitle").textContent =
     `${r.mode === "constrained" ? "Conditioned melody" : "Ordinary Markov sample"} · ${r.notes.length} notes · ${r.model.rhythm === "corpus" ? "learned rhythm" : "quarter notes"} · ${r.notes.reduce((sum, n) => sum + n.duration, 0)} beats · order ${r.model.maxOrder} · seed ${r.seed}${r.ending ? ` · final ${r.notes.at(-1)!.duration} beats` : ""}`;
   el("diagnostic-detail").textContent =
-    `${r.productStates.toLocaleString()} product states · ${r.productEdges.toLocaleString()} time-indexed edges · ${(r.bufferBytes / 1048576).toFixed(2)} MiB inference buffers · ${r.elapsedMs.toFixed(0)} ms generation. Mean absolute interval ${r.diagnostics.averageAbsoluteInterval.toFixed(2)}, largest leap ${r.diagnostics.maximumInterval}, repeated notes ${r.diagnostics.repeatedPercent.toFixed(1)}%. Copied ${r.diagnostics.ngramOrder}-grams: ${r.diagnostics.copiedNgrams}. Log source weight ${r.logSourceWeight.toFixed(3)}${r.logPartitionFunction === null ? "" : `, log weighted partition ${r.logPartitionFunction.toFixed(3)}`}. Constraint violations: ${r.violations.length ? r.violations.join(", ") : "none"}. Copy counts compare literal absolute pitches against each source separately; transposed copying is not counted.`;
+    `${r.productStates.toLocaleString()} product states · ${r.productEdges.toLocaleString()} time-indexed edges · ${(r.bufferBytes / 1048576).toFixed(2)} MiB inference buffers · ${r.elapsedMs.toFixed(0)} ms generation (${r.timings.modelReused ? "cached model" : "new model"}; preparation ${r.timings.trainingMs.toFixed(0)} ms, inference ${r.timings.inferenceMs.toFixed(0)} ms, sampling ${r.timings.samplingMs.toFixed(1)} ms). Mean absolute interval ${r.diagnostics.averageAbsoluteInterval.toFixed(2)}, largest leap ${r.diagnostics.maximumInterval}, repeated notes ${r.diagnostics.repeatedPercent.toFixed(1)}%. Copied ${r.diagnostics.ngramOrder}-grams: ${r.diagnostics.copiedNgrams}. Log source weight ${r.logSourceWeight.toFixed(3)}${r.logPartitionFunction === null ? "" : `, log weighted partition ${r.logPartitionFunction.toFixed(3)}`}. Constraint violations: ${r.violations.length ? r.violations.join(", ") : "none"}. Copy counts compare literal absolute pitches against each source separately; transposed copying is not counted.`;
   el("note-list").innerHTML = r.notes
     .map(
       (n, i) =>
@@ -406,12 +406,11 @@ function generate(freshSeed = false) {
     }
     const options = readOptions(),
       selected = selectedCorpus();
-    worker?.terminate();
-    worker = new Worker(new URL("../generation/worker.ts", import.meta.url), {
+    worker ??= new Worker(new URL("../generation/worker.ts", import.meta.url), {
       type: "module",
     });
     busy(true);
-    status("Training model and solving the constrained distribution…");
+    status("Preparing model and solving the constrained distribution…");
     const timeout = setTimeout(() => {
       worker?.terminate();
       worker = null;
@@ -423,8 +422,6 @@ function generate(freshSeed = false) {
     }, 30000);
     worker.onmessage = ({ data }) => {
       clearTimeout(timeout);
-      worker?.terminate();
-      worker = null;
       el<HTMLButtonElement>("cancel").disabled = true;
       if (data.ok) {
         void showResult(data.result)

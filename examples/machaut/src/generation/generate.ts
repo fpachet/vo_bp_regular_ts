@@ -1,3 +1,4 @@
+import { GenerationCache } from "./cache";
 import {
   DFA,
   runBP,
@@ -67,7 +68,7 @@ function beta(
   }
   return -Infinity;
 }
-export function generate(corpus: Melody[], options: GenerationOptions) {
+export function generate(corpus: Melody[], options: GenerationOptions, cache?: GenerationCache) {
   if (
     !Number.isInteger(options.seed) ||
     options.seed < 0 ||
@@ -82,7 +83,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     options.model.rhythm === "corpus"
       ? (options.model.phraseEndStrength ?? 0)
       : 0;
-  const phrasePrior = phraseStrength ? learnPhraseDurations(corpus) : undefined;
+
   const phrasePositions = [...new Set(options.phraseEndPositions ?? [])].sort(
     (a, b) => a - b,
   );
@@ -94,7 +95,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     throw new Error(
       "Phrase-end positions must be one-based internal note positions",
     );
-  const prior = strength ? learnMeter(corpus) : undefined;
+
   const includeAnchor =
     (strength > 0 ||
       phraseStrength > 0 ||
@@ -106,10 +107,16 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     includeIntervalAnchor: includeAnchor,
   };
   const began = performance.now(),
-    trained = train(corpus, effectiveModel),
+    prepared = cache?.prepare(corpus, effectiveModel),
+    trained = prepared?.trained ?? train(corpus, effectiveModel),
     rng = seededRng(options.seed),
     c = options.constraints,
     rep = options.model.representation;
+  const prior = strength ? (prepared?.meter ?? learnMeter(corpus)) : undefined;
+  const phrasePrior = phraseStrength ? (prepared?.phrases ?? learnPhraseDurations(corpus)) : undefined;
+  const trainingMs = performance.now() - began;
+  const inferenceStarted = performance.now();
+  let samplingStarted = inferenceStarted;
   const horizon =
     rep === "intervals" && !includeAnchor ? c.length - 1 : c.length;
   const pitchDfa =
@@ -158,9 +165,11 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
       throw new Error(
         "No melody satisfies these constraints under the model. Widen the range, simplify fixed notes/cadence, relax the final duration/meter, or increase backoff.",
       );
+    samplingStarted = performance.now();
     inferenceSequence = bp.sample(rng);
     sequence = wrapped ? inferenceSequence.slice(0, -1) : inferenceSequence;
   } else {
+    samplingStarted = performance.now();
     let state = trained.graph.startState;
     for (let i = 0; i < horizon; i++) {
       const row = trained.graph.outgoing(state);
@@ -175,6 +184,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
   }
   let previous = initialPitch(c);
   const offset = rep === "intervals" && !includeAnchor ? 1 : 0;
+  const samplingMs = performance.now() - samplingStarted;
   const pitches = offset ? [previous] : [];
   for (const symbol of sequence) {
     const decoded = trained.decode(symbol);
@@ -394,6 +404,7 @@ export function generate(corpus: Melody[], options: GenerationOptions) {
     productStates: bp?.productStateCount ?? 0,
     productEdges: bp?.productEdgeCount ?? 0,
     bufferBytes: bp?.memoryDiagnostics().totalBufferBytes ?? 0,
+    timings: { trainingMs, inferenceMs: samplingStarted - inferenceStarted, samplingMs, modelReused: prepared?.reused ?? false },
     elapsedMs: performance.now() - began,
   };
 }
