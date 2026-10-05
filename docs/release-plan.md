@@ -45,3 +45,11 @@ Progress and measurements will be recorded below as stages complete.
 - Release artifact: markov-constraints-0.2.0-rc.1.tgz built and validated. Actual
   npm publication remains an account/registry setup step requiring package-name
   ownership and authentication. No registry publication is claimed by this plan.
+
+## 0.4 npm prerelease preparation
+
+The public package API, installation guide, executable README examples, exact
+artifact validation and GitHub prerelease are complete. See
+[npm release checklist and results](npm-release.md). Publication to npm and a
+fresh registry installation require maintainer authentication; those steps
+remain pending. The GitHub release tarball is available now.
