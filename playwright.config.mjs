@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/browser",
   fullyParallel: true,
+  reporter: [["list"],["json",{outputFile:"test-results/results.json"}]],
   retries: process.env.CI ? 1 : 0,
   projects: [
     { name: "chromium", use: { browserName: "chromium" } },

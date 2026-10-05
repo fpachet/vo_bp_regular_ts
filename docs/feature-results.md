@@ -78,3 +78,17 @@ Full Alice is the Gutenberg edition (front matter included, wrapper removed for
 training); the complete original corpus/license is shipped with the demo.
 
 The package remains a release candidate. npm registry publication is separate.
+
+Realistic benchmark retained memory after compilation/backward inference (before
+filling sampling caches); these workloads use a forbidden-pattern constraint,
+rather than the larger full-book MAXORDER demonstration:
+
+| Workload | JS heap MiB | Array buffers MiB | Sum MiB |
+|---|---:|---:|---:|
+| Full Alice | 2.143 | 1.828 | 3.971 |
+| Transposed melody | 3.841 | 0.960 | 4.801 |
+| Branching, horizon 64 | 0.765 | 0.380 | 1.145 |
+| Branching, horizon 256 | 1.601 | 1.557 | 3.158 |
+
+All four realistic products match the Python reference state/edge counts; log
+partition differences are at most 2.3e-14.

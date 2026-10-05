@@ -34,3 +34,25 @@ cumulative-duration meter and WebAudio playback; see feature-results.md.
 Remaining limits: no npm registry publication/authentication. Probability-space DP
 is a benchmark prototype; the public library retains stable log inference.
 The product budgets intentionally stop large requests rather than approximating.
+
+
+## 0.3.0-rc.1 feature milestone
+
+- 168 tests passed on Node 20, 22 and 24; 91 Python fixtures freshly regenerated
+  in CI, including 12 cumulative meter/PAD cases.
+- Packed external strict TypeScript consumer passes, including meter/marginal APIs.
+- 16 browser checks passed across Chromium/Firefox, including full Alice modes,
+  marginals, exact melody duration, WebAudio startup/stop, MIDI downloads and
+  cache saturation benchmarks. Linux CI supplies a virtual audio sink; this
+  verifies graph startup, not acoustic output from speakers.
+- Rich examples run successfully; the independent MIDI parser validates events.
+- Realistic TS/Python log partitions agree within 2.3e-14 and product counts match.
+- Heap and external array-buffer measurements are now reported separately.
+- Local browser inspection confirms full Alice generation and metered playback.
+  Screenshot: playground-features.png.
+
+Validated implementation: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37307941669
+
+Validated deployment: https://github.com/fpachet/vo_bp_regular_ts/actions/runs/37307941667
+
+Performance gains and practical limits: [feature-results.md](feature-results.md).

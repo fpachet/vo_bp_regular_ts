@@ -1,6 +1,8 @@
 # Feature and example completion plan
 
-Status: in progress.
+Status: implemented and validated. Browser timing artifact persistence is being finalized.
+
+Version: 0.3.0-rc.1. Results: [feature-results.md](feature-results.md).
 
 1. Replace prefix-scanning substring automata with Aho–Corasick failure links,
    cached sparse transitions and optional bounded finite-alphabet tables. Benchmark
