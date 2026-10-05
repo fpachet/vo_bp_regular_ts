@@ -22,3 +22,21 @@ test("natural performance can be disabled; tempo scales seconds and rejects inva
   assert.throws(() => renderPerformance(notes, 0));
   assert.throws(() => renderPerformance(notes, NaN));
 });
+
+test("articulation follows instrument and beat positions, with bounded phrase breaths", () => {
+  const notes = [0, 0.5, 1, 2].map(onset => ({ midi: 60, pitchClass: 0, onset, duration: 0.5 }));
+  const recorder = renderPerformance(notes, 60, true, "recorder", [2]);
+  const harp = renderPerformance(notes, 60, true, "orchestral_harp", [2]);
+  assert.equal(recorder[0].velocity, 77);
+  assert.equal(recorder[1].velocity, 71);
+  assert.equal(recorder[1].duration, 0.44);
+  assert.equal(harp[1].duration, 0.5);
+  assert.equal(renderPerformance(notes, 60, true, "fiddle")[0].duration, 0.495);
+  assert.equal(renderPerformance(notes, 60, true, "church_organ")[0].duration, 0.49);
+  assert.deepEqual(renderPerformance(notes, 60, false, "choir_aahs", [2]), renderPerformance(notes, 60, false));
+  const rested = structuredClone(notes);
+  rested[2].onset = 1.5;
+  assert.equal(renderPerformance(rested, 60, true, "recorder", [2])[1].duration, 0.48);
+  assert.ok(recorder.every(n => n.duration > 0));
+  assert.deepEqual(recorder.map(n => n.onset), notes.map(n => n.onset));
+});

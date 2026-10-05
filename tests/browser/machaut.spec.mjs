@@ -317,3 +317,19 @@ test("Machaut: persistent worker reuses model and invalidates model changes", as
   await ready(page);
   expect((await jsonDownload(page)).timings.modelReused).toBe(false);
 });
+
+test("Machaut: reused notation redraws on resize and retains note interaction", async ({ page }) => {
+  await page.goto("/machaut/");
+  await expect(page.locator("#generate")).toBeEnabled();
+  await ready(page);
+  await expect(page.locator("#notation-time")).toContainText("Notation");
+  await page.setViewportSize({ width: 1000, height: 800 });
+  await expect(page.locator('#score [aria-label^="Explain score note 1 "]')).toBeVisible();
+  await page.waitForTimeout(250);
+  await page.locator('#score [aria-label^="Explain score note 1 "]').first().click();
+  await expect(page.locator("#explanation")).toContainText("Note 1:");
+  await ready(page);
+  await expect(page.locator('#score [aria-label^="Explain score note 2 "]')).toBeVisible();
+  await page.locator('#score [aria-label^="Explain score note 2 "]').first().press("Enter");
+  await expect(page.locator("#explanation")).toContainText("Note 2:");
+});

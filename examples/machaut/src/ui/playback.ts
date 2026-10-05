@@ -17,6 +17,8 @@ const effected = new WeakSet<Soundfont>();
 
 export function stop() {
   revision++;
+  // smplr.stop() only stops voices; future notes remain queued separately.
+  active?.scheduler.stop();
   active?.stop();
   active = undefined;
   if (context) master.gain.setValueAtTime(0, context.currentTime);
@@ -28,6 +30,7 @@ export function setReverb(amount: number) {
 
 export async function play(notes: NoteEvent[], bpm: number, options: {
   instrument?: InstrumentId; natural?: boolean; reverb?: number;
+  phraseEnds?: readonly number[];
   loading?: (value: boolean) => void;
 } = {}) {
   stop();
@@ -69,7 +72,7 @@ export async function play(notes: NoteEvent[], bpm: number, options: {
     active = instrument;
     master.gain.setValueAtTime(1, audio.currentTime);
     const start = audio.currentTime + 0.06;
-    for (const note of renderPerformance(notes, bpm, options.natural ?? true)) {
+    for (const note of renderPerformance(notes, bpm, options.natural ?? true, id, options.phraseEnds)) {
       instrument.start({ note: note.midi, time: start + note.onset, duration: note.duration, velocity: note.velocity });
     }
   } finally {

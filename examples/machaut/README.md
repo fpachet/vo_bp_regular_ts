@@ -306,9 +306,12 @@ Generation → performance rendering → sampler → Web Audio reverb → output
 
 `src/audio/performance.ts` converts quarter-note beats to seconds at the selected
 BPM without modifying the symbolic melody or exports. Natural performance adds
-96% articulation, a small deterministic dynamic pattern, and a softer final
+instrument-specific articulation (Recorder 96%, Harp 100%, Fiddle 99%,
+Organ/Voice 98%), gentle accents on quarter-note beat positions, and a softer final
 note held to 115%; disabling it preserves exact symbolic timing and duration.
-There is no timing jitter or inferred phrase treatment. Reverb defaults to a
+Explicit internal phrase endings soften the release; Recorder and Voice leave a
+breath of up to 60 ms (capped at 15% of note duration) where needed. Existing
+rests provide their own breath. There is no timing jitter or inferred phrasing. Reverb defaults to a
 restrained 12% send and can be adjusted during playback.
 
 `src/ui/playback.ts` owns the shared AudioContext, lazy instrument cache, audio
@@ -328,3 +331,8 @@ is still recomputed. Cancel, timeout, worker failure or closing the page discard
 the cache. Generation diagnostics report preparation, inference and sampling
 times and whether the model was reused. `generate()` remains usable without a
 cache for scripts and independent comparisons.
+
+Notation keeps one OpenSheetMusicDisplay instance. Unchanged MusicXML is not
+reloaded on resize; only layout is redrawn and note interaction is reattached.
+The notation timing beside the score measures load/layout separately from model
+generation (the first renderer download and queue wait are excluded).
